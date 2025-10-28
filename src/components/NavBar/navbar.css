@@ -1,0 +1,73 @@
+.navbar, .links {
+    display: flex;
+}
+
+.navbar {
+    background-color: var(--sf-light);
+    padding: .5rem;
+    border-bottom: 1px solid var(--bg-dark);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.links {
+    gap: 2rem;
+    align-items: center;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+}
+
+.navbar-logo {
+    display: flex;
+    gap: 2%;
+}
+
+.labable-logo {
+    width: 36px;
+}
+
+.title {
+    display: flex;
+}
+
+.title-secondary {
+    color: var(--hl-gray);
+}
+
+.links {
+    font-weight: 500;
+}
+
+.link {
+    border-radius: 50px;
+    padding: .5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+}
+
+.link:hover {
+    background-color: rgba(from var(--hl-gray) r g b / .05);
+}
+
+.link.active {
+    background-color: rgba(from var(--hl-gray) r g b / .15);
+}
+
+.actions button {
+    padding: .5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    border: 1px solid var(--bg-dark);
+    cursor: pointer;
+    transition: .2s ease-in-out;
+}
+
+.signup-btn {
+    background-color: var(--bg-dark);
+    color: var(--fg-dark);
+}
