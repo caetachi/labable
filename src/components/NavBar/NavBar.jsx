@@ -1,11 +1,14 @@
 import { NavLink } from 'react-router'
-import labableLogo from '../../assets/logo.png'
+import labableLogo from '../../assets/labable-black.svg'
 import './nav-bar.css'
 export default  function NavBar(){
     return(
         <>
-            <div className="nav-bar-container">
-                <img src={labableLogo} alt="" className='logo'/>
+            <nav className="nav-bar-container">
+                <div className="logo">
+                    <img src={labableLogo} alt="Labable" className='logo'/>
+                    <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
+                </div>
                 <div className="links">
                     <NavLink to='/' className='nav-link'>Home</NavLink>
                     <NavLink to='/' className='nav-link'>About us</NavLink>
@@ -16,7 +19,7 @@ export default  function NavBar(){
                     <button className='login'>Login</button>
                     <button className='signup'>Signup</button>
                 </div>
-            </div>
+            </nav>
         </>
     )
 }
