@@ -1,10 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 :root {
-  --fg-light: #000000;
-  --fg-dark: #FFFFFF;
+  --fg-dark: #000000;
+  --fg-light: #FFFFFF;
   --bg-light: #FFFFFF;
   --bg-dark: #000000;
   --sf-light: #DDDDDD;
-  --sf-dark: #3F3F3F;
+  --sf-dark: #919191;
   --ov-light: #C0C0C0;
   --ov-dark: #4D4D4D;
   --hl-gray: #616161;
@@ -14,12 +15,22 @@
   --hl-blue: #2891D8;
   --hl-yellow: #ffeb3b;
   --success: #22C55E;
-  --error: #EF4444; 
+  --error: #EF4444;
+  --primary-font: 'Poppins', sans-serif; 
 }
 
 *{
   box-sizing: border-box;
 }
 body{
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  padding: 0;
+}
+
+p, h1, h2, h3, h4, h5, h6, span, a, li, button{
+  font-family: var(--primary-font);
+  margin: 0;
+  padding: 0;
 }
