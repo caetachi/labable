@@ -1,0 +1,46 @@
+.footer-container *{
+    color: white;
+}
+.footer-container{
+    background-color: black;
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    width: 100%;
+}
+
+.summary p{
+    margin: 0;
+}
+
+.summary{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid white;
+}
+
+.summary div{
+    width: 450px;
+    padding: 0px 50px;
+}
+
+.footer-title{
+    font-size: 30px;
+    font-weight: bold;
+    padding-bottom: 8px;
+}
+
+.find-us-at .socials{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px;
+}
+
+.copyright{
+    align-self: center;
+}

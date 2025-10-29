@@ -16,3 +16,10 @@
   --success: #22C55E;
   --error: #EF4444; 
 }
+
+*{
+  box-sizing: border-box;
+}
+body{
+  margin: 0;
+}

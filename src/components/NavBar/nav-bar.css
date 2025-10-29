@@ -1,0 +1,54 @@
+.nav-bar-container *{
+    font-family: 'Poppins';
+    font-size: 20px;
+}
+.nav-bar-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    color: rgba(255, 255, 255, 0.95);
+    border: 0.5px solid rgba(0, 0, 0, 0.3);
+}
+
+.links{
+    display: flex;
+    flex-direction: row;
+    gap: 4vw;
+}
+
+.nav-link{
+    text-decoration: none;
+    color: black;
+}
+
+.login-signup{
+    display: flex;
+    gap: 10px;
+}
+
+.login-signup button{
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    border-radius: 100px;
+}
+
+.login-signup .signup{
+    color: white;
+    background-color: black;
+    border: 1px solid;
+    transition: ease 0.3s;
+}
+
+.login-signup .signup:hover{
+    color: black;
+    background-color: white;
+}
+
+.login-signup .login:hover{
+    transition: ease 0.3s;
+    background-color: rgba(91, 91, 91, .20);
+}
