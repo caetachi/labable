@@ -324,6 +324,11 @@
 }
 
 
+.radio-container{
+    display: flex;
+    flex-direction: row;
+}
+
 
 .radio{
     appearance: none; 
@@ -409,4 +414,11 @@
 .summary-number{
     display: inline;
     color: var(--sf-dark);
+}
+
+.gcash-label{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
