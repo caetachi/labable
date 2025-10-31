@@ -7,6 +7,7 @@ import ShirtLogo from '../../assets/shirt.svg'
 import SkirtLogo from '../../assets/skirt.svg'
 import DressLogo from '../../assets/dress.svg'
 import GCashLogo from '../../assets/gcash.svg'
+
 export default function CreateOrder() {
     return(
         <div className='create-order-container'>
@@ -298,9 +299,8 @@ export default function CreateOrder() {
                 </div>
                 <div className="radio-container">
                     <input className='radio' type="radio" name="payment-method" id="gcash-payment" />
-                    <label className='radio-label gcash-label' htmlFor="gcash-payment">
-                        GCash<img src={GCashLogo} alt="" />
-
+                    <label className='radio-label' htmlFor="gcash-payment">
+                        GCash <img src={GCashLogo}/>
                     </label>
                 </div>
             </div>
