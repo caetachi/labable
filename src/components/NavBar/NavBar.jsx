@@ -16,8 +16,8 @@ export default  function NavBar(){
                     <NavLink to='/' className='nav-link'>Create order</NavLink>
                 </div>
                 <div className="login-signup">
-                    <button className='login'>Login</button>
-                    <button className='signup'>Signup</button>
+                    <NavLink to='/login' className='login'>Login</NavLink>
+                    <NavLink to='/registration' className='signup'>Signup</NavLink>
                 </div>
             </nav>
         </>
