@@ -283,7 +283,7 @@
 .service-type-card,
 .service-type-icon-container,
 .service-type-icon{
-    transition: ease-in-out 0.2s;
+    transition: ease-in-out 0.3s;
 }
 
 .service-type-icon-container{
@@ -324,6 +324,11 @@
 }
 
 
+.radio-container{
+    display: flex;
+    flex-direction: row;
+}
+
 
 .radio{
     appearance: none; 
@@ -333,18 +338,34 @@
     border-radius: 50%;
     outline: none; 
     cursor: pointer; 
+    position: relative;
 }
 
 .radio:checked{
-    background-color: var(--sf-dark);
+    /* background-color: var(--sf-dark); */
     border-color: var(--fg-dark); 
     
+}
+
+.radio:checked::before {
+  content: ""; /* Magdagdag ng checkmark */
+  width: 10px; /* Lapad ng checkmark */
+  height: 10px; /* Taas ng checkmark */
+  background-color: rgb(239, 0, 0); /* Kulay ng checkmark */
+  border-radius: 50%; /* Gawing bilog */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* I-center ang checkmark */
 }
 
 .radio-label{
     font-size: 20px;
     font-weight: 500;
     font-family: 'Poppins', 'Sans serif';
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }
 
 .transfer-date-input{
@@ -409,4 +430,11 @@
 .summary-number{
     display: inline;
     color: var(--sf-dark);
+}
+
+.gcash-label{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
