@@ -33,11 +33,13 @@
     gap: 10px;
 }
 
-.login-signup button{
+.login-signup a {
     padding: 10px 20px;
     background-color: transparent;
     border: none;
     border-radius: 100px;
+    text-decoration: none;
+    color: var(--fg-dark);
 }
 
 .login-signup .signup{
