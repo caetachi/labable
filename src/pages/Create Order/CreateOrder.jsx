@@ -46,7 +46,7 @@ export default function CreateOrder() {
                 </div>
                 <div className="order-items-container">
                     <div className="washable-items-container gray-border">
-                        <p className='section-title'>Select Washable Item</p>
+                        <p className='section-title washable-items-title'>Select Washable Item</p>
                         <div className="select-items">
                             <div className="search-container">
                                 <input className='select-search gray-border' type="text" placeholder='Search Washable Items.......'/>
