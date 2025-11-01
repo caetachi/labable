@@ -162,7 +162,7 @@
     align-items: center;
     font-weight: 500;
     cursor: pointer;
-    transition: .2s ease-in-out;
+    transition: .2s ease;
 }
 
 .registration-container .alt-registration-btn i {

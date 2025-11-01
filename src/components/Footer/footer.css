@@ -70,7 +70,7 @@
 }
 
 .socials i:hover{
-    transition: ease-in-out 0.3s;
+    transition: ease 0.3s;
     color: var(--fg-dark);
     background-color: var(--bg-light);
 }

@@ -38,7 +38,7 @@
     border-radius: 50px;
     border: 2px solid var(--sf-light);
     padding: 3%;
-    transition: .1s ease-in-out;
+    transition: .1s ease;
 }
 
 .login-container .input-field i {
@@ -126,7 +126,7 @@
     align-items: center;
     font-weight: 500;
     cursor: pointer;
-    transition: .2s ease-in-out;
+    transition: .2s ease;
 }
 
 .login-container .alt-login-btn i {
