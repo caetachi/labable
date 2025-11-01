@@ -32,13 +32,13 @@
 }
 
 .login-container .input-field {
-  display: flex;
-  align-items: center;
-  gap: 2%;
-  border-radius: 50px;
-  border: 2px solid var(--sf-light);
-  padding: 3%;
-  transition: 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 2%;
+    border-radius: 50px;
+    border: 2px solid var(--sf-light);
+    padding: 3%;
+    transition: .1s ease;
 }
 
 .login-container .input-field i {
@@ -123,18 +123,17 @@
 }
 
 .login-container .alt-login-btn {
-  background-color: var(--fg-light);
-  color: var(--fg-dark);
-  padding: 4%;
-  border: 2px solid var(--fg-dark);
-  border-radius: 50px;
-  display: flex;
-  gap: 2%;
-  justify-content: center;
-  align-items: center;
-  font-weight: 500;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
+    background-color: var(--fg-light);
+    color: var(--fg-dark);
+    padding: 4%;
+    border-radius: 50px;
+    display: flex;
+    gap: 2%;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: .2s ease;
 }
 
 .login-container .alt-login-btn i {

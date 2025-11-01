@@ -283,7 +283,7 @@
 .service-type-card,
 .service-type-icon-container,
 .service-type-icon{
-    transition: ease-in-out 0.3s;
+    transition: ease 0.3s;
 }
 
 .service-type-icon-container{
@@ -411,7 +411,7 @@
 .draft-button{
     background-color: var(--fg-light);
     color: var(--fg-dark);
-    transition: ease-in-out 0.3s;
+    transition: ease 0.3s;
 }
 .draft-button:hover{
     background-color: var(--fg-dark);
@@ -421,7 +421,7 @@
 .summary-button{
     background-color: var(--fg-dark);
     color: var(--fg-light);
-    transition: ease-in-out 0.3s;
+    transition: ease 0.3s;
 }
 .summary-button:hover{
     background-color: var(--fg-light);
