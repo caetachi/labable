@@ -1,80 +1,78 @@
 .footer-container{
     background-color: black;
-    padding: 50px 0;
+    padding: 1rem 0;
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    align-items: center;
     width: 100%;
+    gap: 1rem;
     color: var(--fg-light);
 }
 
-.summary{
+.footer-container .summary{
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 20px 0;
+    padding: 0 10rem 1rem 10rem;
     border-bottom: 1px solid var(--fg-light);
-    gap: 20px;
+    width: 100%;
+    gap: 5rem;
 }
 
-.footer-title{
+.footer-container .footer-section{
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
+}
+
+.footer-container .footer-title{
     font-size: 2rem;
     font-weight: bold;
 }
 
-.business, .quick-links, .services, .find-us-at{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    flex-basis: 0;
-    padding: 0px 50px;
-}
-
-.white-logo{
+.footer-container .white-logo{
     display: flex;
     flex-direction: row;
     align-items: start;
     gap: 10px;
 }
 
-.white-logo img{
+.footer-container .white-logo img{
     width: 50px;
     height: 50px;
 }
 
-.white-logo h1{
+.footer-container .white-logo h1{
     color: var(--fg-light);
 }
 
-.white-logo h1 span{
+.footer-container .white-logo h1 span{
     font-weight: bold;
     font-size: 2rem;
 }
 
-.white-logo .highlight-tag{
+.footer-container .white-logo .highlight-tag{
     color: var(--sf-dark);
 }
 
-.socials{
+.footer-container .socials{
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
-.socials i{
+.footer-container .socials i{
     font-size: 2rem;
     cursor: pointer;
     border-radius: 10px;
     padding: 5px;
 }
 
-.socials i:hover{
+.footer-container .socials i:hover{
     transition: ease 0.3s;
     color: var(--fg-dark);
     background-color: var(--bg-light);
 }
 
-.copyright{
+.footer-container .copyright{
     align-self: center;
 }
