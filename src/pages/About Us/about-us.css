@@ -1,59 +1,109 @@
-.container{
-    margin-top: 100px;
-    padding: 10px;
-    display: flex;
-    text-align: center;
-    justify-self: center;
-
+.about-us-container {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 3rem;
 }
-.container-top{
-    margin-top: 100px;
-    padding: 10px;
-    display: flex;
-    text-align: center;
-    justify-self: center;
-    font-size: 30px;
 
+.about-us-container > div {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
 }
-.text-top {
-  padding: 10px 20px;      
+
+.about-us-container h2 {
+  font-size: 2rem;
+}
+
+.about-us-container .hero {
   width: 100%;
-  max-width: 1000px;       
-  margin: 20px auto;          
-  text-align: center;      
-  color: #919191;
+  font-size: 1.5rem;
+  letter-spacing: 0.2rem;
+  background-image: url("../../assets/white_textile_hang.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
-.text-top-story {
-  padding: 10px 20px;      
-  width: 100%;
-  max-width: 1100px;       
-  margin: 0 auto;          
-  text-align: left;      
-  color: #919191;
-  margin-bottom: 20px;
-}
-.mission-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    margin-top: 20px;
-}
-.mission-card{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    width: 350px;
-    padding: 40px;
-    text-align: center;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    border: 2px solid #919191;
-} 
-.mission-card i {
-    font-size: 80px;
-    align-self: center;
-    padding-bottom: 50px;
 
-} .mission-card p {
-    color: #919191;
+.about-us-container .hero .hero-text-content {
+    width: 100%;
+    height: 100%;
+    background-color: color-mix(in srgb, var(--bg-dark) 50%, transparent);
+    padding: 10%;
+    color: var(--fg-light);
+}
+
+.about-us-container .about-us {
+  gap: 1rem;
+}
+
+.about-us-container .about-us-desc {
+  color: var(--hl-gray);
+  text-align: justify;
+}
+
+.about-us-container .values {
+    flex-direction: row;
+    gap: 5%;
+    align-items: center;
+}
+
+
+.about-us-container .values h2 {
+  text-align: end;
+}
+
+.about-us-container .values-container {
+    width: 70%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.about-us-container .value-card {
+    border-radius: 25px;
+    box-shadow: 0 0 10px var(--sf-light);
+    padding: 5%;
+}
+
+.about-us-container .value-card .value-title {
+    display: flex;
+    gap: 5%;
+    align-items: center;
+    margin-bottom: 2%;
+}
+
+.about-us-container .value-card .value-title h2 {
+    font-size: 1.5rem;
+}
+
+.about-us-container .value-card .value-title i {
+    font-size: 1.5rem;
+}
+
+.about-us-container .value-card .value-desc {
+    height: max-content;
+    padding: 5%;
+    background-color: color-mix(in srgb, var(--sf-light) 5%, transparent);
+    box-shadow: inset 0 0 5px var(--sf-light);
+    border-radius: 15px;
+    color: var(--hl-gray);
+}
+
+.about-us-container .value-revolutionize i {
+    color: var(--success);
+}
+
+.about-us-container .value-customer i {
+    color: var(--hl-blue);
+}
+
+.about-us-container .value-quality i {
+    color: var(--hl-yellow);
+}
+
+.about-us-container .value-care i {
+    color: var(--error);
 }
