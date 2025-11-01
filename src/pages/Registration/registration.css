@@ -129,11 +129,18 @@
     text-align: center;
     padding: 4%;
     border-radius: 50px;
-    border: none;
+    border: 2px solid;
     background-color: var(--fg-dark);
     color: var(--fg-light);
     font-weight: 500;
     cursor: pointer;
+    transition: .2s ease-in-out;
+}
+
+.registration-container .registration-btn:hover {
+    color: var(--fg-dark);
+    border-color: var(--fg-dark);
+    background-color: transparent;
 }
 
 .registration-container .alt-registration-label {
@@ -156,6 +163,7 @@
     color: var(--fg-dark);
     padding: 4%;
     border-radius: 50px;
+    border: 2px solid var(--fg-dark);
     display: flex;
     gap: 2%;
     justify-content: center;
@@ -170,8 +178,8 @@
 }
 
 .registration-container .alt-registration-btn:hover {
-    color: var(--fg-light);
-    background-color: var(--bg-dark);
+    background-color: var(--sf-light);
+    border-color: var(--sf-light);
 }
 
 .registration-container .signup-redirect {
