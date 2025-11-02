@@ -11,6 +11,7 @@ import Profile from "./pages/Profile/Profile"
 import Registration from "./pages/Registration/Registration"
 import UserDashboard from "./pages/User Dashboard/UserDashboard"
 import NotFound from "./pages/Not Found/NotFound"
+import OrderSummary from "./pages/Order Summary/OrderSummary"
 export default function App() {
 
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/about-us" element={<AboutUs/>}/>
           <Route path="/create-order" element={<CreateOrder/>}/>
+          <Route path="/order-summary" element={<OrderSummary/>}/>
           <Route path="/my-orders" element={<MyOrder/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/registration" element={<Registration/>}/>
