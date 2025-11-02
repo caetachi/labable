@@ -4,12 +4,11 @@
 }
 .nav-bar-container{
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    gap: 15vw;
     width: 100%;
-    height: 80px;
-    padding: 10px 30px;
+    padding: .3rem 1.5rem;
     border-bottom: 0.5px solid var(--sf-dark);
     position: fixed;
     z-index: 1000;
@@ -17,15 +16,23 @@
 }
 
 .links{
+    width: 100%;
     display: flex;
-    flex-direction: row;
-    gap: 4vw;
+    justify-content: space-around;
 }
 
 .nav-link{
+    text-align: center;
     text-decoration: none;
     color: var(--fg-dark);
     font-size: 1rem;
+    transition: .2s ease;
+    border-radius: 50px;
+    padding: 2%;
+}
+
+.nav-link:hover {
+    background-color: color-mix(in srgb, var(--sf-light) 50%, transparent);
 }
 
 .login-signup{
@@ -42,11 +49,11 @@
     color: var(--fg-dark);
 }
 
-.login-signup .signup{
+.login-signup .signup {
     color: var(--fg-light);
     background-color: var(--fg-dark);
-    border: 1px solid;
-    transition: ease 0.3s;
+    border: 2px solid;
+    transition: .2s ease;
 }
 
 .login-signup .signup:hover{
@@ -54,9 +61,14 @@
     background-color: var(--bg-light);
 }
 
+.login-signup .login {
+    border: 2px solid;
+    transition: .2s ease;
+}
+
 .login-signup .login:hover{
-    transition: ease 0.3s;
-    background-color: color-mix(in srgb, var(--sf-dark) 20%, transparent);
+    border-color: var(--sf-light);
+    background-color: var(--sf-light);
 }
 
 .logo{

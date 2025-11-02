@@ -1,22 +1,19 @@
 import './footer.css'
 import WhiteLogo from '../../assets/labable-white.svg'
-import InstaLogo from '../../assets/insta.png'
-import TeamsLogo from '../../assets/teams.png'
-import FbLogo from '../../assets/facebook.png'
 
 export default function Footer(){
     return(
         <>
             <footer className="footer-container">
                 <div className="summary">
-                    <div className="business">
+                    <div className="footer-section footer-logo">
                         <div className="white-logo">
                             <img src={WhiteLogo} alt="Labable" className='logo-white'/>
                             <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
                         </div>
                         <p>Smart Laundry Management System for modern living</p>
                     </div>
-                    <div className="quick-links">
+                    <div className="footer-section quick-links">
                         <h2 className='footer-title'>Quick Links</h2>
                         <p>Home</p>
                         <p>About</p>
@@ -24,7 +21,7 @@ export default function Footer(){
                         <p>Contact</p>
                         <p>Create Order</p>
                     </div>
-                    <div className="services">
+                    <div className="footer-section services">
                         <h2 className='footer-title'>Services</h2>
                         <p>Washing</p>
                         <p>Dry Cleaning</p>
@@ -32,8 +29,8 @@ export default function Footer(){
                         <p>Wash & Fold</p>
                         <p>Pickup & Delivery</p>
                     </div>
-                    <div className="find-us-at">
-                        <h2 className='footer-title'>Find Us At</h2>
+                    <div className="footer-section find-us">
+                        <h2 className='footer-title'>Find us at</h2>
                         <div className="socials">
                             <i className='fa-brands fa-square-instagram'></i>
                             <i className='fa-brands fa-square-twitter'></i>
