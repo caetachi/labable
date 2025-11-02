@@ -1,0 +1,86 @@
+.admin-sidebar-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: end;
+    width: 80px;
+    height: 100vh;
+    padding: 30px 0;
+    padding-left: 5px;
+    border-right: 0.5px solid var(--sf-light);
+    position: fixed;
+    background-color: var(--bg-light);
+    gap: 2rem;
+}
+
+.admin-sidebar-container img{
+    width: 50px;
+    height: 50px;
+    align-self: center;
+}
+
+.admin-sidebar-logo-links{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.admin-sidebar-navigation-links{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.admin-sidebar-link{
+    text-decoration: none;
+    color: var(--fg-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 400;
+    padding: 5px;
+    border-radius: 10px 0 0 10px;
+}
+
+.admin-sidebar-link i{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-sidebar-link:hover, .admin-sidebar-link.active{
+    background-color: var(--bg-dark);
+    box-shadow: 0 2px 10px 0 var(--bg-dark);
+    color: var(--fg-light);
+    transition: 0.3s ease;
+}
+
+.admin-sidebar-logout{
+    align-self: center;
+    width: 100%;
+}
+
+.admin-sidebar-logout button{
+    width: 100%;
+    background-color: var(--bg-light);
+    border: none;
+    color: var(--error);
+    font-size: 0.7rem;
+    padding: 5px;
+    border-radius: 10px 0 0 10px;
+}
+
+.admin-sidebar-logout button i{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-sidebar-logout button:hover{
+    cursor: pointer;
+    color: var(--fg-light);
+    background-color: var(--error);
+    transition: 0.3s ease;
+    box-shadow: 0 2px 10px 0 var(--error);
+}
