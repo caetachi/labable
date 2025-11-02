@@ -46,116 +46,18 @@
 }
 
 .about-us-container .values-container {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2rem;
-}
-
-.about-us-container .value-card {
-    border-radius: 15px;
-    box-shadow: 0 0 10px var(--sf-light);
-    padding: 5%;
-}
-
-.about-us-container .value-card .value-title {
     display: flex;
-    gap: 5%;
-    align-items: center;
-    margin: 5% 0;
-}
-
-.about-us-container .value-card .value-title h2 {
-    font-size: 1.3rem;
-}
-
-.about-us-container .value-card .value-title i {
-    font-size: 2rem;
-}
-
-.about-us-container .value-card .value-desc {
-    height: max-content;
-    margin-top: 10%;
-    border-radius: 15px;
-    color: var(--hl-gray);
-}
-
-.about-us-container .value-revolutionize i {
-    color: var(--success);
-}
-
-.about-us-container .value-user i {
-    color: var(--hl-blue);
-}
-
-.about-us-container .value-quality i {
-    color: var(--hl-yellow);
-}
-
-.about-us-container .value-care i {
-    color: var(--error);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .about-us-container .team-container {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 2rem;
-  width: 100%;
-}
-
-.about-us-container .team-card {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1%;
-  padding: 2% 0;
-  border-radius: 15px;
-  box-shadow: 0 0 10px var(--sf-light);
-}
-
-.about-us-container .team-card .image-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 75px;
-  height: 75px;
-}
-
-.about-us-container .team-card .image-container img {
-  margin: auto;
-  width: 100%;
-  height: auto;
-  border-radius: 100%;
-  object-fit: contain;
-  border-radius: 100%;
-  box-shadow: 0 0 5rem color-mix(in srgb, var(--sf-light) 100%, transparent);
-}
-
-.about-us-container .team-card h2 {
-  font-size: 1rem;
-  margin: 2% 0;
-}
-
-.about-us-container .team-card .socials-bar {
-  margin-top: 2%;
-  display: flex;
-  justify-content: center;
-  gap: 5%;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
   width: 100%;
-}
-
-.about-us-container .team-card .socials-bar a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--fg-dark);
-  padding: 2%;
-  border-radius: 10px;
-  transition: .2s ease;
-  font-size: 1.5rem;
-}
-
-.about-us-container .team-card .socials-bar a:hover {
-  background-color: color-mix(in srgb, var(--ov-light) 30%, transparent);
 }

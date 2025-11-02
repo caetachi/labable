@@ -1,0 +1,49 @@
+.value-card {
+    flex: 1;
+    border-radius: 15px;
+    box-shadow: 0 0 10px var(--sf-light);
+    padding: 20px;
+    max-width: 400px;
+    min-width: 250px;
+}
+
+.value-card .value-title {
+    display: flex;
+    gap: 5%;
+    align-items: center;
+    margin: 5% 0;
+}
+
+.value-card .value-title h2 {
+    font-size: 1.3rem;
+}
+
+.value-card .value-title i {
+    padding: 5px;
+    background-color: color-mix(in srgb, var(--sf-dark) 30%, transparent);
+    font-size: 2rem;
+    border-radius: 10px;
+}
+
+.value-card .value-desc {
+    text-align: center;
+    height: max-content;
+    margin-top: 10%;
+    border-radius: 15px;
+    color: var(--hl-gray);
+}
+
+.value-revolutionize i {
+    color: var(--success);
+}
+
+.value-user i {
+    color: var(--hl-blue);
+}
+
+.value-quality i {
+    color: var(--hl-yellow);
+}
+.value-care i {
+    color: var(--error);
+}
