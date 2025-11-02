@@ -7,8 +7,10 @@ import ShirtLogo from '../../assets/shirt.svg'
 import SkirtLogo from '../../assets/skirt.svg'
 import DressLogo from '../../assets/dress.svg'
 import GCashLogo from '../../assets/gcash.svg'
+import { useNavigate } from 'react-router'
 
 export default function CreateOrder() {
+    const navigate = useNavigate();
     return(
         <div className='create-order-container'>
             <div className="title-container">
@@ -311,7 +313,7 @@ export default function CreateOrder() {
             <p className='section-title'>Estimated Cost: Php 295.00</p>
             <div className="action-buttons">
                 <button className='action-button draft-button'>Save as Draft</button>
-                <button className='action-button summary-button'>Review Order Summary <p className='summary-number'>(15)</p></button>
+                <button className='action-button summary-button' onClick={() => navigate('/order-summary')}>Review Order Summary <p className='summary-number'>(15)</p></button>
             </div>
         </div>
     )
