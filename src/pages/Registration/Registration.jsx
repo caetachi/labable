@@ -8,19 +8,19 @@ export default function Registration() {
         <>
             <section className="registration-container">
                 <div className="content">
-                <div className="col splash">
-                        <div className="logo">
-                            <img src={labableLogo} alt="Labable" className='logo'/>
-                            <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
-                        </div>
-                        
-                        <div className="splash-container">
-                            <img src={Mascot} alt="Labable mascot image" />
-                        </div>
+                    <div className="col splash">
+                            <div className="logo">
+                                <img src={labableLogo} alt="Labable" className='logo'/>
+                                <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
+                            </div>
+                            
+                            <div className="splash-container">
+                                <img src={Mascot} alt="Labable mascot image" />
+                            </div>
 
-                        <p className="label">
-                            Let's Create your Account!
-                        </p>
+                            <p className="label">
+                                Let's Create your Account!
+                            </p>
                     </div>
 
                     <div className="col form">
@@ -90,7 +90,7 @@ export default function Registration() {
                             <input type="radio" name="consent" id="registration-consent" />
                             I agree to the Terms and Conditions
                         </span>
-                       
+                        
                         <button className="registration-btn">
                             Register
                         </button>
@@ -111,7 +111,6 @@ export default function Registration() {
                             <NavLink to={'/login'}>Login</NavLink>
                         </span>
                     </div>
-
                 </div>
             </section>
         </>
