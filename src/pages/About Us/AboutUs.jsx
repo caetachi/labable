@@ -4,6 +4,8 @@ import Flores from '../../assets/team_flores.jpg';
 import Pavia from '../../assets/team_pavia.jpg';
 import Santiago from '../../assets/team_santiago.jpg';
 import Valdez from '../../assets/team_valdez.jpg';
+import TeamCard from "../../components/Team Card - About Us/TeamCard";
+import ValueCard from "../../components/Value Card - About Us/ValueCard";
 
 export default function AboutUs() {
   return (
@@ -44,55 +46,30 @@ export default function AboutUs() {
           <h2>Our Values</h2>
 
           <div className="values-container">
-            <div className="value-card value-revolutionize">
-              <div className="value-title">
-                <i className="ti ti-target"></i>
-                <h2>Revolutionize</h2>
-              </div>
-
-              <p className="value-desc">
-                To revolutionize laundry services with smart, efficient, and
-                user-friendly management solutions that save time and deliver
-                exceptional results.
-              </p>
-            </div>
-
-            <div className="value-card value-user">
-              <div className="value-title">
-                <i className="ti ti-user-filled"></i>
-                <h2>User-centric</h2>
-              </div>
-
-              <p className="value-desc">
-                We put you at the heart of everything we do, ensuring
-                satisfaction through quality service and transparent
-                communication.
-              </p>
-            </div>
-
-            <div className="value-card value-quality">
-              <div className="value-title">
-                <i className="ti ti-carambola-filled"></i>
-                <h2>Highest Quality</h2>
-              </div>
-
-              <p className="value-desc">
-                We maintain the highest standards in garment care, using premium
-                products and advanced techniques for optimal results.
-              </p>
-            </div>
-
-            <div className="value-card">
-              <div className="value-title value-care">
-                <i className="ti ti-heart-filled"></i>
-                <h2>Utmost Care</h2>
-              </div>
-
-              <p className="value-desc">
-                Your clothes are precious to us. We handle every item with care
-                and build lasting relationships based on trust.
-              </p>
-            </div>
+            <ValueCard
+              iconClass="ti ti-target"
+              title="Revolutionize"
+              description="To revolutionize laundry services with smart, efficient, and user-friendly management solutions that save time and deliver exceptional results."
+              extraClass="value-revolutionize"
+            />
+            <ValueCard
+              iconClass="ti ti-user-filled"
+              title="User-centric"
+              description="We put you at the heart of everything we do, ensuring satisfaction through quality service and transparent communication."
+              extraClass="value-user"
+            />
+            <ValueCard
+              iconClass="ti ti-carambola-filled"
+              title="Highest Quality"
+              description="We maintain the highest standards in garment care, using premium products and advanced techniques for optimal results."
+              extraClass="value-quality"
+            />
+            <ValueCard
+              iconClass="ti ti-heart-filled"
+              title="Utmost Care"
+              description="Your clothes are precious to us. We handle every item with care and build lasting relationships based on trust."
+              extraClass="value-care"
+            />
           </div>
         </div>
 
@@ -103,73 +80,42 @@ export default function AboutUs() {
             </p>
 
             <div className="team-container">
-              <div className="team-card">
-                <div className="image-container">
-                  <img src={Bacang} alt="Bacang, Raizel's Image" />
-                </div>
-                <h2>Bacang, Raizel</h2>
+              <TeamCard 
+                imageSrc={Bacang}
+                name="Bacang, Raizel"
+                role="Developer"
+                facebookUrl="https://www.facebook.com/raixeru"
+                githubUrl="https://github.com/sin-raixel"
+              />
 
-                <p className="role">Developer</p>
-
-                <div className="socials-bar">
-                  <a href="https://www.facebook.com/raixeru"><i className='ti ti-brand-facebook'></i></a>
-                  <a href="https://github.com/sin-raixel"><i className="ti ti-brand-github"></i></a>
-                </div>
-              </div>
-
-              <div className="team-card">
-                <div className="image-container">
-                  <img src={Flores} alt="Flores, Janver's Image" />
-                </div>
-                <h2>Flores, Janver</h2>
-
-                <p className="role">Developer</p>
-
-                <div className="socials-bar">
-                  <a href="https://www.facebook.com/flrsver"><i className='ti ti-brand-facebook'></i></a>
-                  <a href="https://github.com/caetachi"><i className="ti ti-brand-github"></i></a>
-                </div>
-              </div>
-
-              <div className="team-card">
-                <div className="image-container">
-                  <img src={Pavia} alt="Pavia, Marc Justin's Image" />
-                </div>
-                <h2>Pavia, Marc Justin</h2>
-
-                <p className="role">Developer</p>
-
-                <div className="socials-bar">
-                  <a href="https://www.facebook.com/marcjustin.pavia"><i className='ti ti-brand-facebook'></i></a>
-                  <a href="https://github.com/Jusen1"><i className="ti ti-brand-github"></i></a>
-                </div>
-              </div>
-
-              <div className="team-card">
-                <div className="image-container">
-                  <img src={Santiago} alt="Santiago, Jan Rei's Image" />
-                </div>
-                <h2>Santiago, Jan Rei</h2>
-                <p className="role">Developer</p>
-
-                <div className="socials-bar">
-                  <a href="https://www.facebook.com/jear8008569"><i className='ti ti-brand-facebook'></i></a>
-                  <a href="https://github.com/DaddyJiAr"><i className="ti ti-brand-github"></i></a>
-                </div>
-              </div>
-
-              <div className="team-card">
-                <div className="image-container">
-                  <img src={Valdez} alt="Valdez, Jerson Patrick's Image" />
-                </div>
-                <h2>Valdez, Jerson Patrick</h2>
-                <p className="role">Developer</p>
-
-                <div className="socials-bar">
-                  <a href="https://www.facebook.com/valdez.jerson.5"><i className='ti ti-brand-facebook'></i></a>
-                  <a href="https://github.com/Jerson-Valdez"><i className="ti ti-brand-github"></i></a>
-                </div>
-              </div>
+              <TeamCard 
+                imageSrc={Flores}
+                name="Flores, Janver"
+                role="Developer"
+                facebookUrl="https://www.facebook.com/flrsver"
+                githubUrl="https://github.com/caetachi"
+              />
+              <TeamCard 
+                imageSrc={Pavia}
+                name="Pavia, Marc Justin"
+                role="Developer"
+                facebookUrl="https://www.facebook.com/marcjustin.pavia"
+                githubUrl="https://github.com/Jusen1"     
+              />
+              <TeamCard 
+                imageSrc={Santiago}     
+                name="Santiago, Jan Rei"
+                role="Developer"
+                facebookUrl="https://www.facebook.com/jear8008569"
+                githubUrl="https://github.com/DaddyJiAr"
+              />
+              <TeamCard 
+                imageSrc={Valdez}     
+                name="Valdez, Jerson Patrick"
+                role="Developer"
+                facebookUrl="https://www.facebook.com/valdez.jerson.5"
+                githubUrl="https://github.com/Jerson-Valdez"
+              />
             </div>
         </div>
       </div>

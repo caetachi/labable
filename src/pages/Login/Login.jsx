@@ -1,13 +1,28 @@
 import { NavLink } from 'react-router'
 import Mascot from '../../assets/Mascot.png'
 import labableLogo from '../../assets/labable-white.svg'
+import bubble from '../../assets/bubble.svg'
+import heartBubble from '../../assets/heart-bubble.svg'
 import './login.css'
 
 export default function Login() {
     return (
-        <>
-            <section className="login-container">
-                <div className="content">
+        
+        <section className="login-container">
+            <div className="content">
+
+                    <img src={bubble} className="bubble" style={{top: '-3%', left: '-2%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '10%', left: '15%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '85%', left: '10%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '80%', left: '-5%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '60%', left: '-1%'}}/>
+                
+                    <img src={heartBubble} className="heart-bubble" style={{top: '1%', right: '2%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '4%', right: '1%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '80%', right: '-1%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '90%', right: '3%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '70%', right: '8%'}}/>
+
                     <div className="col form">
                         <div className="field">
                             <p className="label-field">
@@ -72,9 +87,8 @@ export default function Login() {
                             Welcome Back!
                         </p>
                     </div>
-                </div>
-            </section>
-        </>
+            </div>
+        </section>
     )
 }
 
