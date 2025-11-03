@@ -12,6 +12,7 @@ import Registration from "./pages/Registration/Registration"
 import UserDashboard from "./pages/User Dashboard/UserDashboard"
 import NotFound from "./pages/Not Found/NotFound"
 import OrderSummary from "./pages/Order Summary/OrderSummary"
+import Contact from './pages/Contact/Contact'
 export default function App() {
 
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/about-us" element={<AboutUs/>}/>
+          <Route path="/contact" element={<Contact/>}/>
           <Route path="/create-order" element={<CreateOrder/>}/>
           <Route path="/order-summary" element={<OrderSummary/>}/>
           <Route path="/my-orders" element={<MyOrder/>}/>

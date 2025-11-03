@@ -38,9 +38,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="service-section">
+      <section id="services" className="service-section">
         <h2>Our Services</h2>
-        <p>Complete laundry care solutions for your every need</p>
+        <p>Complete laundry care solutions htmlFor your every need</p>
         <div className="service-container">
           <div className="service-card">
             <div className="icon-container">
@@ -90,7 +90,7 @@ export default function Home() {
                   <p className="order">01</p>
                   <p>Schedule Laundry</p>
                 </span>
-                <p className="desc">Choose your preferred date and time for laundry pickup</p>
+                <p className="desc">Choose your preferred date and time htmlFor laundry pickup</p>
               </div>
             </div>
             <div className="step-card">
@@ -148,7 +148,7 @@ export default function Home() {
           <form className="contact-form">
             <div className="name">
               <div className="form-group">
-                <label for="contact-first-name">First Name</label>
+                <label htmlFor="contact-first-name">First Name</label>
                 <input
                   type="text"
                   placeholder="First Name"
@@ -157,7 +157,7 @@ export default function Home() {
                 />
               </div>
               <div className="form-group">
-                <label for="contact-last-name">Last Name</label>
+                <label htmlFor="contact-last-name">Last Name</label>
                 <input
                   type="text"
                   placeholder="Last Name"
@@ -167,7 +167,7 @@ export default function Home() {
               </div>
             </div>
             <div className="form-group">
-              <label for="contact-email">Email</label>
+              <label htmlFor="contact-email">Email</label>
               <input
                 type="email"
                 placeholder="name@example.com"
@@ -176,7 +176,7 @@ export default function Home() {
               />
             </div>
             <div className="form-group">
-              <label for="contact-feedback">Message</label>
+              <label htmlFor="contact-feedback">Message</label>
               <textarea
                 name="contactFeedback"
                 id="contact-feedback"
