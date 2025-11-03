@@ -76,3 +76,8 @@
 .footer-container .copyright{
     align-self: center;
 }
+
+.footer-container a {
+    text-decoration: none;
+    color: var(--fg-light);
+}

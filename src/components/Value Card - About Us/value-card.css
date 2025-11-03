@@ -20,7 +20,7 @@
 
 .value-card .value-title i {
     padding: 5px;
-    background-color: color-mix(in srgb, var(--sf-dark) 30%, transparent);
+    background-color: color-mix(in srgb, var(--ov-light) 10%, transparent);
     font-size: 2rem;
     border-radius: 10px;
 }

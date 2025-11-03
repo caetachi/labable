@@ -1,5 +1,6 @@
 import './footer.css'
 import WhiteLogo from '../../assets/labable-white.svg'
+import { NavLink } from 'react-router'
 
 export default function Footer(){
     return(
@@ -15,11 +16,10 @@ export default function Footer(){
                     </div>
                     <div className="footer-section quick-links">
                         <h2 className='footer-title'>Quick Links</h2>
-                        <p>Home</p>
-                        <p>About</p>
-                        <p>Services</p>
-                        <p>Contact</p>
-                        <p>Create Order</p>
+                        <NavLink to={'/'}>Home</NavLink>
+                        <NavLink to={'/about-us'}>About Us</NavLink>
+                        <NavLink to={'/#services'}>Services</NavLink>
+                        <NavLink to={'/contact'}>Contact</NavLink>
                     </div>
                     <div className="footer-section services">
                         <h2 className='footer-title'>Services</h2>
