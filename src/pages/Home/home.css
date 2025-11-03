@@ -1,5 +1,4 @@
 .homepage-container {
-  margin-top: 100px;
   font-family: var(--primary-font);
   width: 100%;
 }
@@ -23,7 +22,9 @@
   margin-bottom: 30px;
 }
 .homepage-container .hero-section {
+  display: flex;
   flex-direction: row;
+  flex-wrap: wrap-reverse;
   align-items: center;
   justify-content: center;
   gap: 40px;
@@ -58,9 +59,11 @@
 }
 .homepage-container .hero-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
 }
 .homepage-container .btn {
+  flex-grow: 1;
   padding: 12px 28px;
   font-size: 1rem;
   font-weight: 600;
@@ -68,6 +71,7 @@
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 200px;
 }
 .homepage-container .create-order-btn {
   background-color: var(--fg-dark);
@@ -94,7 +98,7 @@
 .homepage-container .hero-image video {
   width: 100%;
   height: 90%;
-  aspect-ratio: 1/1;
+  min-width: 500px;
 }
 .homepage-container .service-section {
   background-color: color-mix(in srgb, var(--sf-light) 30%, transparent);
