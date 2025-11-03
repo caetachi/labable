@@ -1,6 +1,7 @@
 import "./home.css";
 import Icon from "../../assets/Icon.svg";
-import HIW from "../../assets/how-it-works.svg";
+import laundryVideo from "../../assets/laundry_process.mp4";
+import helloVideo from "../../assets/hello_laundry.mp4";
 
 export default function Home() {
   return (
@@ -27,7 +28,13 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-image">
-          <img src={Icon} alt="Labable" />
+          <video
+              src={helloVideo}
+              autoPlay
+              loop
+              playsInline
+              className="w-full h-auto object-cover"
+            />
         </div>
       </section>
 
@@ -117,7 +124,16 @@ export default function Home() {
             </div>
           </div>
           <div className="how-it-works-image">
-            <img src={HIW} alt='"How it works" visual' />
+            <video
+              src={laundryVideo}
+              autoPlay
+              muted
+              loop
+              controls
+              playsInline
+              className="w-full h-auto object-cover"
+              onClick={(e) => (e.target.muted = !e.target.muted)} 
+            />
           </div>
         </div>
       </section>

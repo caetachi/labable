@@ -91,9 +91,10 @@
   flex: 1;
   max-width: 500px;
 }
-.homepage-container .hero-image img {
+.homepage-container .hero-image video {
   width: 100%;
-  height: auto;
+  height: 90%;
+  aspect-ratio: 1/1;
 }
 .homepage-container .service-section {
   background-color: color-mix(in srgb, var(--sf-light) 30%, transparent);
@@ -142,20 +143,18 @@
 }
 .homepage-container .how-it-works-container {
   display: flex;
+  flex-wrap: wrap-reverse;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 100%;
   max-width: 1200px;
+  gap: 10px;
 }
 .homepage-container .how-it-works-container .how-it-works {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-.homepage-container .how-it-works-container .how-it-works-image {
-  flex: 1;
-  max-width: 500px;
 }
 .homepage-container .how-it-works-section {
   background-color: var(--bg-light);
@@ -163,6 +162,7 @@
 .homepage-container .how-it-works {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 20px;
 }
 .homepage-container .step-card {
@@ -171,7 +171,6 @@
   text-align: start;
   align-items: center;
   gap: 8px;
-  margin-left: 100px;
 }
 .homepage-container .step-card > .icon-container {
   background-color: var(--fg-dark);
@@ -197,13 +196,15 @@
   color: color-mix(in srgb, var(--hl-gray) 50%, transparent);
 }
 .homepage-container .how-it-works-image {
-  margin-top: 40px;
   flex: 1;
-  max-width: 500px;
+  max-width: 700px;
 }
-.homepage-container .how-it-works-image img {
+.homepage-container .how-it-works-image video {
+  border-radius: 20px;
+  box-shadow: 0 2px 10px 0 var(--sf-light);
   width: 100%;
   max-width: 700px;
+  min-width: 300px;
   height: auto;
 }
 .homepage-container .get-in-touch-section {
