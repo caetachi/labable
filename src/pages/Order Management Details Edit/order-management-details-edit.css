@@ -1,0 +1,113 @@
+.gray-border{
+    border: 1px solid var(--ov-light);
+    border-radius: 25px;
+}
+
+.subtext{
+    color: var(--sf-dark);
+}
+
+.details-edit-container{
+    /* margin-top: 100px; */
+    padding: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.details-edit{
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+.details-title-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.details-title{
+    font-weight: bold;
+    font-size: 2.5em;
+}
+
+.small-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.small-container-title{
+    font-weight: 500;
+}
+
+.small-container-input-container{
+    position: relative;
+}
+
+.small-container-input{
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    padding-left: 40px;
+    font-family: 'Poppins';
+    font-size: 1em;
+}
+
+.input-icon{
+    position: absolute;
+    font-size: 25px;
+    top: 10px;
+}
+
+.left-icon{
+    color: var(--sf-dark);
+    left: 10px;
+    
+}
+
+.right-icon{
+    right: 12px;
+    cursor: pointer;
+}
+
+.action-buttons-containers{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.action-buttons-containers *{
+    flex: 1;
+    padding: 20px 200px;
+    font-size: 1.125em;
+    font-weight: 500;
+    font-family: 'Poppins';
+    border: 2px solid var(--fg-dark);
+    border-radius: 50px;
+    transition: ease 0.3s;
+}
+
+.back-action-button{
+    background-color: var(--fg-light);
+    color: var(--fg-dark);
+}
+
+.back-action-button:hover{
+    background-color: var(--fg-dark);
+    color: var(--fg-light);
+}
+
+.update-action-button{
+    background-color: var(--fg-dark);
+    color: var(--fg-light);
+}
+.update-action-button:hover{
+    background-color: var(--fg-light);
+    color: var(--fg-dark);
+}

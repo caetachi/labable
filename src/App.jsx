@@ -13,6 +13,7 @@ import OrderSummary from "./pages/Order Summary/OrderSummary"
 import Contact from './pages/Contact/Contact'
 import Dashboard from "./pages/Dashboard/Dashboard"
 import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
+import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
 export default function App() {
 
   const user = { name: "Jerson Valdez", role: "user" }
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/registration" element={<Registration/>}/>
           <Route path="/:role/dashboard" element={<Dashboard/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/details-edit" element={<OrderManagementDetailsEdit/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
         <Footer/>
