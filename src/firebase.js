@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "",
+  apiKey: process.env.VITE_FIREBASE_API,
   authDomain: "labable-55008.firebaseapp.com",
   databaseURL: "https://labable-55008-default-rtdb.firebaseio.com",
   projectId: "labable-55008",

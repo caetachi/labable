@@ -247,7 +247,8 @@
 }
 .homepage-container .contact-form .name {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 2rem;
 }
 .homepage-container .contact-form .name input {
   flex: 1;
