@@ -7,7 +7,7 @@
     color: var(--sf-dark);
 }
 
-.order-management-details-edit-container{
+.details-edit-container{
     /* margin-top: 100px; */
     padding: 100px;
     display: flex;
@@ -16,7 +16,7 @@
     gap: 20px;
 }
 
-.order-details-edit-container{
+.details-edit{
     padding: 50px;
     display: flex;
     flex-direction: column;
@@ -24,13 +24,13 @@
     width: 100%;
 }
 
-.order-details-title-container{
+.details-title-container{
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.order-details-title{
+.details-title{
     font-weight: bold;
     font-size: 2.5em;
 }
@@ -72,5 +72,42 @@
 
 .right-icon{
     right: 12px;
+    cursor: pointer;
+}
 
+.action-buttons-containers{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.action-buttons-containers *{
+    flex: 1;
+    padding: 20px 200px;
+    font-size: 1.125em;
+    font-weight: 500;
+    font-family: 'Poppins';
+    border: 2px solid var(--fg-dark);
+    border-radius: 50px;
+    transition: ease 0.3s;
+}
+
+.back-action-button{
+    background-color: var(--fg-light);
+    color: var(--fg-dark);
+}
+
+.back-action-button:hover{
+    background-color: var(--fg-dark);
+    color: var(--fg-light);
+}
+
+.update-action-button{
+    background-color: var(--fg-dark);
+    color: var(--fg-light);
+}
+.update-action-button:hover{
+    background-color: var(--fg-light);
+    color: var(--fg-dark);
 }
