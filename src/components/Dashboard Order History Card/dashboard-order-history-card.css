@@ -1,0 +1,121 @@
+.order-history-card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 20px;
+    border: 0.5px solid var(--sf-dark);
+    border-radius: 40px;
+    gap: 10px;
+}
+
+.order-history-card .order-history-details{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-history-card .order-history-details i{
+    font-size: 3.5rem;
+    color: var(--fg-dark);
+    border-radius: 100px;
+    padding: 15px;
+    background-color: var(--sf-light);
+}
+
+.order-history-card .order-history-details .infos{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 5px;
+    min-width: 300px;
+}
+
+.order-history-card .order-history-details .infos .first-row{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.order-history-card .order-history-details .infos .first-row h4{
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--fg-dark);
+}
+
+.order-history-card .order-history-details .infos .first-row span{
+    font-size: 1rem;
+    padding: 5px 10px;
+    border-radius: 100px;
+}
+
+.order-history-card .order-history-details .infos .first-row .status.completed{
+    background-color: color-mix(in srgb, var(--success) 20%, transparent);
+    color: var(--success);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.rejected{
+    background-color: color-mix(in srgb, var(--error) 20%, transparent);
+    color: var(--error);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.inprogress{
+    background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
+    color: var(--hl-blue);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.pending{
+    background-color: color-mix(in srgb, var(--hl-yellow) 20%, transparent);
+    color: var(--hl-yellow);
+}
+
+.order-history-card .order-history-details .infos p{
+    font-size: 0.9rem;
+    color: var(--sf-dark);
+}
+
+.order-history-card .order-history-amount{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+    min-width: fit-content;
+}
+
+.order-history-card .order-history-amount h3{
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--fg-dark);
+}
+
+.order-history-card .order-history-amount button{
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-light);
+    color: var(--fg-dark);
+    border: 2px solid var(--bg-dark);
+    padding: 10px 30px;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.order-history-card .order-history-amount button:hover{
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    transition: 0.3s ease;
+}
+
+.order-history-card .order-history-amount button i{
+    font-size: 1.3rem;
+}

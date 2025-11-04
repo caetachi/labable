@@ -1,0 +1,29 @@
+.dashboard-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    border: 0.5px solid var(--sf-dark);
+    padding: 30px;
+    flex: 1;
+    flex-basis: 0;
+    border-radius: 30px;
+    gap: 5px;
+    min-width: 300px;
+}
+
+.dashboard-card .info h4{
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fg-dark);
+}
+
+.dashboard-card .info h2{
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--fg-dark);
+}
+
+.dashboard-card .info p{
+    font-size: 0.9rem;
+    color: var(--sf-dark);
+}
