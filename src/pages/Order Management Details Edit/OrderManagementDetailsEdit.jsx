@@ -10,7 +10,7 @@ import KunwareLeaflet from '../../assets/kunware-leaflet.svg'
 import { useState } from 'react'
 
 export default function OrderManagementDetailsEdit(){
-    const [editDetail, setEditDetail] = useState('Inventory Details');
+    const [editDetail, setEditDetail] = useState('Order Details');
     // Order Details, Schedule Details, Inventory Details
     return (
         <div className="details-edit-container">
