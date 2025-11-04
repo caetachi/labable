@@ -3,7 +3,7 @@
     padding: 4%;
 }
 
-.content {
+.management-container .content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
