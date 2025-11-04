@@ -19,16 +19,16 @@ export default function CreateOrder() {
             </div>
             <div className="draft-container gray-border">
                 <p className='drafts-title'>Drafts</p>
-                <div className="drafts-container gray-border">
-                    <div className="draft">
+                <div className="drafts-container">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
-                    <div className="draft">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
-                    <div className="draft">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
@@ -183,7 +183,7 @@ export default function CreateOrder() {
                         </div>
                     </div>
                 </div>
-            </div>
+            
             <div className="service-types-containter gray-border">
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
@@ -314,6 +314,7 @@ export default function CreateOrder() {
             <div className="action-buttons">
                 <button className='action-button draft-button'>Save as Draft</button>
                 <button className='action-button summary-button' onClick={() => navigate('/order-summary')}>Review Order Summary <p className='summary-number'>(15)</p></button>
+            </div>
             </div>
         </div>
     )
