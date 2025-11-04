@@ -4,6 +4,7 @@ import mapquery from "../../scripts/mapquery";
 import "./management-view.css";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import BigNumber from "bignumber.js";
 
 const statusMap = {
 	accepted: {
@@ -51,11 +52,7 @@ const fieldGroups = {
 		["Additional Notes", (v) => v.notes],
 		["Current Status", (v) => titlecase(v.status)],
 		["Claim Date", (v) => v.claimDate],
-		[
-			"Customer",
-			(v) =>
-				titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`),
-		],
+		["Customer", (v) => titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`)],
 	],
 	schedule: [
 		["Schedule ID", (v) => v.id],
@@ -66,11 +63,7 @@ const fieldGroups = {
 		["Claim Date", (v) => v.claimDate],
 		["Claim Type", (v) => v.claimType],
 		["Current Status", (v) => titlecase(v.status)],
-		[
-			"Customer",
-			(v) =>
-				titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`),
-		],
+		["Customer", (v) => titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`)],
 	],
 	inventory: [
 		["Item ID", (v) => v.id],
@@ -80,11 +73,28 @@ const fieldGroups = {
 		["Quantity", (v) => v.quantity],
 		["Unit", (v) => v.unit],
 		["Current Status", (v) => titlecase(v.status)],
-		[
-			"Staff",
-			(v) => titlecase(`${v.staff?.firstName} ${v.staff?.lastName}`),
-		],
+		["Updated By", (v) => titlecase(`${v.staff?.firstName} ${v.staff?.lastName}`)],
 	],
+	service: [
+		["Service ID", (v) => v.id],
+		["Date Created", (v) => v.addDate],
+		["Service Name", (v) => v.name],
+		["Created By", (v) => titlecase(`${v.creator?.firstName} ${v.creator?.lastName}`)],
+		["Included Services", (v) => titlecase(`${v.inclusions.join(', ')}`)],
+		["Date Modified", (v) => v.modifyDate],
+		["Price", (v) => `₱ ${new BigNumber(v.price).toFormat(2)}`],
+		["Modified By", (v) => titlecase(`${v.modifier?.firstName} ${v.modifier?.lastName}`)]
+	],
+	washable: [
+		["Item ID", (v) => v.id],
+		["Date Created", (v) => v.addDate],
+		["Item Name", (v) => v.name],
+		["Created By", (v) => titlecase(`${v.creator?.firstName} ${v.creator?.lastName}`)],
+		["Price per Piece", (v) => `₱ ${new BigNumber(v.pricePerPiece).toFormat(2)}`],
+		["Date Modified", (v) => v.modifyDate],
+		["Item per Kg", (v) => v.itemPerKg],
+		["Modified By", (v) => titlecase(`${v.modifier?.firstName} ${v.modifier?.lastName}`)]
+	]
 };
 
 const DetailsCard = ({ category, data }) => (
@@ -150,6 +160,12 @@ const ActionButtons = ({ category, status }) => {
 				["Delete", "delete-btn"],
 				["Restock", "update-btn"],
 			],
+			service: [
+				["Delete", "delete-btn"]
+			],
+			washable: [
+				["Delete", "delete-btn"]
+			]
 		}[category] || [];
 
 	return (
@@ -243,6 +259,38 @@ export default function ManagementView() {
 			status: "Good",
 			staff: { firstName: "FirstName", lastName: "LastName" },
 		},
+		service: {
+			id: viewId,
+			addDate: "10/24/2025",
+			name: "Superb Service",
+			creator: {
+				firstName: "Jerson",
+				lastName: "Valdez"
+			},
+			inclusions: ["Wash", "Dry", "Fold", "Iron"],
+			modifyDate: "10/24/2025",
+			price: 120.00,
+			modifier: {
+				firstName: "Jerson",
+				lastName: "Valdez"
+			}
+		},
+		washable: {
+			id: viewId,
+			addDate: "10/24/2025",
+			name: "Pants (Regular)",
+			creator: {
+				firstName: "Jerson",
+				lastName: "Valdez"
+			},
+			pricePerPiece: 8.00,
+			modifyDate: "10/24/2025",
+			itemPerKg: 4,
+			modifier: {
+				firstName: "Jerson",
+				lastName: "Valdez"
+			}
+		},
 	};
 
 	useEffect(() => {
@@ -255,7 +303,7 @@ export default function ManagementView() {
 		if (last) last.style.visibility = "hidden";
 	}, []);
 
-	if (!["order", "schedule", "inventory"].includes(viewCategory))
+	if (!["order", "schedule", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
 
 	const data = mockData[viewCategory];
@@ -272,7 +320,11 @@ export default function ManagementView() {
 								? "customer orders"
 								: viewCategory === "schedule"
 								? "schedules of delivery and pick ups"
-								: "inventory items"}
+								: viewCategory === "inventory" 
+								? "inventory items"
+								: viewCategory === "service"
+								? "services types and pricing"
+								: "washable items, pricing, and number of pieces per kilo"}
 						</h3>
 					</div>
 					<button className='return-btn'>Back</button>
