@@ -1,0 +1,79 @@
+.dashboard-container {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+}
+
+.dashboard-container .page-header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.dashboard-container .page-header .page-title h1{
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--fg-dark);
+}
+
+.dashboard-container .page-header .page-title p{
+    font-size: 1.2rem;
+    color: var(--sf-dark);
+}
+
+.dashboard-container .page-header button{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    font-weight: 600;
+    padding: 20px 45px;
+    border-radius: 100px;
+    border: 2px solid var(--bg-dark);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.dashboard-container .page-header button:hover{
+    background-color: var(--bg-light);
+    color: var(--fg-dark);
+    transition: 0.3s ease;
+}
+
+.dashboard-container .dashboard-card-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.dashboard-container .order-history-container{
+    display: flex;
+    flex-direction: column;
+    border: 0.5px solid var(--sf-dark);
+    padding: 20px;
+    border-radius: 30px;
+    gap: 20px;
+}
+
+.dashboard-container .order-history-container .order-history-header h2{
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.dashboard-container .order-history-container .order-history-header p{
+    color: var(--sf-dark);
+    font-size: 1rem;
+}
