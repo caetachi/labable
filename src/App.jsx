@@ -12,12 +12,16 @@ import NotFound from "./pages/Not Found/NotFound"
 import OrderSummary from "./pages/Order Summary/OrderSummary"
 import Contact from './pages/Contact/Contact'
 import Dashboard from "./pages/Dashboard/Dashboard"
+import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 export default function App() {
 
-  return (
+  const user = { name: "Jerson Valdez", role: "user" }
+
+  return (  
     <>
       <BrowserRouter>
-        <NavBar/>
+          {user.role === "admin" && <AdminSideBar />}
+          {user.role !== "admin" && <NavBar />}
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/about-us" element={<AboutUs/>}/>

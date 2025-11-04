@@ -8,24 +8,25 @@ function AdminSideBar() {
       <div className="admin-sidebar-logo-links">
         <img src={logo} alt="Labable" />
         <div className="admin-sidebar-navigation-links">
-          <NavLink className="admin-sidebar-link">
-            <i class="hgi hgi-stroke hgi-dashboard-square-02"></i>
+          <NavLink className="admin-sidebar-link" 
+            to={"/admin/dashboard"}>
+            <i className="hgi hgi-stroke hgi-dashboard-square-02"></i>
             <p>Dashboard</p>
           </NavLink>
           <NavLink className="admin-sidebar-link">
-            <i class="hgi hgi-stroke hgi-check-list"></i>
+            <i className="hgi hgi-stroke hgi-check-list"></i>
             <p>Orders</p>
           </NavLink>
           <NavLink className="admin-sidebar-link">
-            <i class="hgi hgi-stroke hgi-calendar-03"></i>
+            <i className="hgi hgi-stroke hgi-calendar-03"></i>
             <p>Schedules</p>
           </NavLink>
           <NavLink className="admin-sidebar-link">
-            <i class="hgi hgi-stroke hgi-user-multiple-02"></i>
+            <i className="hgi hgi-stroke hgi-user-multiple-02"></i>
             <p>Customers</p>
           </NavLink>
           <NavLink className="admin-sidebar-link">
-            <i class="hgi hgi-stroke hgi-package"></i>
+            <i className="hgi hgi-stroke hgi-package"></i>
             <p>Inventory</p>
           </NavLink>
         </div>
