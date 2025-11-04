@@ -10,7 +10,7 @@ import KunwareLeaflet from '../../assets/kunware-leaflet.svg'
 import { useState } from 'react'
 
 export default function OrderManagementDetailsEdit(){
-    const [editDetail, setEditDetail] = useState('Order Details');
+    const [editDetail, setEditDetail] = useState('Inventory Details');
     // Order Details, Schedule Details, Inventory Details
     return (
         <div className="details-edit-container">
@@ -122,7 +122,7 @@ export default function OrderManagementDetailsEdit(){
                                 <p className='subtext'>Quantity</p>
                                 <p className='subtext'>Action</p>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Pants (Regular)</p>
@@ -136,7 +136,7 @@ export default function OrderManagementDetailsEdit(){
                                     <button className="delete-button section-title">Delete</button>
                                 </div>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Pants (Cotton)</p>
@@ -150,7 +150,7 @@ export default function OrderManagementDetailsEdit(){
                                     <button className="delete-button section-title">Delete</button>
                                 </div>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Skirt (Regular)</p>
@@ -164,7 +164,7 @@ export default function OrderManagementDetailsEdit(){
                                     <button className="delete-button section-title">Delete</button>
                                 </div>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Skirt (Cotton)</p>
@@ -178,7 +178,7 @@ export default function OrderManagementDetailsEdit(){
                                     <button className="delete-button section-title">Delete</button>
                                 </div>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Dress (Regular)</p>
@@ -192,7 +192,7 @@ export default function OrderManagementDetailsEdit(){
                                     <button className="delete-button section-title">Delete</button>
                                 </div>
                             </div>
-                            <div className="order-card gray-border">
+                            <div className="create-order-card gray-border">
                                 <div className="order-logo-name-container">
                                     <img className='order-item-logo' src={BigPantsLogo} alt="" />
                                     <p className='order-item-name'>Dress (Cotton)</p>
