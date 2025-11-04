@@ -19,16 +19,16 @@ export default function CreateOrder() {
             </div>
             <div className="draft-container gray-border">
                 <p className='drafts-title'>Drafts</p>
-                <div className="drafts-container gray-border">
-                    <div className="draft">
+                <div className="drafts-container">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
-                    <div className="draft">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
-                    <div className="draft">
+                    <div className="draft gray-border">
                         <p className="draft-title">Title</p>
                         <p className="subtext">Description</p>
                     </div>
@@ -43,7 +43,7 @@ export default function CreateOrder() {
                     <p className='section-title'>Address</p>
                 </div>
                 <div className="address-input-container">
-                    <input className='address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan'/>
+                    <input className='create-address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan'/>
                     <img className='address-edit' src={EditLogo} alt="" />
                 </div>
                 <div className="order-items-container">
@@ -97,10 +97,10 @@ export default function CreateOrder() {
                             <p className='subtext'>Quantity</p>
                             <p className='subtext'>Action</p>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Pants (Regular)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Pants (Regular)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -111,10 +111,10 @@ export default function CreateOrder() {
                                 <button className="delete-button section-title">Delete</button>
                             </div>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Pants (Cotton)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Pants (Cotton)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -125,10 +125,10 @@ export default function CreateOrder() {
                                 <button className="delete-button section-title">Delete</button>
                             </div>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Skirt (Regular)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Skirt (Regular)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -139,10 +139,10 @@ export default function CreateOrder() {
                                 <button className="delete-button section-title">Delete</button>
                             </div>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Skirt (Cotton)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Skirt (Cotton)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -153,10 +153,10 @@ export default function CreateOrder() {
                                 <button className="delete-button section-title">Delete</button>
                             </div>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Dress (Regular)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Dress (Regular)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -167,10 +167,10 @@ export default function CreateOrder() {
                                 <button className="delete-button section-title">Delete</button>
                             </div>
                         </div>
-                        <div className="order-card gray-border">
+                        <div className="create-order-card gray-border">
                             <div className="order-logo-name-container">
-                                <img className='order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='order-item-name'>Dress (Cotton)</p>
+                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
+                                <p className='create-order-item-name'>Dress (Cotton)</p>
                             </div>
                             <div className="order-quantity-container">
                                 <p className='quantity-operation'>+</p>
@@ -183,7 +183,7 @@ export default function CreateOrder() {
                         </div>
                     </div>
                 </div>
-            </div>
+            
             <div className="service-types-containter gray-border">
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
@@ -314,6 +314,7 @@ export default function CreateOrder() {
             <div className="action-buttons">
                 <button className='action-button draft-button'>Save as Draft</button>
                 <button className='action-button summary-button' onClick={() => navigate('/order-summary')}>Review Order Summary <p className='summary-number'>(15)</p></button>
+            </div>
             </div>
         </div>
     )

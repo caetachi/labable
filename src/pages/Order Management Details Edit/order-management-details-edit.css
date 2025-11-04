@@ -54,6 +54,7 @@
     padding: 10px;
     outline: none;
     padding-left: 40px;
+    padding-right: 40px;
     font-family: 'Poppins';
     font-size: 1em;
 }
@@ -84,7 +85,7 @@
 
 .action-buttons-containers *{
     flex: 1;
-    padding: 20px 200px;
+    padding: 20px;
     font-size: 1.125em;
     font-weight: 500;
     font-family: 'Poppins';
