@@ -190,29 +190,6 @@
     gap: 10px;
 }
 
-.washable-item{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    min-width: 130px;
-    flex-basis: 48%;
-    flex-grow: 1;
-    padding: 10px;
-}
-
-
-.washable-item-name{
-    text-align: center;
-}
-
-.washable-item img, .order-logo-name-container img{
-    padding: 15px;
-    background-color: var(--sf-light);
-    border-radius: 10px;
-}
-
 .orders-list-container{
     flex: 1;
     padding: 20px;
@@ -228,57 +205,6 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-}
-
-.create-order-card{
-    padding: 15px 25px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.order-logo-name-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.create-order-item-logo{
-    padding: 20px;
-}
-
-.create-order-item-name{
-    font-size: 1.25em;
-    font-weight: 600;
-}
-
-.order-quantity-container{
-    display: flex;
-    flex-direction: row;
-    
-}
-
-.order-quantity-container *{
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 1.25em;
-}
-
-.quantity-operation{
-    background-color: var(--sf-light);
-    font-weight: 500;
-}
-
-.delete-button{
-    color: var(--fg-light);
-    background-color: var(--error);
-    padding: 10px 30px;
-    outline: none;
-    border: none;
-    border-radius: 25px;
-    font-weight: 500;
 }
 
 .service-types-containter{
