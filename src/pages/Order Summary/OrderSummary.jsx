@@ -3,6 +3,7 @@ import EditLogo from '../../assets/edit.svg'
 import SmallPantsLogo from '../../assets/pants-small.svg'
 import GCashLogo from '../../assets/gcash.svg'
 import { useNavigate } from 'react-router'
+import OrderItem from '../../components/Order Item - Order Summary/OrderItem'
 
 export default function OrderSummary() {
     const navigate = useNavigate();
@@ -32,51 +33,11 @@ export default function OrderSummary() {
                                 <p className='subtext'>Item</p>
                                 <p className='subtext'>Quantity</p>
                             </div>
-                            <div className="order-card">
-                                <div className="order-logo-name-container">
-                                    <img className='order-item-logo' src={SmallPantsLogo} alt="" />
-                                    <p className='order-item-name'>Pants (Regular)</p>
-                                </div>
-                                <div className="order-quantity-container">
-                                    <p className='quantity-number'>3</p>
-                                </div>
-                            </div>
-                            <div className="order-card">
-                                <div className="order-logo-name-container">
-                                    <img className='order-item-logo' src={SmallPantsLogo} alt="" />
-                                    <p className='order-item-name'>Pants (Cotton)</p>
-                                </div>
-                                <div className="order-quantity-container">
-                                    <p className='quantity-number'>3</p>
-                                </div>
-                            </div>
-                            <div className="order-card">
-                                <div className="order-logo-name-container">
-                                    <img className='order-item-logo' src={SmallPantsLogo} alt="" />
-                                    <p className='order-item-name'>Skirt (Regular)</p>
-                                </div>
-                                <div className="order-quantity-container">
-                                    <p className='quantity-number'>3</p>
-                                </div>
-                            </div>
-                            <div className="order-card">
-                                <div className="order-logo-name-container">
-                                    <img className='order-item-logo' src={SmallPantsLogo} alt="" />
-                                    <p className='order-item-name'>Skirt (Cotton)</p>
-                                </div>
-                                <div className="order-quantity-container">
-                                    <p className='quantity-number'>3</p>
-                                </div>
-                            </div>
-                            <div className="order-card">
-                                <div className="order-logo-name-container">
-                                    <img className='order-item-logo' src={SmallPantsLogo} alt="" />
-                                    <p className='order-item-name'>Dress (Regular)</p>
-                                </div>
-                                <div className="order-quantity-container">
-                                    <p className='quantity-number'>3</p>
-                                </div>
-                            </div>
+                            <OrderItem imgUrl={SmallPantsLogo} itemName='Pants (Regular)' quantity='3'/>
+                            <OrderItem imgUrl={SmallPantsLogo} itemName='Pants (Cotton)' quantity='3'/>
+                            <OrderItem imgUrl={SmallPantsLogo} itemName='Skirt (Regular)' quantity='3'/>
+                            <OrderItem imgUrl={SmallPantsLogo} itemName='Skirt (Cotton)' quantity='3'/>
+                            <OrderItem imgUrl={SmallPantsLogo} itemName='Dress (Regular)' quantity='3'/>
                         </div>
                         <div className="order-summary-date-service-payment">
                             <div className="order-summary-date-container container gray-border">

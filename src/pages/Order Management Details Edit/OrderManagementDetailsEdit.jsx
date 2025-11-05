@@ -6,12 +6,15 @@ import BigPantsLogo from '../../assets/pants-big.svg'
 import ShirtLogo from '../../assets/shirt.svg'
 import SkirtLogo from '../../assets/skirt.svg'
 import DressLogo from '../../assets/dress.svg'
-import KunwareLeaflet from '../../assets/kunware-leaflet.svg'
 import { useState } from 'react'
+import "leaflet/dist/leaflet.css";
+import Leaflet from '../../components/Leaflet/Leaflet'
+import Buttons from '../../components/Buttons - Edit Details/Buttons'
 
 export default function OrderManagementDetailsEdit(){
-    const [editDetail, setEditDetail] = useState('Inventory Details');
+    const [editDetail, setEditDetail] = useState('Schedule Details');
     // Order Details, Schedule Details, Inventory Details
+    
     return (
         <div className="details-edit-container">
             <div className="logo">
@@ -25,7 +28,7 @@ export default function OrderManagementDetailsEdit(){
                         <p className='details-title'>Order Details</p>
                         <p className='subtext'>Update Order Details</p>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Customer</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-user input-icon left-icon'></i>
@@ -33,7 +36,7 @@ export default function OrderManagementDetailsEdit(){
                             <i className='ti ti-search input-icon right-icon'></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Address</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-map-pin input-icon left-icon'></i>
@@ -41,34 +44,29 @@ export default function OrderManagementDetailsEdit(){
                             <i className='ti ti-map-2 input-icon right-icon'></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Service Type</p>
                         <div className="small-container-input-container">
-                            {/* <span className="iconify input-icon left-icon" data-icon="material-symbols:laundry-outline"></span> */}
-                            <i class="ti ti-wash-machine input-icon left-icon"></i>
+                            <i className="ti ti-wash-machine input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Wash and Fold'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Payment Method</p>
                         <div className="small-container-input-container">
                             
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Cash'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Amount</p>
                         <div className="small-container-input-container">
-
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='289.00'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
                     <div className="order-items-container">
@@ -208,85 +206,71 @@ export default function OrderManagementDetailsEdit(){
                             </div>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Status</p>
                         <div className="small-container-input-container">
-                            <i class="ti ti-circle-check input-icon left-icon"></i>
-                            <span class="material-symbols--laundry-outline input-icon left-icon"></span>
+                            <i className="ti ti-circle-check input-icon left-icon"></i>
+                            <span className="material-symbols--laundry-outline input-icon left-icon"></span>
                             <input className='small-container-input gray-border' type="text" placeholder='Washing'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Mode of Transfer</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Pick-up'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Mode of Claiming</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Drop-off'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Order Date</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='10/24/25'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Laundry Transfer Date</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='10/26/25'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Laundry Transfer Date Time</p>
                         <div className="small-container-input-container">
-                            
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='7:00 AM'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-clock input-icon right-icon"></i>
+                            <i className="ti ti-clock input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Arrival Date</p>
                         <div className="small-container-input-container">
-                            
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='10/26/25'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Notes</p>
                         <div className="small-container-input-container">
-                            
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Please clean it all'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
                         </div>
                     </div>
-                    <div className="action-buttons-containers ">
-                        <button className="back-action-button">Back</button>
-                        <button className="update-action-button">Update</button>
-                    </div>
+                    <Buttons/>
                 </div>
             }
             {
@@ -296,7 +280,7 @@ export default function OrderManagementDetailsEdit(){
                         <p className='details-title'>Schedule Details</p>
                         <p className='subtext'>Update Schedule Details</p>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Customer</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-user input-icon left-icon'></i>
@@ -304,7 +288,7 @@ export default function OrderManagementDetailsEdit(){
                             <i className='ti ti-search input-icon right-icon'></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Address</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-map-pin input-icon left-icon'></i>
@@ -313,110 +297,94 @@ export default function OrderManagementDetailsEdit(){
                         </div>
                     </div>
                     <p className='subtext'>You can specified your address in the map by dragging the red icon</p>
-                    <img src={KunwareLeaflet} alt="" />
-                    <div className="customer small-container">
+                    <Leaflet coordinates={[14.62, 120.98]} location_name="Manila" />
+                    <div className="small-container">
                         <p className='small-container-title'>Type</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Pick-up'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Status</p>
                         <div className="small-container-input-container">
-                            <i class="ti ti-circle-check input-icon left-icon"></i>
-                            <span class="material-symbols--laundry-outline input-icon left-icon"></span>
+                            <i className="ti ti-circle-check input-icon left-icon"></i>
+                            <span className="material-symbols--laundry-outline input-icon left-icon"></span>
                             <input className='small-container-input gray-border' type="text" placeholder='Out for Delivery'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Schedule Date</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='10/24/25'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Delivery/Pickup Date</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='10/24/25'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Time to Pickup/Delivery</p>
                         <div className="small-container-input-container">
-                            
-                            <i class="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='7:00 AM'/>
-                            {/* <i className='ti ti-map-2 input-icon right-icon'></i> */}
-                            <i class="ti ti-clock input-icon right-icon"></i>
+                            <i className="ti ti-clock input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="action-buttons-containers ">
-                        <button className="back-action-button">Back</button>
-                        <button className="update-action-button">Update</button>
-                    </div>
+                    <Buttons/>
                 </div>
             }
             {
                 editDetail == 'Inventory Details'  &&
                 <div className="details-edit gray-border">
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Item Name</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-menu-square input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-menu-square input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Jerson Patrick Valdez'/>
-                            {/* <i className='ti ti-search input-icon right-icon'></i> */}
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Quantity</p>
                         <div className="small-container-input-container">
-                            <i class="hgi hgi-stroke hgi-shopping-cart-check-out-02 input-icon left-icon"></i>
+                            <i className="hgi hgi-stroke hgi-shopping-cart-check-out-02 input-icon left-icon"></i>
                             <input className='small-container-input gray-border' type="text" placeholder='12'/>
-                            {/* <i className='ti ti-search input-icon right-icon'></i> */}
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Status</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-circle-check input-icon left-icon'></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Good'/>
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Unit</p>
                         <div className="small-container-input-container">
                             <i className='ti ti-ruler-2 input-icon left-icon'></i>
                             <input className='small-container-input gray-border' type="text" placeholder='Pieces    '/>
-                            <i class="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                            <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="customer small-container">
+                    <div className="small-container">
                         <p className='small-container-title'>Last Restock Date</p>
                         <div className="small-container-input-container">
-                            {/* <i className='ti ti-user input-icon left-icon'></i> */}
                             <input className='small-container-input gray-border' type="text" placeholder='Jerson Patrick Valdez'/>
-                            <i class="ti ti-calendar-week input-icon right-icon"></i>
+                            <i className="ti ti-calendar-week input-icon right-icon"></i>
                         </div>
                     </div>
-                    <div className="action-buttons-containers ">
-                        <button className="back-action-button">Back</button>
-                        <button className="update-action-button">Update</button>
-                    </div>
+                    <Buttons/>
                 </div>
             }
-            
         </div>
     )
 }
