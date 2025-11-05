@@ -8,6 +8,8 @@ import SkirtLogo from '../../assets/skirt.svg'
 import DressLogo from '../../assets/dress.svg'
 import GCashLogo from '../../assets/gcash.svg'
 import { useNavigate } from 'react-router'
+import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
+import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 
 export default function CreateOrder() {
     const navigate = useNavigate();
@@ -55,38 +57,14 @@ export default function CreateOrder() {
                                 <img className='select-search-logo' src={SearchLogo} alt=""  />
                             </div>
                             <div className="items-container">
-                                <div className="washable-item gray-border">
-                                    <img src={PantsLogo} alt="" />
-                                    <p className='washable-item-name'>Pants (Regular)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={PantsLogo} alt="" />
-                                    <p className='washable-item-name'>Pants (Cotton)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={ShirtLogo} alt="" />
-                                    <p className='washable-item-name'>Shirt (Regular)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={ShirtLogo} alt="" />
-                                    <p className='washable-item-name'>Shirt (Cotton)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={SkirtLogo} alt="" />
-                                    <p className='washable-item-name'>Skirt (Regular)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={SkirtLogo} alt="" />
-                                    <p className='washable-item-name'>Skirt (Cotton)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={DressLogo} alt="" />
-                                    <p className='washable-item-name'>Dress (Regular)</p>
-                                </div>
-                                <div className="washable-item gray-border">
-                                    <img src={DressLogo} alt="" />
-                                    <p className='washable-item-name'>Dress (Cotton)</p>
-                                </div>
+                                <WashableItem imgUrl={PantsLogo}  itemName='Pants (Regular)'/>
+                                <WashableItem imgUrl={PantsLogo}  itemName='Pants (Cotton)'/>
+                                <WashableItem imgUrl={ShirtLogo}  itemName='Shirt (Regular)'/>
+                                <WashableItem imgUrl={ShirtLogo}  itemName='Shirt (Cotton)'/>
+                                <WashableItem imgUrl={SkirtLogo}  itemName='Skirt (Regukar)'/>
+                                <WashableItem imgUrl={SkirtLogo}  itemName='Skirt (Cotton)'/>
+                                <WashableItem imgUrl={DressLogo}  itemName='Dress (Regular)'/>
+                                <WashableItem imgUrl={DressLogo}  itemName='Dress (Cotton)'/>
                             </div>
                         </div>
                     </div>
@@ -97,90 +75,12 @@ export default function CreateOrder() {
                             <p className='subtext'>Quantity</p>
                             <p className='subtext'>Action</p>
                         </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Pants (Regular)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Pants (Cotton)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Skirt (Regular)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Skirt (Cotton)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Dress (Regular)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
-                        <div className="create-order-card gray-border">
-                            <div className="order-logo-name-container">
-                                <img className='create-order-item-logo' src={BigPantsLogo} alt="" />
-                                <p className='create-order-item-name'>Dress (Cotton)</p>
-                            </div>
-                            <div className="order-quantity-container">
-                                <p className='quantity-operation'>+</p>
-                                <p className='quantity-number'>3</p>
-                                <p className='quantity-operation'>-</p>
-                            </div>
-                            <div className="delete-container">
-                                <button className="delete-button section-title">Delete</button>
-                            </div>
-                        </div>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Pants (Regular)' quantity={3}/>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Pants (Cotton)' quantity={3}/>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Skirt (Regular)' quantity={3}/>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Skirt (Cotton)' quantity={3}/>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Dress (Regular)' quantity={3}/>
+                        <OrderItem imgUrl={BigPantsLogo} itemName='Dress (Cotton)' quantity={3}/>
                     </div>
                 </div>
             

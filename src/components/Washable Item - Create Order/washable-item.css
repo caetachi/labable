@@ -1,0 +1,21 @@
+.washable-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-width: 130px;
+    flex-basis: 48%;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.washable-item-name{
+    text-align: center;
+}
+
+.washable-item img{
+    padding: 15px;
+    background-color: var(--sf-light);
+    border-radius: 10px;
+}
