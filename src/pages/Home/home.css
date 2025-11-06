@@ -227,7 +227,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 70px;
+  padding: 50px;
   border-radius: 50px;
   min-width: 300px;
   background-color: var(--bg-light);
@@ -238,6 +238,7 @@
   flex-direction: column;
   flex: 1;
   gap: 8px;
+  min-width: 300px;
 }
 .homepage-container .form-group label {
   font-weight: 500;
@@ -247,6 +248,7 @@
 }
 .homepage-container .contact-form .name {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 2rem;
 }
@@ -343,4 +345,10 @@
   color: var(--fg-light);
   margin-bottom: 8px;
   text-align: center;
+}
+@media (max-width: 768px) {
+  .homepage-container .contact-form{
+    padding: 30px;
+    border-radius: 30px;
+  }
 }
