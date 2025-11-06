@@ -17,13 +17,13 @@ import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
 export default function App() {
 
-  const user = { name: "Jerson Valdez", role: "user" }
+  const user = { name: "Jerson Valdez", role: "admin" }
 
   return (  
     <>
       <BrowserRouter>
-          {user.role === "admin" ? <AdminSideBar /> : ''}
-          <NavBar/>
+          {user.role === "admin" ? <AdminSideBar /> : <NavBar />}
+          
 
         <Routes>
           <Route path="/" element={<Home/>}/>

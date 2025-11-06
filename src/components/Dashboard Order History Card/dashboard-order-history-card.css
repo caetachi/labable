@@ -26,6 +26,7 @@
     border-radius: 100px;
     padding: 15px;
     background-color: var(--sf-light);
+    z-index: -1;
 }
 
 .order-history-card .order-history-details .infos{
@@ -33,7 +34,7 @@
     flex-direction: column;
     justify-content: start;
     gap: 5px;
-    min-width: 300px;
+    min-width: 250px;
 }
 
 .order-history-card .order-history-details .infos .first-row{
