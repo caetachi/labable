@@ -71,6 +71,8 @@ cd labable-lms
 | **Database** | Firebase | Robust and reliable data storage for all transactions and records. |
 | **Tools** | Git, GitHub, vs.code | Version control and collaborative development platform. |
 
+# Team Roles
+
 | Name | Role | Description |
 | :--- | :--- | :--- |
 | **Bacang, John Raizel** | UX Researcher, Front-end | Designing Flow and diagrams |
