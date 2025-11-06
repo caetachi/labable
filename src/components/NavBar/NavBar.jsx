@@ -1,5 +1,6 @@
 import { Navigate, NavLink } from 'react-router'
 import labableLogo from '../../assets/labable-black.svg'
+import { HashLink } from 'react-router-hash-link';
 import './nav-bar.css'
 
 export default  function NavBar(){
@@ -25,10 +26,10 @@ export default  function NavBar(){
                         <i className="ti ti-info-circle"></i>
                         <p>About</p>
                     </NavLink>
-                    <NavLink to='/#contact' className='nav-link'>
-                        <i className="ti ti-address-book"></i>
-                        <p>Contact</p>
-                    </NavLink>
+                    <HashLink smooth to="/#contact" className="nav-link">
+                      <i className="ti ti-address-book"></i>
+                      <p>Contact</p>
+                    </HashLink>
                     <NavLink to='/create-order' className='nav-link'>
                         <i className="ti ti-circle-plus"></i>
                         <p>Order</p>
