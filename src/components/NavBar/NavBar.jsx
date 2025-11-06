@@ -1,6 +1,7 @@
-import { NavLink } from 'react-router'
+import { Navigate, NavLink } from 'react-router'
 import labableLogo from '../../assets/labable-black.svg'
 import './nav-bar.css'
+
 export default  function NavBar(){
     return(
         <>
@@ -24,7 +25,7 @@ export default  function NavBar(){
                         <i className="ti ti-info-circle"></i>
                         <p>About</p>
                     </NavLink>
-                    <NavLink to='/contact' className='nav-link'>
+                    <NavLink to='/#contact' className='nav-link'>
                         <i className="ti ti-address-book"></i>
                         <p>Contact</p>
                     </NavLink>
@@ -41,6 +42,9 @@ export default  function NavBar(){
                         <p>Signup</p>
                     </NavLink>
                 </div>
+                {
+
+                }
                 <div className="login-signup">
                     <NavLink to='/login' className='login'>Login</NavLink>
                     <NavLink to='/registration' className='signup'>Signup</NavLink>

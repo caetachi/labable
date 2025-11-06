@@ -82,7 +82,7 @@ export default function AboutUs() {
             <div className="team-container">
               <TeamCard 
                 imageSrc={Bacang}
-                name="Bacang, Raizel"
+                name="Bacang, John Raizel"
                 role="Developer"
                 facebookUrl="https://www.facebook.com/raixeru"
                 githubUrl="https://github.com/sin-raixel"
