@@ -1,22 +1,50 @@
 # Labable - Laundry Shop Management System
+# A modern, efficient, and student-centered web and mobile platform for small to medium-sized laundry shops.
 
-# Introduction
-The primary target users of the proposed system are the students of Bulacan State University who temporarily reside in dormitories, apartments and boarding houses near the campus; these students have limited time to do laundry because of their academic responsibilities. In addition, the system also caters the general public who require laundry services to manage not only their clothes but also other washable items. 
-The system also serves the laundry shop owner, who oversees the overall business operations and monitoring. The laundry shop staff are also among the target users, as they are expected to be the administrators who are responsible for processing customer orders, updating records, and ensuring smooth flow of services.
-Most laundry shops today, particularly small to medium-sized businesses near universities and residential areas, are still relying on traditional ways of processing and managing daily business operations. These processes include handwritten order tracking, manual recording of customer details, and physical monitoring of payment and delivery schedules. Those traditional manual practices often lead to inefficiency, human error, data loss due to misplaced papers or paper tearing, and delays in service, especially during peak hours when multiple transactions and customers occur simultaneously.
-For instance, many laundry shop owners record customer information, laundry load information and payment details on logbooks or notebooks. When these records have been accumulated, retrieving specific information from logbooks or notebooks becomes very difficult, resulting in confusion, inconsistency, misplaced records, inaccuracy and inefficient tracking of records. Also this kind of system poses many problems or issues in generating sales reports, monitoring income, and tracking customer histories.
-The laundry service is a vital part of the daily routine of students who temporarily reside in dormitories, apartments and boarding houses, and other clients who rely on this kind of service due to limited free time to do laundry. However, many of them experience long waiting time, and unclear communication about their order status, this issues mostly occured because the customers obliged to visit the shop to physically check about their laundry status, causing inconvenience and wasted time and effort.
-From the administrator or the staff perspectives, manual record-keeping makes it difficult to perform (CRUD operations) the create, read, update and delete, or locate orders, leading to human errors in laundry handling, delayed deliveries and services, and sometimes leads to customer dissatisfaction due to inconvenience. They also have to manually compute payments and update receipts, which increases the risk of calculation mistakes.
+# Introduction and Problem Solved
+The Challenge with Traditional Laundry Services
+Most small to medium-sized laundry shops near university areas still rely on manual, traditional processes like handwritten logbooks for order tracking, payment recording, and scheduling. This results in:
 
-# Project Context
-  A significant portion of Bulacan State University students reside in dormitories, boarding houses, and apartments near the campus. Due to busy schedules and limited resources, many students struggle to manage their laundry items. The proposed Laundry Management System (LMS) addresses this by providing a convenient web and mobile-based management system that allows students and the general public to easily schedule laundry services, schedule pick-up and delivery services, track their orders, and process payments anytime.
-Unlike existing laundry management systems that are designed mainly for large-scale operations, the proposed LMS is simple, affordable, and tailored for small local laundry shops catering to students and the general public. It offers real-time tracking, automated cost computation, and integrated dashboards for administrators. The system also combines Transaction Processing System (TPS) and Management Information System (MIS) features, enabling efficient daily transactions, report generation, and business performance monitoring.
-The proposed LMS provides a modern, student-centered, and efficient solution that streamlines operations for laundry shop owners and staff while offering users a faster, more reliable, and accessible laundry service experience.
+1. Inefficiency and Errors: High risk of human error, data loss (misplaced or damaged papers), and inconsistency in records.
+2. Difficult Management: Staff struggle to perform basic CRUD operations (create, read, update, delete) on records, making sales report generation and customer history tracking difficult.
+3. Customer Inconvenience: Customers often face long waiting times and must physically visit the shop to check their order status due to a lack of clear communication.
 
-# General Objectives
-  The  main objective of the study is to design and develop a mobile and web-based  Laundry Shop Management (LMS) System for students, more specifically Bulacan State University’s college students but available also for the general public that will mitigate the difficulties of managing laundry due to time constraint and lack of equipment so that people allocate their time on different activities.
+# The Labable Solution
+The Labable Laundry Shop Management System (LMS) is designed to mitigate these difficulties by offering a convenient web and mobile-based platform. It specifically targets the time-constrained students of Bulacan State University and the general public, providing a modern alternative that streamlines operations for the business owner and enhances the service experience for the client.
 
-# Purpose and Description
-  The main purpose of this project is to create a system that will assist the students of Bulacan State University by providing a system that will conveniently manage their laundry through the Laundry Shop Management (LMS) System. Through this system, students are expected to face less hassle in handling their own laundry, allowing them to focus more of their time and attention on their academic or personal responsibilities.
-The TPS (Transaction Processing System) features of the LMS allow students to schedule their laundry, track its progress, and choose between pick-up and delivery options. The system also supports both cash and cashless payment methods and automatically generates receipts for each transaction. The MIS (Management Information System) features focus on organizing and managing collected data by sorting, summarizing, and classifying records, generating reports, dashboard generation to view a summary of key information, and providing a search function for viewing laundry histories. 
-In summary, these subsystems make the system a comprehensive and efficient platform for students to use as it provides real-time update and transparent tracking. The system also seeks to provide a more modern approach as opposed to the traditional and manual laundry process by offering a convenient and technologically advanced alternative customized for the students of Bulacan State University and its community.
+# Target Users
+The system is designed to serve three main groups:
+
+1. Customers (Students & General Public): Individuals residing near campus (dormitories, apartments) who need a fast, reliable, and convenient way to manage their laundry, including scheduling services, pick-up/delivery, and tracking.
+2. Laundry Shop Staff/Administrators: The individuals responsible for processing customer orders, updating service records, and ensuring the smooth flow of daily operations.
+3. Laundry Shop Owner: The primary user for overseeing overall business operations, monitoring performance, and generating crucial sales and income reports.
+
+# Key Features (Purpose and Description)
+Labable combines Transaction Processing System (TPS) and Management Information System (MIS) features to ensure both operational efficiency and insightful reporting.
+
+# Customer & Staff Features (TPS)
+- Service Scheduling: Allows customers to easily schedule laundry services and choose between pick-up and delivery options.
+- Real-Time Tracking: Provides transparent, real-time updates on laundry progress, eliminating the need for physical shop visits to inquire.
+- Automated Payments: Supports both cash and cashless payment methods.
+- Receipt Generation: Automatically generates receipts for every completed transaction.
+- Order Management: Enables staff to easily create, locate, update, and delete customer orders.
+
+# Owner & Management Features (MIS)
+- Data Organization: Manages collected data by sorting, summarizing, and classifying customer and order records.
+- Report Generation: Provides tools for generating sales reports, monitoring income, and analyzing business performance.
+- Integrated Dashboard: Offers a summarized view of key business information for quick monitoring.
+- History Search: A search function to easily view and track customer laundry histories.
+
+# Getting Started (Installation & Setup)
+This is where you would put the practical steps for getting the code running.
+
+Prerequisites
+To run this project locally, you will need:
+
+1. Node.js
+2. React Vite
+3. Firebase.com
+
+# Installation Steps
+git clone https://github.com/yourusername/labable-lms.git
+cd labable-lms
