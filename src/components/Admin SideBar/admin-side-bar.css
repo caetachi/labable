@@ -1,26 +1,38 @@
-.admin-sidebar-container {
+.admin-sidebar-container{
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     align-items: end;
     width: 80px;
-    height: 100vh;
-    padding: 30px 0;
+    height: 100%;
+    padding: 60px 0;
     padding-left: 5px;
     border-right: 0.5px solid var(--sf-light);
     position: fixed;
     background-color: var(--bg-light);
     gap: 2rem;
+    margin-top: 30px;
+    z-index: 1002;
 }
 
-.admin-sidebar-container img{
+.admin-sidebar-container.open {
+    margin-left: 0;
+    transition: 0.3s ease;
+}
+
+.admin-sidebar-container.closed{
+    margin-left: -100px;
+    transition: 0.3s ease;
+}
+
+.admin-sidebar-header img{
     width: 50px;
     height: 50px;
     align-self: center;
 }
 
-.admin-sidebar-logo-links{
-    width: 100%;
+.admin-sidebar-links{
+    height: fit-content;
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -28,12 +40,14 @@
 }
 
 .admin-sidebar-navigation-links{
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.2rem;
 }
 
 .admin-sidebar-link{
+    flex: 1;
     text-decoration: none;
     color: var(--fg-dark);
     display: flex;
@@ -47,7 +61,7 @@
 
 .admin-sidebar-link i{
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 400;
 }
 
 .admin-sidebar-link:hover, .admin-sidebar-link.active{
@@ -58,6 +72,10 @@
 }
 
 .admin-sidebar-logout{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
     align-self: center;
     width: 100%;
 }
@@ -70,6 +88,7 @@
     font-size: 0.7rem;
     padding: 5px;
     border-radius: 10px 0 0 10px;
+    height: fit-content;
 }
 
 .admin-sidebar-logout button i{
@@ -83,4 +102,108 @@
     background-color: var(--error);
     transition: 0.3s ease;
     box-shadow: 0 2px 10px 0 var(--error);
+}
+
+.admin-sidebar-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    padding: 0 30px;
+    border-bottom: 0.5px solid var(--sf-light);
+    position: fixed;
+    background-color: var(--bg-light);
+    z-index: 1003;
+}
+
+.admin-sidebar-header i{
+    font-size: 1.5rem;
+    color: var(--sf-dark);
+}
+
+.admin-sidebar-header i:hover{
+    cursor: pointer;
+    color: var(--fg-dark);
+    transition: 0.3s ease;
+}
+
+.admin-sidebar-header .admin-profile, .admin-sidebar-header .admin-profile .admin-profile-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-sidebar-header .admin-profile .admin-profile-info{
+    background-color: var(--sf-light);
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+
+.admin-sidebar-header .admin-profile .admin-profile-info h3{
+    font-size: 1rem;
+    color: var(--fg-dark);
+    font-weight: 600;
+}
+
+.admin-sidebar-header .admin-profile .admin-profile-info img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.admin-sidebar-header .admin-profile .admin-profile-info i{
+    color: var(--fg-dark);
+}
+
+.admin-sidebar-container .admin-sidebar-menu-close-button, .admin-sidebar-header .admin-sidebar-menu-open-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-sidebar-container .admin-sidebar-menu-close-button:hover, .admin-sidebar-header .admin-sidebar-menu-open-button:hover{
+    background-color: var(--sf-light);
+    transition: 0.3s ease;
+}
+
+.admin-sidebar-header .admin-sidebar-logo-menu{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-sidebar-header .admin-sidebar-logo-menu .highlight-tag{
+    color: var(--sf-dark);
+}
+
+@media (min-width: 769px){
+    .admin-sidebar-container .admin-sidebar-menu-close-button{
+        display: none;
+    }
+
+    .admin-sidebar-header .admin-sidebar-menu-open-button{
+        display: none;
+    }
+}
+
+@media (max-width: 768px){
+    .admin-sidebar-container {
+        margin-left: -100px;
+    }
+
+    .admin-sidebar-header{
+        padding: 1rem;
+    }
+
+    .admin-sidebar-header .admin-sidebar-logo-menu h1, .admin-sidebar-header .admin-sidebar-logo-menu img{
+        display: none;
+    }
 }

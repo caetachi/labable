@@ -1,4 +1,4 @@
-.dashboard-container {
+.dashboard-container, .dashboard-container.admin-dashboard {
     margin-top: 3rem;
     display: flex;
     flex-direction: column;
@@ -6,10 +6,8 @@
     gap: 20px;
 }
 
-@media (max-width: 768px) {
-    .dashboard-container {
-        padding: 1rem;
-    }
+.dashboard-container.admin-dashboard {
+    margin-left: 60px;
 }
 
 .dashboard-container .page-header{
@@ -68,6 +66,13 @@
     gap: 20px;
 }
 
+.dashboard-container .order-history-container .order-history-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .dashboard-container .order-history-container .order-history-header h2{
     font-weight: 600;
     font-size: 1.5rem;
@@ -76,4 +81,71 @@
 .dashboard-container .order-history-container .order-history-header p{
     color: var(--sf-dark);
     font-size: 1rem;
+}
+
+.dashboard-container .page-header .header-button i{
+    font-size: 1.5rem;
+}
+
+.dashboard-container .dashboard-day-summary-data{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-family: var(--primary-font);
+    gap: 10px;
+    border: 0.5px solid var(--sf-dark);
+    width: fit-content;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.dashboard-container .dashboard-day-summary-data input{
+    border: none;
+    font-size: 1rem;
+    font-family: var(--primary-font);
+    outline: none;
+}
+
+.dashboard-container .order-history-filter{
+    padding: 10px;
+    font-size: 1rem;
+    width: 100px;
+    border: 0.5px solid var(--sf-dark);
+    outline: none;
+    border-radius: 10px;
+}
+
+.dashboard-container .dashboard-button-link{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dashboard-container .dashboard-button-link .dashboard-link-button{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--bg-dark);
+    border: 2px solid var(--bg-dark);
+    padding: 20px 0;
+    border-radius: 30px;
+    min-width: 150px;
+}
+
+.dashboard-container .dashboard-button-link .dashboard-link-button:hover{
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    transition: 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container, .dashboard-container.admin-dashboard {
+        padding: 1rem;
+        margin: 0;
+        margin-top: 80px;
+    }
 }

@@ -5,7 +5,7 @@ function DashboardCard({ iconClass, title, value, subTitle }) {
         <div className="dashboard-card">  
             <div className="info">
                 <h4>{title}</h4>
-                <h2>Php {value}</h2>
+                <h2>{value}</h2>
                 <p>{subTitle}</p>
             </div>
             <div className="icon">
