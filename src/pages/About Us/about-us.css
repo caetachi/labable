@@ -36,7 +36,7 @@
     width: 100%;
     height: 100%;
     background-color: color-mix(in srgb, var(--bg-dark) 25%, transparent);
-    padding: 10%;
+    padding: 10px;
     color: var(--fg-light);
     text-align: center;
 }
