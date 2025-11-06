@@ -54,6 +54,7 @@
     padding: 10px;
     outline: none;
     padding-left: 40px;
+    padding-right: 40px;
     font-family: 'Poppins';
     font-size: 1em;
 }
@@ -75,39 +76,3 @@
     cursor: pointer;
 }
 
-.action-buttons-containers{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.action-buttons-containers *{
-    flex: 1;
-    padding: 20px 200px;
-    font-size: 1.125em;
-    font-weight: 500;
-    font-family: 'Poppins';
-    border: 2px solid var(--fg-dark);
-    border-radius: 50px;
-    transition: ease 0.3s;
-}
-
-.back-action-button{
-    background-color: var(--fg-light);
-    color: var(--fg-dark);
-}
-
-.back-action-button:hover{
-    background-color: var(--fg-dark);
-    color: var(--fg-light);
-}
-
-.update-action-button{
-    background-color: var(--fg-dark);
-    color: var(--fg-light);
-}
-.update-action-button:hover{
-    background-color: var(--fg-light);
-    color: var(--fg-dark);
-}

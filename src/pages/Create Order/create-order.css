@@ -103,9 +103,10 @@
     position: relative;
 }
 
-.address-input{
+.create-address-input{
     width: 100%;
     padding: 20px;
+    padding-right: 60px;
     font-family: var(--primary-font);
     font-size: 1.125em;
     outline: none;
@@ -115,6 +116,7 @@
     position: absolute;
     top: 22px;
     right: 22px;
+    /* background-color: var(--fg-light); */
     /* pointer-events: none; */
     cursor: pointer;
 }
@@ -150,6 +152,10 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 100%;
+    align-items: center;
+    overflow: hidden;
+    height: 630px;
 }
 
 .search-container{
@@ -162,6 +168,7 @@
     font-size: 1em;
     outline: none;
     padding: 15px 15px;
+    padding-right: 50px;
 }
 
 .select-search-logo{
@@ -174,37 +181,13 @@
 
 .items-container{
     display: flex;
+    width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    max-width: 320px;
+    /* max-width: 320px; */
     gap: 10px;
-}
-
-.washable-item{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 48%;
-    max-width: 100%;
-    min-width: 130px;
-    flex: 1;
-    padding: 10px;
-    border-radius: 15px;
-}
-
-
-.washable-item-name{
-    text-align: center;
-}
-
-.washable-item img, .order-logo-name-container img{
-    padding: 15px;
-    background-color: var(--sf-light);
-    border-radius: 10px;
 }
 
 .orders-list-container{
@@ -222,57 +205,6 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-}
-
-.order-card{
-    padding: 15px 25px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.order-logo-name-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.order-item-logo{
-    padding: 20px;
-}
-
-.order-item-name{
-    font-size: 1.25em;
-    font-weight: 600;
-}
-
-.order-quantity-container{
-    display: flex;
-    flex-direction: row;
-
-}
-
-.order-quantity-container *{
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 1.25em;
-}
-
-.quantity-operation{
-    background-color: var(--sf-light);
-    font-weight: 500;
-}
-
-.delete-button{
-    color: var(--fg-light);
-    background-color: var(--error);
-    padding: 10px 30px;
-    outline: none;
-    border: none;
-    border-radius: 25px;
-    font-weight: 500;
 }
 
 .service-types-containter{

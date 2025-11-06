@@ -1,0 +1,56 @@
+.create-order-item-logo{
+    padding: 20px;
+}
+
+.create-order-item-name{
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.create-order-card{
+    padding: 15px 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.order-logo-name-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.order-logo-name-container img{
+    padding: 15px;
+    background-color: var(--sf-light);
+    border-radius: 10px;
+}
+
+.order-quantity-container{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.order-quantity-container *{
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 1.25em;
+}
+
+.quantity-operation{
+    background-color: var(--sf-light);
+    font-weight: 500;
+}
+
+.delete-button{
+    color: var(--fg-light);
+    background-color: var(--error);
+    padding: 10px 30px;
+    outline: none;
+    border: none;
+    border-radius: 25px;
+    font-weight: 500;
+}
