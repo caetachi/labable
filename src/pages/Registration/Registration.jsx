@@ -2,6 +2,7 @@ import { NavLink } from 'react-router'
 import Mascot from '../../assets/Mascot.png'
 import labableLogo from '../../assets/labable-white.svg'
 import './registration.css'
+import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 
 export default function Registration() {
     return (
@@ -100,11 +101,8 @@ export default function Registration() {
                             <p>or register with</p>
                             <hr />
                         </div>
-
-                        <button className="alt-registration-btn google">
-                            <i className="ti ti-brand-google"></i>
-                            Google
-                        </button>
+   
+                        <AltAccountButton/>
 
                         <span className="signup-redirect">
                             Already have an account?

@@ -309,7 +309,7 @@ export default function ManagementView() {
 	const data = mockData[viewCategory];
 
 	return (
-		<div className='management-container'>
+		<div className='management-view-container'>
 			<div className='content'>
 				<div className='header'>
 					<div className='title'>
@@ -345,7 +345,7 @@ export default function ManagementView() {
 							tracks={mockData.order.statusHistory}
 						/>
 					) : viewCategory === "schedule" ? (
-						<InteractiveMap address={data.address} />
+						<InteractiveMap address={"GAJFHGJHGHGFJHDGHJFHVJDHJV"} />
 					) : null}
 
 					<ActionButtons

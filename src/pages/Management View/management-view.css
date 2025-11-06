@@ -1,27 +1,27 @@
-.management-container {
+.management-view-container {
     margin-top: 100px;
     padding: 4%;
 }
 
-.management-container .content {
+.management-view-container .content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.management-container .header {
+.management-view-container .header {
     display: flex;
     justify-content: space-between;
 }
 
-.management-container .header .desc {
+.management-view-container .header .desc {
     font-size: 1rem;
     font-weight: normal;
     margin-top: .5rem;
     color: var(--hl-gray);
 }
 
-.management-container .header .return-btn {
+.management-view-container .header .return-btn {
     border-radius: 50px;
     background-color: var(--bg-dark);
     color: var(--fg-light);
@@ -33,7 +33,7 @@
     font-weight: 500;
 }
 
-.management-container .details-container {
+.management-view-container .details-container {
     border-radius: 25px;
     border: 1px solid var(--sf-light);
     padding: 1.5rem;
@@ -42,12 +42,12 @@
     gap: 1.5rem;
 }
 
-.management-container .details-title {
+.management-view-container .details-title {
     font-size: 1.2rem;
     font-weight: 600;
 }
 
-.management-container .details-card {
+.management-view-container .details-card {
     border-radius: 25px;
     background-color: color-mix(in srgb, var(--sf-light) 50%, transparent);
     padding: 2%;
@@ -58,51 +58,51 @@
     font-weight: 500;
 }
 
-.management-container .details-card .label {
+.management-view-container .details-card .label {
     color: var(--hl-gray);
 }
 
-.management-container .track-card {
+.management-view-container .track-card {
     display: flex;
     flex-direction: column;
 }
 
-.management-container .detail-track {
+.management-view-container .detail-track {
     display: flex;
     gap: .5rem;
 }
 
-.management-container .detail-track .visual {
+.management-view-container .detail-track .visual {
     font-size: 1.2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.management-container .detail-track .connector {
+.management-view-container .detail-track .connector {
     border: 2px solid;
     height: 100%;
 }
 
 
-.management-container .detail-track .content {
+.management-view-container .detail-track .content {
     display: flex;
     gap: 2px;
     margin: .5rem 0;
 }
 
-.management-container .detail-track .title {
+.management-view-container .detail-track .title {
     color: var(--fg-dark);
     font-weight: 500;
 }
 
-.management-container .btn-container {
+.management-view-container .btn-container {
     display: flex;
     justify-content: space-around;
     gap: 1rem;
 }
 
-.management-container .btn-container button {
+.management-view-container .btn-container button {
     flex-grow: 1;
     border-radius: 50px;
     border: 2px solid;
@@ -113,61 +113,61 @@
     transition: .2s ease;
 }
 
-.management-container .btn-container .edit-btn {
+.management-view-container .btn-container .edit-btn {
     background-color: transparent;
 }
 
-.management-container .btn-container .edit-btn:hover {
+.management-view-container .btn-container .edit-btn:hover {
     background-color: var(--bg-dark);
     color: var(--fg-light);
 }
 
-.management-container .btn-container .cancel-btn {
+.management-view-container .btn-container .cancel-btn {
     background-color: color-mix(in srgb, var(--hl-yellow) 80%, transparent);
 }
 
-.management-container .btn-container .cancel-btn:hover {
+.management-view-container .btn-container .cancel-btn:hover {
     background-color: var(--hl-yellow);
 }
 
-.management-container .btn-container .update-btn {
+.management-view-container .btn-container .update-btn {
     background-color: color-mix(in srgb, var(--success) 80%, transparent);
 }
 
-.management-container .btn-container .update-btn:hover {
+.management-view-container .btn-container .update-btn:hover {
     background-color: var(--success);
 }
 
-.management-container .btn-container .delete-btn {
+.management-view-container .btn-container .delete-btn {
     background-color: color-mix(in srgb, var(--error) 80%, transparent);
 }
 
-.management-container .btn-container .delete-btn:hover {
+.management-view-container .btn-container .delete-btn:hover {
     background-color: var(--error);
 }
 
-.management-container .map-container {
+.management-view-container .map-container {
     height: 500px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.management-container .leaflet-container {
+.management-view-container .leaflet-container {
     border-radius: 25px;
     width: 100%;
     height: 100%;
 }
 
-.management-container .leaflet-control-attribution {
+.management-view-container .leaflet-control-attribution {
     padding-right: 1rem;
 }
 
-.management-container .map-msg {
+.management-view-container .map-msg {
     text-align: center;
     font-size: 1rem;
 }
 
-.management-container .map-msg.error {
+.management-view-container .map-msg.error {
     color: var(--error);
 }

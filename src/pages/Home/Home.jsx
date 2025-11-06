@@ -2,8 +2,12 @@ import "./home.css";
 import Icon from "../../assets/Icon.svg";
 import laundryVideo from "../../assets/laundry_process.mp4";
 import helloVideo from "../../assets/hello_laundry.mp4";
+import { useState } from "react";
 
 export default function Home() {
+  const [user, setUser] = useState(null);
+
+  
   return (
     <main className="homepage-container">
       <section className="hero-section">
@@ -138,7 +142,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="get-in-touch-section">
+      <section id="contact" className="get-in-touch-section">
         <h2>Get In Touch</h2>
         <p>
           Have questions? We'd love to hear from you. Send us a message and

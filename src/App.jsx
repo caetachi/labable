@@ -10,10 +10,10 @@ import Profile from "./pages/Profile/Profile"
 import Registration from "./pages/Registration/Registration"
 import NotFound from "./pages/Not Found/NotFound"
 import OrderSummary from "./pages/Order Summary/OrderSummary"
-import Contact from './pages/Contact/Contact'
 import Dashboard from "./pages/Dashboard/Dashboard"
 import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
+import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
 export default function App() {
 
@@ -22,11 +22,12 @@ export default function App() {
   return (  
     <>
       <BrowserRouter>
-          {user.role === "admin" ? <AdminSideBar /> : <NavBar/>}
+          {user.role === "admin" ? <AdminSideBar /> : ''}
+          <NavBar/>
+
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/about-us" element={<AboutUs/>}/>
-          <Route path="/contact" element={<Contact/>}/>
           <Route path="/create-order" element={<CreateOrder/>}/>
           <Route path="/order-summary" element={<OrderSummary/>}/>
           <Route path="/my-orders" element={<MyOrder/>}/>
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/registration" element={<Registration/>}/>
           <Route path="/:role/dashboard" element={<Dashboard/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/admin/:viewCategory" element={<Management/>} />
           <Route path="/admin/:viewCategory/:viewId" element={<ManagementView/>} />
           <Route path="/details-edit" element={<OrderManagementDetailsEdit/>}/>
           <Route path="*" element={<NotFound/>}/>

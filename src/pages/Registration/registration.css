@@ -124,7 +124,6 @@
     margin: 0;
 }
 
-
 .registration-container .registration-btn {
     text-align: center;
     padding: 4%;
@@ -156,30 +155,6 @@
     height: 1px;
     margin: 0;
     width: 100%;
-}
-
-.registration-container .alt-registration-btn {
-    background-color: var(--fg-light);
-    color: var(--fg-dark);
-    padding: 4%;
-    border-radius: 50px;
-    border: 2px solid var(--fg-dark);
-    display: flex;
-    gap: 2%;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    cursor: pointer;
-    transition: .2s ease;
-}
-
-.registration-container .alt-registration-btn i {
-    font-size: 1.2rem;
-}
-
-.registration-container .alt-registration-btn:hover {
-    background-color: var(--sf-light);
-    border-color: var(--sf-light);
 }
 
 .registration-container .signup-redirect {

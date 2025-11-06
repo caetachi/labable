@@ -4,6 +4,8 @@ import labableLogo from '../../assets/labable-white.svg'
 import bubble from '../../assets/bubble.svg'
 import heartBubble from '../../assets/heart-bubble.svg'
 import './login.css'
+import { useState } from 'react'
+import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 
 export default function Login() {
     return (
@@ -63,10 +65,7 @@ export default function Login() {
                             <hr />
                         </div>
 
-                        <button className="alt-login-btn google">
-                            <i className="ti ti-brand-google"></i>
-                            Google
-                        </button>
+                        <AltAccountButton/>
 
                         <span className="signup-redirect">
                             Don't have an account?
