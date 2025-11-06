@@ -61,6 +61,14 @@ cd labable-lms
    npm run dev
 
 # Technology Used
-[Technology Used.xlsx](https://github.com/user-attachments/files/23394206/Technology.Used.xlsx)
+## ⚙️ Technologies Used
+
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Frontend (Web)** | HTML5, CSS3, JavaScript | Building the core UI for the admin dashboard. |
+| **Frontend (Mobile)** | React Native | Developing the cross-platform customer application. |
+| **Backend** | Python (Flask) | Handling API requests, business logic, and server operations. |
+| **Database** | PostgreSQL | Robust and reliable data storage for all transactions and records. |
+| **Tools** | Git, GitHub | Version control and collaborative development platform. |
 
    
