@@ -1,5 +1,5 @@
 # Labable - Laundry Shop Management System
-# A modern, efficient, and student-centered web and mobile platform for small to medium-sized laundry shops.
+A modern, efficient, and student-centered web and mobile platform for small to medium-sized laundry shops.
 
 # Introduction and Problem Solved
 The Challenge with Traditional Laundry Services
@@ -46,5 +46,21 @@ To run this project locally, you will need:
 3. Firebase.com
 
 # Installation Steps
-git clone https://github.com/yourusername/labable-lms.git
+1. Clone the Repository:
+  git clone https://github.com/yourusername/labable-lms.git
 cd labable-lms
+
+2. Install Dependencies:
+   npm install react-router
+   npm install fireabase
+   npm install rechart
+   npm install leaflet
+  etc....
+
+3. Run the Application:
+   npm run dev
+
+# Technology Used
+[Technology Used.xlsx](https://github.com/user-attachments/files/23394206/Technology.Used.xlsx)
+
+   
