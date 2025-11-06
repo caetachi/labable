@@ -4,7 +4,7 @@ import { NavLink } from 'react-router'
 import { useState } from 'react';
 
 function AdminSideBar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   function sidebarFunc() {
     if (isSidebarOpen) {
       setIsSidebarOpen(false);
