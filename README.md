@@ -65,10 +65,18 @@ cd labable-lms
 
 | Category | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend (Web)** | HTML5, CSS3, JavaScript | Building the core UI for the admin dashboard. |
-| **Frontend (Mobile)** | React Native | Developing the cross-platform customer application. |
-| **Backend** | Python (Flask) | Handling API requests, business logic, and server operations. |
-| **Database** | PostgreSQL | Robust and reliable data storage for all transactions and records. |
-| **Tools** | Git, GitHub | Version control and collaborative development platform. |
+| **Frontend (Web)** | HTML5, CSS3, JavaScript, React.js | Building the core UI for all the pages. |
+| **Frontend (Mobile)** | Android Studio, xml, HTML5, CSS3 | Developing the cross-platform customer application. |
+| **Backend** | Javascript, Postman | Handling API requests, business logic, and server operations. |
+| **Database** | Firebase | Robust and reliable data storage for all transactions and records. |
+| **Tools** | Git, GitHub, vs.code | Version control and collaborative development platform. |
+
+| Name | Role | Description |
+| :--- | :--- | :--- |
+| **Bacang, John Raizel** | UX Researcher, Front-end | Designing Flow and diagrams |
+| **Flores, Janver** | Back-end, Frond-end | Developing the application and web. |
+| **Pavia, Marc Justin** | UX Designer, Front-end | Designs optimized diagrams and sitemaps. |
+| **Santiago, Jan Rei** | Back-end, Front-end | Organized and optimized the flow of data from front end to api and back-end. |
+| **Valdez, Jerson patrick** | UI Designer, Front-end, Flows | Designs and organized the user interface including the flows of data. |
 
    
