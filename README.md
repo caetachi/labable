@@ -1,15 +1,15 @@
 # Labable - Laundry Shop Management System
-A modern, efficient, and student-centered web and mobile platform for small to medium-sized laundry shops.
+## A modern, efficient, and student-centered web and mobile platform for small to medium-sized laundry shops.
 
 # Introduction and Problem Solved
-The Challenge with Traditional Laundry Services
+## The Challenge with Traditional Laundry Services
 Most small to medium-sized laundry shops near university areas still rely on manual, traditional processes like handwritten logbooks for order tracking, payment recording, and scheduling. This results in:
 
 1. Inefficiency and Errors: High risk of human error, data loss (misplaced or damaged papers), and inconsistency in records.
 2. Difficult Management: Staff struggle to perform basic CRUD operations (create, read, update, delete) on records, making sales report generation and customer history tracking difficult.
 3. Customer Inconvenience: Customers often face long waiting times and must physically visit the shop to check their order status due to a lack of clear communication.
 
-# The Labable Solution
+## The Labable Solution
 The Labable Laundry Shop Management System (LMS) is designed to mitigate these difficulties by offering a convenient web and mobile-based platform. It specifically targets the time-constrained students of Bulacan State University and the general public, providing a modern alternative that streamlines operations for the business owner and enhances the service experience for the client.
 
 # Target Users
@@ -22,14 +22,14 @@ The system is designed to serve three main groups:
 # Key Features (Purpose and Description)
 Labable combines Transaction Processing System (TPS) and Management Information System (MIS) features to ensure both operational efficiency and insightful reporting.
 
-# Customer & Staff Features (TPS)
+## Customer & Staff Features (TPS)
 - Service Scheduling: Allows customers to easily schedule laundry services and choose between pick-up and delivery options.
 - Real-Time Tracking: Provides transparent, real-time updates on laundry progress, eliminating the need for physical shop visits to inquire.
 - Automated Payments: Supports both cash and cashless payment methods.
 - Receipt Generation: Automatically generates receipts for every completed transaction.
 - Order Management: Enables staff to easily create, locate, update, and delete customer orders.
 
-# Owner & Management Features (MIS)
+## Owner & Management Features (MIS)
 - Data Organization: Manages collected data by sorting, summarizing, and classifying customer and order records.
 - Report Generation: Provides tools for generating sales reports, monitoring income, and analyzing business performance.
 - Integrated Dashboard: Offers a summarized view of key business information for quick monitoring.
@@ -38,14 +38,14 @@ Labable combines Transaction Processing System (TPS) and Management Information 
 # Getting Started (Installation & Setup)
 This is where you would put the practical steps for getting the code running.
 
-Prerequisites
+##Prerequisites
 To run this project locally, you will need:
 
 1. Node.js
 2. React Vite
 3. Firebase.com
 
-# Installation Steps
+## Installation Steps
 1. Clone the Repository:
   git clone https://github.com/yourusername/labable-lms.git
 cd labable-lms
@@ -70,6 +70,13 @@ cd labable-lms
 | **Backend** | Javascript, Postman | Handling API requests, business logic, and server operations. |
 | **Database** | Firebase | Robust and reliable data storage for all transactions and records. |
 | **Tools** | Git, GitHub, vs.code | Version control and collaborative development platform. |
+
+## Additional Technologies
+### Icons: [Fontawesome](https://fontawesome.com/), [Tabler Icons](https://tabler.io/icons), [Huge Icons](https://hugeicons.com/)
+### Fonts: [Poppins, Sanserif](https://fonts.google.com/specimen/Poppins)
+### Table: [Recharts](https://recharts.github.io/)
+### Image Generation: [Gemini](https://gemini.google.com/), [Recraft](https://www.recraft.ai/)
+### Video Generation: [Veo 3](https://deepmind.google/models/veo/), [Hailuoai](https://hailuoai.video/)
 
 # Team Roles
 
