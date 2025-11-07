@@ -72,7 +72,6 @@ export default function Leaflet(props) {
           toast.success("Location found and marker updated!");
         } else {
           console.warn("No coordinates found for", locationName);
-          alert("Location not found.");
           toast.error("Location not found.");
         }
       } catch (error) {
