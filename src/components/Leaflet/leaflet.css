@@ -1,0 +1,62 @@
+.leaflet-container {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    padding: 20px;
+    border: 0.5px solid var(--sf-light);
+    border-radius: 30px;
+    gap: 10px;
+}
+
+.leaflet-container p{
+    font-weight: 500;
+}
+
+.leaflet-container .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.leaflet-container .field-group label {
+    font-family: var(--primary-font);
+    font-weight: 500;
+}
+
+.leaflet-container .field-group .input-search {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.leaflet-container .field-group .input-search input {
+    flex: 1;
+    padding: 5px 10px;
+    font-family: var(--primary-font);
+    font-size: 0.8rem;
+    border: 0.5px solid var(--sf-dark);
+    border-radius: 12px;
+    background-color: var(--bg-light);
+}
+
+.leaflet-container .field-group .input-search button{
+    flex: 1;
+    max-width: 10%;
+    width: 10%;
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    border: none;
+    padding: 10px;
+    border-radius: 15px;
+    min-width: fit-content;
+    border: 2px solid var(--fg-dark);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.leaflet-container .field-group .input-search button:hover{
+    background-color: var(--bg-light);
+    color: var(--fg-dark);
+    transition: 0.3s ease;
+}

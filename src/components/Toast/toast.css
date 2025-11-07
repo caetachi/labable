@@ -1,0 +1,17 @@
+.toast-container {
+  bottom: 1rem !important;
+  left: 1rem !important;
+  width: auto;
+  pointer-events: none;
+}
+
+.custom-toast {
+  box-shadow: 0 4px 10px var(--sf-dark);
+  padding: 12px !important;
+  font-family: var(--primary-font);
+}
+
+.custom-toast-body {
+  font-size: 1rem;
+  font-weight: 500;
+}
