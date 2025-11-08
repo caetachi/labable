@@ -17,17 +17,40 @@ import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
 import Toast from "./components/Toast/Toast"
 import Example from "./scripts/Example"
+import { useEffect, useState } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import { get, ref } from "firebase/database"
+import { auth, db } from "./firebase"
+
 export default function App() {
 
-  const user = { name: "Jerson Valdez", role: "user" }
+  const [user, setUser] = useState();
+  const [userData, setUserData] = useState({});
+
+  useEffect(()=>{
+    onAuthStateChanged(auth, (currentUser)=>{
+      setUser(currentUser);
+      if(currentUser){
+          get(ref(db, `users/${currentUser.uid}`)).then((snapshot)=>{
+          if(snapshot.exists()){
+            setUserData(snapshot.val());
+          }
+        })
+      }else{
+        setUserData({});
+      }
+    })
+  },[])
 
   return (  
     <>
       <Toast />
       <BrowserRouter>
-          {user.role === "admin" ? <AdminSideBar /> : <NavBar />}
-          
-
+          {userData?.role === "admin" ? 
+            <AdminSideBar /> 
+            : 
+            <NavBar name={userData.fullname} image_url={userData.image_url}/>
+          }
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/about-us" element={<AboutUs/>}/>
