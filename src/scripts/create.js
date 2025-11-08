@@ -1,36 +1,36 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
-import { auth, db } from './firebase'
+import { auth, db } from '../firebase'
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate){
-    const usersRef = ref(db, 'users');
-    const userCounter = await ((await get(child(usersRef, 'user_counter'))).val()) ;
-    const userId = 'CUS-' + String(userCounter+1).padStart(3, '0');
-    const userData = { 
-      'user_id': userId,
-      'auth_id': authId,
-      'email': email,
-      'role': 'customer',
-      'fullname': name, // null if wala
-      'phone': phoneNum, // null if wala
-      'address': null, // user input
-      'status': 'active', 
-      'image_url': imgUrl, // null if wala
-      created_at: currentDate,
-      created_by: authId
-    }
-    set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
-    .then((newReference)=>{
-      alert("New user created!")
-    })
-    .catch((err)=>{
-      alert(err.message);
-    })
-    await update(usersRef, {
-      'user_counter': userCounter+1,
-    })
-    .then(()=>console.log("Increment"));
-    
+  const usersRef = ref(db, 'users');
+  const userCounter = await ((await get(child(usersRef, 'user_counter'))).val()) ;
+  const userId = 'CUS-' + String(userCounter+1).padStart(3, '0');
+  const userData = { 
+    'user_id': userId,
+    'auth_id': authId,
+    'email': email,
+    'role': 'customer',
+    'fullname': name, // null if wala
+    'phone': phoneNum, // null if wala
+    'address': null, // user input
+    'status': 'active', 
+    'image_url': imgUrl, // null if wala
+    created_at: currentDate,
+    created_by: authId
   }
+  set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
+  .then((newReference)=>{
+    alert("New user created!")
+  })
+  .catch((err)=>{
+    alert(err.message);
+  })
+  await update(usersRef, {
+    'user_counter': userCounter+1,
+  })
+  .then(()=>console.log("Increment"));
+    
+}
 
   export async function createViaEmailAndPassword(authId, email, currentDate){
     const usersRef = ref(db, 'users');

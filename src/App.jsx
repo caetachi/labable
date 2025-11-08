@@ -42,7 +42,7 @@ export default function App() {
           <Route path="/admin/:viewCategory/:viewId" element={<ManagementView/>} />
           <Route path="/details-edit" element={<OrderManagementDetailsEdit/>}/>
           <Route path="*" element={<NotFound/>}/>
-          <Route path="/sample" element={<Example/>}/>
+          <Route path="/example" element={<Example/>}/>
           
         </Routes>
         <Footer/>

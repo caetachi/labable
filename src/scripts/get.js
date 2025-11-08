@@ -1,6 +1,6 @@
 
 import { child, get, ref } from 'firebase/database'
-import { db } from './firebase'
+import { db } from '../firebase'
 
   export async function getServiceName(serviceUid) {
     const servicesRef = ref(db, 'service_types');
@@ -84,3 +84,11 @@ import { db } from './firebase'
     // return Object.values(serviceTypes);
     return Object.entries(inventory);
   }
+  export async function getUsers() { // eto nalang din sa Schedule Management
+    const usersRef = ref(db, 'users')
+    const users = await (await get(usersRef)).val();
+    console.log(Object.entries(users));
+    // return Object.values(serviceTypes);
+    return Object.entries(users);
+  }
+  

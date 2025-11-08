@@ -1,5 +1,5 @@
 import { child, ref, set, update } from 'firebase/database'
-import { auth, db } from './firebase'
+import { auth, db } from '../firebase'
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
