@@ -30,11 +30,15 @@ export default function App() {
   useEffect(()=>{
     onAuthStateChanged(auth, (currentUser)=>{
       setUser(currentUser);
-      get(ref(db, `users/${currentUser.uid}`)).then((snapshot)=>{
-        if(snapshot.exists()){
-          setUserData(snapshot.val());
-        }
-      })
+      if(currentUser){
+          get(ref(db, `users/${currentUser.uid}`)).then((snapshot)=>{
+          if(snapshot.exists()){
+            setUserData(snapshot.val());
+          }
+        })
+      }else{
+        setUserData({});
+      }
     })
   },[])
 
