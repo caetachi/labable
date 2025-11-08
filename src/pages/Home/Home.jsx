@@ -1,12 +1,17 @@
 import "./home.css";
-import Icon from "../../assets/Icon.svg";
+import helloGif from "../../assets/hello_laundry.gif";
 import laundryVideo from "../../assets/laundry_process.mp4";
-import helloVideo from "../../assets/hello_laundry.mp4";
+import superb from "../../assets/superb.png";
+import good from "../../assets/Good.png";
+import budget from "../../assets/Budget.png";
+import superbThick from "../../assets/Superb-Thick.png";
+import dryClean from "../../assets/Dry Cleaning.png";
+import studentPack from "../../assets/Student Pack.png";
 import { useState } from "react";
+import PackageServiceCard from "../../components/Package Service Card/PackageServiceCard";
 
 export default function Home() {
   const [user, setUser] = useState(null);
-
   
   return (
     <main className="homepage-container">
@@ -32,19 +37,13 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-image">
-          <video
-              src={helloVideo}
-              autoPlay
-              loop
-              playsInline
-              className="w-full h-auto object-cover"
-            />
+          <img src={helloGif} alt="Labable Mascot saying hello" />
         </div>
       </section>
 
       <section id="services" className="service-section">
         <h2>Our Services</h2>
-        <p>Complete laundry care solutions htmlFor your every need</p>
+        <p>Complete laundry care solutions for your every need</p>
         <div className="service-container">
           <div className="service-card">
             <div className="icon-container">
@@ -76,6 +75,46 @@ export default function Home() {
             </div>
             <h3>Service Package</h3>
           </div>
+        </div>
+        <h3>The Packages we Offer</h3>
+        <p>Complete laundry packaging solutions for your every need</p>
+        <div className="packages-container">
+          <PackageServiceCard
+            image_name={superb}
+            title="Superb Service"
+            services_included="Wash, Dry, Fold, Iron"
+            description="our premium package offering the complete laundry experience with meticulous care and attention to detail."
+          />
+          <PackageServiceCard
+            image_name={good}
+            title="Good Service"
+            services_included="Wash, Dry, Fold"
+            description="a comprehensive laundry solution that ensures your clothes are cleaned, dried, and neatly folded for your convenience."
+          />
+          <PackageServiceCard
+            image_name={budget}
+            title="Budget Service"
+            services_included="Wash, Dry"
+            description="an economical choice for those who need basic laundry services without the frills."
+          />
+          <PackageServiceCard
+            image_name={superbThick}
+            title="Superb Thick"
+            services_included="Wash, Dry, Fold, Iron"
+            description="our premium package offering the complete laundry experience with extra care for thick fabrics and heavy garments."
+          />
+          <PackageServiceCard
+            image_name={dryClean}
+            title="Dry Cleaning"
+            services_included="Dry Clean"
+            description="a specialized service for delicate and non-washable fabrics, ensuring your garments are professionally cleaned and well-maintained."
+          />
+          <PackageServiceCard
+            image_name={studentPack}
+            title="Student Pack"
+            services_included="Wash, Dry, Fold, Iron"
+            description="a tailored laundry solution designed specifically for students, offering convenience and affordability for their busy lifestyles."
+          />
         </div>
       </section>
 

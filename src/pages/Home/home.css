@@ -95,7 +95,7 @@
   flex: 1;
   max-width: 500px;
 }
-.homepage-container .hero-image video {
+.homepage-container .hero-image img {
   width: 100%;
   height: 90%;
   min-width: 300px;
@@ -144,6 +144,14 @@
   font-weight: 600;
   color: var(--fg-dark);
   margin: 0;
+}
+.homepage-container .packages-container{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
 }
 .homepage-container .how-it-works-container {
   display: flex;
