@@ -1,6 +1,7 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
 import { toast } from 'react-toastify';
+import { getItemPerKg, getServiceName, getServicePrice, getWashableItemName } from './get';
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate){
   const usersRef = ref(db, 'users');
@@ -145,7 +146,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     let total = 0;
     let orderItems = []; 
     for(let i = 0; i < orders.length; i++){
-      const orderItem = await newOrderItem(newOrderUid , orders[i].itemId, orders[i].quantity);
+      const orderItem = await newOrderItem(newOrderUid , orders[i].itemUid, orders[i].quantity);
       orderItems.push(orderItem); 
       total += orderItem.total_kilo;
     }

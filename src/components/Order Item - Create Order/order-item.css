@@ -43,6 +43,7 @@
 .quantity-operation{
     background-color: var(--sf-light);
     font-weight: 500;
+    cursor: pointer;
 }
 
 .delete-button{
@@ -53,4 +54,5 @@
     border: none;
     border-radius: 25px;
     font-weight: 500;
+    cursor: pointer;
 }
