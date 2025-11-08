@@ -3,54 +3,124 @@ import EditLogo from '../../assets/edit.svg'
 import SearchLogo from '../../assets/search.svg'
 import PantsLogo from '../../assets/pants.svg'
 import BigPantsLogo from '../../assets/pants-big.svg'
-import ShirtLogo from '../../assets/shirt.svg'
-import SkirtLogo from '../../assets/skirt.svg'
-import DressLogo from '../../assets/dress.svg'
 import GCashLogo from '../../assets/gcash.svg'
 import { useNavigate } from 'react-router'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
-import { getWashableItems } from '../../scripts/get'
+import { getServices, getWashableItems } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
+import { newOrder } from '../../scripts/create'
 
 export default function CreateOrder() {
-    const [washableItems, setWashableItems] = useState([]);
-    const [orderItems, setOrderItems] = useState([]);
+    const [address, setAddress] = useState();
     const [service, setService] = useState();
+    const [orderItems, setOrderItems] = useState([]);
+    const [modeTransfer, setModeTransfer] = useState();
+    const [transferDate, setTransferDate] = useState();
+    const [modeClaim, setModeClaim] = useState();
+    const [payment, setPayment] = useState();
+    const [notes, setNotes] = useState();
+    const [status, setStatus] = useState();
+    const [washableItems, setWashableItems] = useState([]);
+    const [serviceTypes, setServiceTypes] = useState([]);
+    const [minDate, setMinDate] = useState();
+    const navigate = useNavigate();
 
-    const services = document.querySelectorAll('.create-service-type-card');
-    services.forEach(function(serviceCard){ // parang radio-group galing ko talaga
-        const icons = document.querySelectorAll('.create-service-type-icon');
-        serviceCard.addEventListener('click', () =>{
-            icons.forEach(icon => {
-                icon.classList.remove('service-selected');
+    function setupServices(){
+        const services = document.querySelectorAll('.create-service-type-card');
+        services.forEach(function(serviceCard){ // parang radio-group galing ko talaga
+            const icons = document.querySelectorAll('.create-service-type-icon');
+            serviceCard.addEventListener('click', () =>{
+                icons.forEach(icon => {
+                    icon.classList.remove('service-selected');
+                });
+                const icon = serviceCard.querySelector('.create-service-type-icon');
+                const serviceId = serviceCard.getAttribute('id');
+                setService(serviceId);
+                icon.classList.add('service-selected');
             });
-            const icon = serviceCard.querySelector('.create-service-type-icon');
-            icon.classList.add('service-selected');
         });
-    });
+    }
+
+    function getMinDateTime(hoursAhead) {
+        let now = new Date();
+        now.setHours(now.getHours()+hoursAhead);
+
+        const offset = now.getTimezoneOffset() * 60000; 
+        const localTime = new Date(now.getTime() - offset);
+        console.log(localTime.toISOString().slice(0, 16));
+        return localTime.toISOString().slice(0, 16);
+    }
+
+    function addOnChange(){
+        const input = document.getElementById('input-transfer');
+        input.addEventListener('change', () => { //para yung order pwede i-set kahapon
+            if (input.value < input.min) {
+                input.value = input.min;
+            }
+            setTransferDate(input.value);
+            console.log(input.value);
+            
+        });
+    }
     
 
     useEffect(()=>{
+        setMinDate(getMinDateTime(2));
         async function getStuff(params) {
             const washablesList = await getWashableItems();
+            const serviceList = await getServices();
+            console.log(serviceList);
+            
             let washables = [];
+            let services = [];
             
             for(let i = 0; i < washablesList.length; i++){
                 if(washablesList[i][0] != 'washables_counter'){
                     washables.push(washablesList[i]);
                 }
             }
+            for(let i = 0; i < serviceList.length; i++){
+                if(serviceList[i][0] != 'service_counter'){
+                    services.push(serviceList[i]);
+                }
+            }
             setWashableItems(washables);
+            setServiceTypes(services);
         }
         getStuff();
+        addOnChange();
+        const transfers = document.getElementsByName('transfer-mode');
+        transfers.forEach(element => {
+            element.addEventListener('click', ()=>{
+                setModeTransfer(element.value)
+            })
+        });
+        const receives = document.getElementsByName('receive-mode');
+        receives.forEach(element => {
+            element.addEventListener('click', ()=>{
+                setModeClaim(element.value)
+            })
+        });
+        const payments = document.getElementsByName('payment-method');
+        payments.forEach(element => {
+            element.addEventListener('click', ()=>{
+                setPayment(element.value)
+            })
+        });
     }, [])
 
     useEffect(()=>{
-        console.log("order");
-        
-    }, [orderItems])
+        setupServices();
+    }, [serviceTypes])
+    useEffect(()=>{
+        console.log(service);
+    }, [service])
+    useEffect(()=>{
+        console.log(notes);
+    }, [notes])
+
 
     function addToOrderItems(washableItemUid, washableItemName){
         console.log('click');
@@ -107,9 +177,27 @@ export default function CreateOrder() {
         })
     }
 
+    async function submit(stats){
+        console.log(orderItems);
+        
+        const statusSet = stats;
+        setStatus(statusSet)
+        
+
+        
+        await newOrder(service, address, payment, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems);
+        
+    }
+
+    // const [service, setService] = useState();
+    // const [modeTransfer, setModeTransfer] = useState();
+    // const [modeClaim, setModeClaim] = useState();
+    // const [payment, setPayment] = useState();
+    // const [notes, setNotes] = useState();
+    // const [status, setStatus] = useState();
     
     
-    const navigate = useNavigate();
+    
     return(
         <div className='create-order-container'>
             <div className="title-container">
@@ -142,7 +230,7 @@ export default function CreateOrder() {
                     <p className='section-title'>Address</p>
                 </div>
                 <div className="address-input-container">
-                    <input className='create-address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan'/>
+                    <input className='create-address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan' onChange={(e)=>setAddress(e.target.value)}/>
                     <img className='address-edit' src={EditLogo} alt="" />
                 </div>
                 <div className="order-items-container">
@@ -155,7 +243,7 @@ export default function CreateOrder() {
                             </div>
                             <div className="items-container">
                                 {washableItems.map((washable)=>{
-                                    return <WashableItem imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name)}/>
+                                    return <WashableItem id={washable[0]} imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name)}/>
                                 })}
                             </div>
                         </div>
@@ -176,11 +264,14 @@ export default function CreateOrder() {
             <div className="service-types-containter gray-border">
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
-                    <ServiceType icon="shirt" name="Dry"/>
+                    {serviceTypes && serviceTypes.map((service)=>{
+                        return <ServiceType icon='shirt' name={service[1].service_name} id={service[0]}/>
+                    })}
+                    {/* <ServiceType icon="shirt" name="Dry" />
                     <ServiceType icon="ironing-2" name="Iron" />
                     <ServiceType icon="wash" name="Wash" />
                     <ServiceType icon="jacket" name="Fold" />
-                    <ServiceType icon="package" name="Package" />
+                    <ServiceType icon="package" name="Package" /> */}
                 </div>
             </div>
             <div className="transfer-details-container">
@@ -188,12 +279,12 @@ export default function CreateOrder() {
                     <p className='section-title'>Mode of Laundry Transfer</p>
                     <div className="radio-container">
                         <label className='radio-label' htmlFor="pick-up-transfer">
-                            <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" />
+                            <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" value={'Pick-up'}/>
                             Pick-up
                         </label>
                     </div>
                     <div className="radio-container">
-                        <input className='radio' type="radio" name="transfer-mode" id="drop-off-transfer" />
+                        <input className='radio' type="radio" name="transfer-mode" id="drop-off-transfer" value={'Drop-off'}/>
                         <label className='radio-label' htmlFor="drop-off-transfer">
                             Drop-off
                         </label>
@@ -201,19 +292,19 @@ export default function CreateOrder() {
                 </div>
                 <div className="transfer-date-container gray-border">
                     <p className='section-title'>Laundry Transfer Date</p>
-                    <input className='transfer-date-input gray-border' type="datetime-local" name="" id="" />
+                    <input className='transfer-date-input gray-border' type="datetime-local" id="input-transfer" min={minDate} onChange={(e) => setTransferDate(e.target.value)}/>
                 </div>
             </div>
             <div className="receive-mode-container section gray-border">
                 <p className='section-title'>How would you like to receive your clean laundry?</p>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" />
+                    <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pick-up'}/>
                     <label className='radio-label' htmlFor="pick-up-receive">
                         Pick-up
                     </label>
                 </div>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="receive-mode" id="drop-off-receive" />
+                    <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Drop-off'}/>
                     <label className='radio-label' htmlFor="drop-off-receive">
                         Drop-off (Deliver to your front door)
                     </label>
@@ -222,13 +313,13 @@ export default function CreateOrder() {
             <div className="payment-method-container section gray-border">
                 <p className='section-title'>Payment Method</p>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="payment-method" id="cash-payment" />
+                    <input className='radio' type="radio" name="payment-method" id="cash-payment" value={'Cash'}/>
                     <label className='radio-label' htmlFor="cash-payment">
                         Cash
                     </label>
                 </div>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="payment-method" id="gcash-payment" />
+                    <input className='radio' type="radio" name="payment-method" id="gcash-payment" value={'GCash'}/>
                     <label className='radio-label' htmlFor="gcash-payment">
                         GCash <img src={GCashLogo}/>
                     </label>
@@ -236,12 +327,12 @@ export default function CreateOrder() {
             </div>
             <div className="additional-notes-container section gray-border">
                 <p className='section-title'>Additional Notes (Optional)</p>
-                <textarea className='additional-textarea gray-border' name="" id="" placeholder='Any special instructions...' ></textarea>
+                <textarea className='additional-textarea gray-border' name="notes" id="" placeholder='Any special instructions...' onChange={(e) => setNotes(e.target.value)}></textarea>
             </div>
             <p className='section-title'>Estimated Cost: Php 295.00</p>
             <div className="action-buttons">
-                <button className='action-button draft-button'>Save as Draft</button>
-                <button className='action-button summary-button' onClick={() => navigate('/order-summary')}>Review Order Summary <p className='summary-number'>(15)</p></button>
+                <button className='action-button draft-button' onClick={() => submit('draft')}>Save as Draft</button>
+                <button className='action-button summary-button' onClick={() => submit('pending')}>Review Order Summary <p className='summary-number'>(15)</p></button>
             </div>
             </div>
         </div>

@@ -27,7 +27,7 @@ import { db } from '../firebase'
     const washableItemRef = child(washableItemsRef, washableItemId);
     const washableItem = await (await get(washableItemRef)).val();
     
-    console.log(washableItem);
+    console.log(washableItem.washable_item_name);
     return washableItem.washable_item_name;
   }
   
