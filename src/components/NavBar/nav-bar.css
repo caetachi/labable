@@ -16,7 +16,7 @@
 }
 
 .nav-bar-container .links{
-    width: 100%;
+    flex: 1;
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -111,6 +111,91 @@
     display: none;
 }
 
+.nav-bar-container .profile-button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.nav-bar-container .profile-picture{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background-color: var(--sf-light);
+    padding: 5px 10px;
+    border-radius: 100px;
+    max-width: fit-content;
+    position: relative;
+}
+
+.nav-bar-container .profile-picture:hover{
+    box-shadow: 0 2px 10px 0 var(--sf-light);
+    transition: 0.3s ease-in-out;
+}
+
+.nav-bar-container .profile-picture img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--bg-dark);
+}
+
+.nav-bar-container .profile-picture h5{
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--fg-dark);
+}
+
+.nav-bar-container .floating-nav-container{
+    display: none;
+    position: absolute;
+    background-color: var(--bg-light);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 10px 0 var(--sf-light);
+    z-index: 1000;
+    top: 0;
+    margin-top: 55px;
+}
+
+.nav-bar-container .floating-nav-container.open{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-bar-container .floating-nav-container button{
+    box-shadow: 0 2px 10px var(--sf-dark);
+    border: none;
+    background-color: var(--error);
+    color: var(--fg-light);
+    cursor: pointer;
+    text-align: left;
+}
+
+.nav-bar-container .floating-nav-link{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: var(--fg-dark);
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.nav-bar-container .floating-nav-link:hover{
+    transition: 0.3s ease-in-out;
+    background-color: color-mix(in srgb, var(--sf-dark) 50%, transparent);
+}
+
+.nav-bar-container .floating-nav-container button:hover{
+    background-color: var(--bg-dark);
+    transition: 0.3s ease-in-out;
+}
+
 @media (max-width: 768px) {
     .nav-bar-container {
         align-items: start;
@@ -123,7 +208,7 @@
         border-top: 0.5px solid var(--sf-dark);
     }
 
-    .nav-bar-container .logo, .nav-bar-container .nav-link:nth-child(4){
+    .nav-bar-container .logo{
         display: none;
     }
 
@@ -163,5 +248,19 @@
         background-color: var(--bg-light);
         border-bottom: 0.5px solid var(--sf-dark);
         z-index: 1001;
+    }
+
+    .nav-bar-container .profile-picture{
+        flex-direction: column;
+        background-color: transparent;
+    }
+
+    .nav-bar-container .profile-picture img{
+        width: 50px;
+        height: 50px;
+    }
+
+    .nav-bar-container .profile-picture i, .nav-bar-container .profile-picture h5{
+        display: none;
     }
 }
