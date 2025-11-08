@@ -55,13 +55,13 @@
     justify-content: center;
     width: 50%;
     padding: 15% 5%;
-    gap: 15px;
+    gap: 5px;
 }
 
 .registration-container .field {
     display: flex;
     flex-direction: column;
-    gap: .5rem;  
+    gap: 5px;  
 }
 
 .registration-container .label-field {
@@ -136,10 +136,26 @@
     transition: .2s ease-in-out;
 }
 
+.registration-container .registration-btn.disabled {
+    text-align: center;
+    padding: 4%;
+    border-radius: 50px;
+    background-color: var(--sf-dark);
+    color: var(--fg-light);
+    font-weight: 500;
+}
+
 .registration-container .registration-btn:hover {
     color: var(--fg-dark);
     border-color: var(--fg-dark);
     background-color: transparent;
+}
+
+.registration-container .registration-btn.disabled:hover {
+    cursor: not-allowed;
+    background-color: var(--sf-dark);
+    color: var(--fg-light);
+    border: 2px solid;
 }
 
 .registration-container .alt-registration-label {
@@ -163,4 +179,9 @@
     gap: 2%;
     color: var(--hl-gray);
     font-size: .8rem;
+}
+
+.registration-container .error-message{
+    color: var(--error);
+    font-size: 0.6rem;
 }

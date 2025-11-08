@@ -2,6 +2,7 @@ import { get, ref } from 'firebase/database';
 import { auth, db, googleAuth } from '../firebase'
 import {createWithGoogle, createViaEmailAndPassword} from './create'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 
 export async function registerViaGoogle(){
@@ -22,15 +23,16 @@ export async function registerViaGoogle(){
     
   }
 
-  export async function registerViaEmailPass(email, password){
+  export async function registerViaEmailPass(email, firstName, lastName, phoneNumber, password){
     // const res;
     try{
       const user = await createUserWithEmailAndPassword(auth, email, password)
       const res = user.user;
       const currDate = new Date().toLocaleString();
-      await createViaEmailAndPassword(res.uid, res.email, currDate);
+      await createViaEmailAndPassword(res.uid, firstName, lastName, phoneNumber, res.email, currDate);
+      toast.success("Account successfully created!");
     }catch(err){
-      alert(err.message);
+      toast.error(err.message);
       return;
     }
   }
