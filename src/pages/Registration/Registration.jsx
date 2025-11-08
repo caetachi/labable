@@ -4,9 +4,7 @@ import labableLogo from '../../assets/labable-white.svg'
 import './registration.css'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { useState } from 'react'
-import { registerViaEmailPass } from '../../scripts/register'
-import { toast } from 'react-toastify'
-import { set } from 'firebase/database'
+import { registerViaEmailPass, registerViaGoogle } from '../../scripts/register'
 
 export default function Registration() {
 
@@ -238,7 +236,7 @@ export default function Registration() {
                             <hr />
                         </div>
    
-                        <AltAccountButton/>
+                        <AltAccountButton register={registerViaGoogle}/>
 
                         <span className="signup-redirect">
                             Already have an account?

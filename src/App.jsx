@@ -21,6 +21,7 @@ import { useEffect, useState } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { get, ref } from "firebase/database"
 import { auth, db } from "./firebase"
+import { toast } from "react-toastify"
 
 export default function App() {
 
@@ -40,6 +41,27 @@ export default function App() {
         setUserData({});
       }
     })
+  },[user])
+
+  useEffect(()=>{
+    const message = localStorage.getItem("toastMessage");
+    const type = localStorage.getItem("toastType");
+    if(message){
+      if(type === "success"){
+        toast.success(message);
+      }else if(type === "error"){
+        toast.error(message);
+      }else if(type === "info"){
+        toast.info(message);
+      }else if(type === "warning"){
+        toast.warning(message);
+      }
+      else{
+        toast(message);
+      }
+      localStorage.removeItem("toastMessage");
+      localStorage.removeItem("toastType");
+    }
   },[])
 
   return (  

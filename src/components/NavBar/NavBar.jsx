@@ -25,10 +25,9 @@ export default  function NavBar({image_url, name}){
     function logout() {
         auth.signOut()
             .then(() => {
-                toast.success("Successfully logged out!");
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
+                localStorage.setItem("toastMessage", "Successfully logged out.");
+                localStorage.setItem("toastType", "success");
+                window.location.href = '/';
             })
             .catch((error) => {
                 console.error("Logout error:", error);
@@ -81,31 +80,29 @@ export default  function NavBar({image_url, name}){
                     }
                 </div>
                 {name ?
-                    <button className="profile-button" onClick={toggleFloatingNav}>
-                        <div className="profile-picture">
-                            <img src={imageUrl} alt="Profile" />
-                            <h5>{name}</h5>
-                            <i className="ti ti-caret-down"></i>
-                            <div className="floating-nav-container">
-                                <NavLink to='/profile' className='floating-nav-link'>
-                                    <i className="ti ti-user"></i>
-                                    <p>Profile</p>
-                                </NavLink>
-                                <NavLink to='/user/dashboard' className='floating-nav-link'>
-                                    <i className="ti ti-layout-dashboard"></i>
-                                    <p>Dashboard</p>
-                                </NavLink>
-                                <NavLink to='/setting' className='floating-nav-link'>
-                                    <i className="ti ti-settings"></i>
-                                    <p>Settings</p>
-                                </NavLink>
-                                <button className='floating-nav-link' onClick={logout}>
-                                    <i className="ti ti-logout"></i>
-                                    <p>Logout</p>
-                                </button>
-                            </div>
+                    <div className="profile-picture" onClick={toggleFloatingNav}>
+                        <img src={imageUrl} alt="Profile" />
+                        <h5>{name}</h5>
+                        <i className="ti ti-caret-down"></i>
+                        <div className="floating-nav-container">
+                            <NavLink to='/profile' className='floating-nav-link'>
+                                <i className="ti ti-user"></i>
+                                <p>Profile</p>
+                            </NavLink>
+                            <NavLink to='/user/dashboard' className='floating-nav-link'>
+                                <i className="ti ti-layout-dashboard"></i>
+                                <p>Dashboard</p>
+                            </NavLink>
+                            <NavLink to='/setting' className='floating-nav-link'>
+                                <i className="ti ti-settings"></i>
+                                <p>Settings</p>
+                            </NavLink>
+                            <button className='floating-nav-link' onClick={logout}>
+                                <i className="ti ti-logout"></i>
+                                <p>Logout</p>
+                            </button>
                         </div>
-                    </button>
+                    </div>
                     :
                     <div className="login-signup">
                         <NavLink to='/login' className='login'>Login</NavLink>
