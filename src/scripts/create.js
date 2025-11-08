@@ -148,7 +148,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     }
 
     total = total * servicePrice;
-    const payment = await newPayment(newOrderUid, null, 'unpaid');
 
     const orderData = {
       "order_id": orderId, 
@@ -162,7 +161,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       "address": address,
       "payment_method": paymentMethod,
       "amount": total,
-      "payment": payment,
       "mode_of_transfer": transferMode,
       "transfer_date": transferDate,
       "arrival_date": arrivalDate,
@@ -224,14 +222,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       alert(err.message);
     })
 
-    const userRef = ref(db, `users/${auth.currentUser.uid}`);
-    const userOrdersRef = child(userRef, `orders/${newOrderUid}`);
-    set(userOrdersRef, orderData).then((res)=>{
-      console.log("success")
-    })
-    .catch((err)=>{
-      alert(err.message);
-    })
     await update(ordersRef, {
       'orders_counter': ordersCounter+1,
     })
@@ -319,5 +309,4 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       'payments_counter': paymentsCounter+1,
     })
     .then(()=>console.log("Increment"));
-    return paymentData;
   }
