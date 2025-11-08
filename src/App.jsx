@@ -15,6 +15,7 @@ import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
 import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
+import Example from "./scripts/Example"
 export default function App() {
 
   const user = { name: "Jerson Valdez", role: "user" }
@@ -39,6 +40,8 @@ export default function App() {
           <Route path="/admin/:viewCategory/:viewId" element={<ManagementView/>} />
           <Route path="/details-edit" element={<OrderManagementDetailsEdit/>}/>
           <Route path="*" element={<NotFound/>}/>
+          <Route path="/sample" element={<Example/>}/>
+          
         </Routes>
         <Footer/>
       </BrowserRouter>
