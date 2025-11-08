@@ -22,10 +22,12 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
   .then((newReference)=>{
-    alert("New user created!")
+    localStorage.setItem("toastMessage", "New user created!");
+    localStorage.setItem("toastType", "success");
   })
   .catch((err)=>{
-    alert(err.message);
+    localStorage.setItem("toastMessage", err.message);
+    localStorage.setItem("toastType", "error");
   })
   await update(usersRef, {
     'user_counter': userCounter+1,
@@ -51,10 +53,12 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     }
     set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then((newReference)=>{
-      toast.success("New user created!");
+      localStorage.setItem("toastMessage", "New user created!");
+      localStorage.setItem("toastType", "success");
     })
     .catch((err)=>{
-      toast.error(err.message);
+      localStorage.setItem("toastMessage", err.message);
+      localStorage.setItem("toastType", "error");
     })
     await update(usersRef, {
       'user_counter': userCounter+1,

@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 export async function registerViaGoogle(){
     let res;
     const result = await signInWithPopup(auth, googleAuth).catch((err)=>{
-      alert(err.message);
+      localStorage.setItem("toastMessage", err.message);
+      localStorage.setItem("toastType", "error");
     });
     const user = result.user;
     const userRef = ref(db, `users/${user.uid}`);
@@ -18,7 +19,9 @@ export async function registerViaGoogle(){
       const currDate = new Date().toLocaleString();
       await createWithGoogle(res.uid, res.email, res.phoneNumber, res.displayName, res.photoURL, currDate);
     }else{
-      alert("Account already exists")
+      localStorage.setItem("toastMessage", "Account already exists!");
+      localStorage.setItem("toastType", "error");
+      return;
     }
     
   }
@@ -30,9 +33,11 @@ export async function registerViaGoogle(){
       const res = user.user;
       const currDate = new Date().toLocaleString();
       await createViaEmailAndPassword(res.uid, firstName, lastName, phoneNumber, res.email, currDate);
-      toast.success("Account successfully created!");
+      localStorage.setItem("toastMessage", "Account successfully created!");
+      localStorage.setItem("toastType", "success");
     }catch(err){
-      toast.error(err.message);
+      localStorage.setItem("toastMessage", err.message);
+      localStorage.setItem("toastType", "error");
       return;
     }
   }
