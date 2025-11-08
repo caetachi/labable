@@ -1,0 +1,269 @@
+.management-page-container {
+    margin-top: 100px;
+    padding: 2rem 4%;
+    margin-left: 60px; 
+    font-family: var(--primary-font);
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 2rem;
+}
+
+.management-header .header-title h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--fg-dark);
+}
+
+.management-header .header-title p {
+    font-size: 1rem;
+    color: var(--hl-gray);
+    margin-top: 5px;
+}
+
+.create-order {
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    border: 2px solid var(--bg-dark);
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.create-order:hover {
+    background-color: var(--bg-light);
+    color: var(--fg-dark);
+}
+
+.management-header .header-actions .action-button {
+    background-color: var(--bg-dark);
+    color: var(--fg-light);
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.management-header .header-actions .action-button:hover {
+    background-color: var(--bg-light);
+    color: var(--fg-dark);
+}
+
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--sf-light);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+}
+
+.filter-controls .search-bar {
+    flex: 2;
+    min-width: 300px;
+    position: relative;
+}
+
+.filter-controls .search-bar input {
+    width: 100%;
+    padding: 12px 20px 12px 45px; 
+    font-size: 1rem;
+    border: 1px solid var(--sf-dark);
+    border-radius: 50px;
+    outline: none;
+}
+
+.filter-controls .search-bar .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: var(--hl-gray);
+}
+
+.filter-controls .filter-dropdown {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: 1px solid var(--sf-dark);
+    border-radius: 50px;
+    background-color: var(--bg-light);
+    cursor: pointer; 
+    padding-right: 3rem; 
+}
+
+.management-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.management-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.management-table th,
+.management-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--sf-light);
+}
+
+.management-table th {
+    font-weight: 600;
+    color: var(--sf-light);
+    background-color: var(--bg-dark);
+}
+
+.management-table th:first-child {
+    border-top-left-radius: 15px;
+}
+
+.management-table th:last-child {
+    border-top-right-radius: 15px;
+    text-align: center;
+}
+
+.management-table td {
+    color: var(--fg-dark);
+    font-weight: 500;
+}
+
+.management-table .status {
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+}
+
+.status.washing, .status.inprogress{
+    background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
+    color: var(--hl-blue);
+}
+.status.drying {
+    background-color: color-mix(in srgb, var(--hl-brown) 20%, transparent);
+    color: var(--hl-brown);
+}
+.status.folding {
+    background-color: color-mix(in srgb, var(--hl-purple) 20%, transparent);
+    color: var(--hl-purple);
+}
+.status.ironing, .status.preparing {
+    background-color: color-mix(in srgb, var(--hl-gray) 20%, transparent);
+    color: var(--hl-gray);
+}
+.status.delivered, .status.completed, .status.active, .status.good, .status.picked, .status.delivered, .status.accepted{
+    background-color: color-mix(in srgb, var(--success) 20%, transparent);
+    color: var(--success);
+}
+.status.pending, .status.outforpickup, .status.outfordelivery, .status.inactive, .status.lowstock{
+    background-color: color-mix(in srgb, var(--hl-yellow) 20%, transparent);
+    color: var(--hl-yellow);
+}
+
+.status.rejected, .status.canceled, .status.deleted, .status.outofstock {
+    background-color: color-mix(in srgb, var(--error) 20%, transparent);
+    color: var(--error);
+}
+
+.management-table .action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.management-table .action-buttons .action-icon {
+    font-size: 1.2rem;
+    color: var(--hl-gray);
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.ti-eye{
+    font-size: 30px;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
+    color: var(--hl-blue);
+}
+.ti-pencil {
+    font-size: 30px;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: color-mix(in srgb, var(--hl-gray) 20%, transparent);
+    color: var(--hl-gray);
+}
+.delete {
+    border: none;
+    background-color: transparent;
+    margin-left: 1px;
+}
+.ti-trash {
+    font-size: 30px;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: color-mix(in srgb, var(--error) 20%, transparent);
+    color: var(--error);
+}
+
+@media (max-width: 768px) {
+    .management-page-container {
+        margin-left: 0;
+        margin-top: 80px; 
+        padding: 1.5rem 1rem;
+    }
+
+    .management-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .management-header .header-actions .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+    }
+
+    .filter-controls .search-bar,
+    .filter-controls .filter-dropdown {
+        min-width: 100%;
+        width: 100%;
+    }
+
+    .management-table {
+        font-size: 0.85rem;
+    }
+
+    .management-table th,
+    .management-table td {
+        padding: 12px 8px;
+    }
+}
