@@ -14,7 +14,16 @@ import Buttons from '../../components/Buttons - Edit Details/Buttons'
 export default function OrderManagementDetailsEdit(){
     const [editDetail, setEditDetail] = useState('Schedule Details');
     // Order Details, Schedule Details, Inventory Details
-    
+    const [coordinates, setCoordinates] = useState([]);
+    const [locationName, setLocationName] = useState("Malolos");
+
+    function onCoordinateChange(newCoordinates){
+        setCoordinates(newCoordinates);
+    }
+
+    function onLocationNameChange(newLocationName){
+        setLocationName(newLocationName);
+    }
     return (
         <div className="details-edit-container">
             <div className="logo">
@@ -297,7 +306,13 @@ export default function OrderManagementDetailsEdit(){
                         </div>
                     </div>
                     <p className='subtext'>You can specified your address in the map by dragging the red icon</p>
-                    <Leaflet coordinates={[14.62, 120.98]} location_name="Manila" />
+                    <p>{locationName}</p>
+                    <p>{coordinates}</p>
+                    <Leaflet 
+                        coordinates={coordinates} 
+                        location_name={locationName} 
+                        onCoordinateChange={onCoordinateChange} 
+                        onLocationNameChange={onLocationNameChange} />
                     <div className="small-container">
                         <p className='small-container-title'>Type</p>
                         <div className="small-container-input-container">

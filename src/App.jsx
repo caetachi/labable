@@ -15,6 +15,7 @@ import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
 import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
+import Toast from "./components/Toast/Toast"
 import Example from "./scripts/Example"
 export default function App() {
 
@@ -22,6 +23,7 @@ export default function App() {
 
   return (  
     <>
+      <Toast />
       <BrowserRouter>
           {user.role === "admin" ? <AdminSideBar /> : <NavBar />}
           
