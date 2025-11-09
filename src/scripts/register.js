@@ -31,7 +31,9 @@ export async function registerViaGoogle(){
       await createUser(res.uid,  res.email, phoneNumber, (firstName + ' ' + lastName), null, phoneNumber, currDate);
       toast.success("Account successfully created!");
     }catch(err){
-      toast.error('Account with that email already exists');
+      if (err.code == 'auth/email-already-in-use') {
+        toast.error('Account with that email already exists');
+      }
       return;
     }
   }
