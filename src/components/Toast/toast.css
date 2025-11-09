@@ -1,8 +1,10 @@
 .toast-container {
+  opacity: 1 !important;
   bottom: 1rem !important;
   left: 1rem !important;
   width: auto;
   pointer-events: none;
+  z-index: 999999  !important;
 }
 
 .custom-toast {

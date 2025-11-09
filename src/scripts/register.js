@@ -2,7 +2,6 @@ import { get, ref } from 'firebase/database';
 import { auth, db, googleAuth } from '../firebase'
 import {createWithGoogle, createViaEmailAndPassword} from './create'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { toast } from 'react-toastify';
 
 
 export async function registerViaGoogle(){
@@ -17,10 +16,10 @@ export async function registerViaGoogle(){
 
     if(!snapshot.exists()){
       const currDate = new Date().toLocaleString();
-      await createWithGoogle(res.uid, res.email, res.phoneNumber, res.displayName, res.photoURL, currDate);
+      await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
     }else{
       localStorage.setItem("toastMessage", "Account already exists!");
-      localStorage.setItem("toastType", "error");
+      localStorage.setItem("toastType", "info");
       return;
     }
     

@@ -3,8 +3,9 @@ import labableLogo from '../../assets/labable-black.svg'
 import { HashLink } from 'react-router-hash-link';
 import './nav-bar.css'
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { auth } from '../../firebase.js';
-import { toast } from 'react-toastify';
+
 
 export default  function NavBar({image_url, name}){
     const [imageUrl, setImageUrl] = useState();
@@ -23,15 +24,28 @@ export default  function NavBar({image_url, name}){
     }
 
     function logout() {
-        auth.signOut()
-            .then(() => {
-                localStorage.setItem("toastMessage", "Successfully logged out.");
-                localStorage.setItem("toastType", "success");
-                window.location.href = '/';
-            })
-            .catch((error) => {
-                console.error("Logout error:", error);
-            });
+        Swal.fire({
+            title: 'Are you sure you want to logout?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--error)',
+            cancelButtonColor: 'var(--bg-dark)',
+            confirmButtonText: 'Yes, logout!',
+            background: 'var(--bg-light)',
+            color: 'var(--fg-dark)'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                auth.signOut()
+                    .then(() => {
+                        localStorage.setItem("toastMessage", "Successfully logged out.");
+                        localStorage.setItem("toastType", "success");
+                        window.location.href = '/';
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error);
+                    });
+            }
+        });
     }
 
     return(

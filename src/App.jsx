@@ -15,13 +15,13 @@ import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
 import Management from "./pages/Management/Management"
 import ManagementView from "./pages/Management View/ManagementView"
-import Toast from "./components/Toast/Toast"
 import Example from "./scripts/Example"
 import { useEffect, useState } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { get, ref } from "firebase/database"
 import { auth, db } from "./firebase"
 import { toast } from "react-toastify"
+import ToastWrapper from "./components/Toast/ToastWrapper"
 
 export default function App() {
 
@@ -47,18 +47,10 @@ export default function App() {
     const message = localStorage.getItem("toastMessage");
     const type = localStorage.getItem("toastType");
     if(message){
-      if(type === "success"){
-        toast.success(message);
-      }else if(type === "error"){
-        toast.error(message);
-      }else if(type === "info"){
-        toast.info(message);
-      }else if(type === "warning"){
-        toast.warning(message);
-      }
-      else{
-        toast(message);
-      }
+      console.log("Showing toast:", type, message);
+      setTimeout(() => {
+        toast[type] ? toast[type](message) : toast(message);
+      }, 100);
       localStorage.removeItem("toastMessage");
       localStorage.removeItem("toastType");
     }
@@ -66,7 +58,7 @@ export default function App() {
 
   return (  
     <>
-      <Toast />
+      <ToastWrapper />
       <BrowserRouter>
           {userData?.role === "admin" ? 
             <AdminSideBar /> 
