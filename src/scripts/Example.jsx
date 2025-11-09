@@ -1,7 +1,7 @@
 import { onValue, ref } from 'firebase/database'
 import { db } from '../firebase'
 import { useEffect } from 'react';
-import {registerViaEmailPass, registerViaGoogle} from './register'
+import {registerViaCredentials, registerViaGoogle} from './register'
 import {newServiceType, newWashableItem, newOrder, newInventory, newPayment} from './create'
 import {getServiceName, getWashableItems, getServices, getOrders, getUsers, getInventory, getOrder} from './get'
 import {updateUser, updateWashableItem, updateServiceType, updateInventoryItem, updateOrderDetails, updateScheduleDetails} from './update'
@@ -56,7 +56,7 @@ export default function Example() {
     <>
       <div className="sample-buttons" style={{display: "flex", marginTop: "100px", flexWrap: "wrap", gap: "10px", width: "100"}}>
         <button onClick={()=>registerViaGoogle()}>Register via Google</button>
-        <button onClick={()=>registerViaEmailPass('janrei@gmail.com', 'hakdog321')}>Register via Email and Password</button>
+        <button onClick={()=>registerViaCredentials('janrei@gmail.com', 'hakdog321')}>Register via Email and Password</button>
         <button onClick={()=>newServiceType('Wash & Fold', 'Standard washing and folding service priced per piece', 40.00, null)}>New Service Type</button>
         <button onClick={()=>newWashableItem('T-Shirt', 10.00, null)}>New Washable Item</button>
         <button onClick={()=>newOrder(sampleService, 'address', 'paymentMethod', 'Pick-up', 'transferDate', 'arrivalDate', 'claimMode', 'note', orders)}>New Order</button>

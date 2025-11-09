@@ -1,14 +1,14 @@
 import { get, ref } from 'firebase/database';
 import { auth, db, googleAuth } from '../firebase'
-import {createWithGoogle, createViaEmailAndPassword} from './create'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { toast } from 'react-toastify';
-
+import { createUser } from './create';
 
 export async function registerViaGoogle(){
     let res;
     const result = await signInWithPopup(auth, googleAuth).catch((err)=>{
-      alert(err.message);
+      console.log(err.message);
+      toast.error("An error has occured!");
     });
     const user = result.user;
     const userRef = ref(db, `users/${user.uid}`);
@@ -16,23 +16,22 @@ export async function registerViaGoogle(){
 
     if(!snapshot.exists()){
       const currDate = new Date().toLocaleString();
-      await createWithGoogle(res.uid, res.email, res.phoneNumber, res.displayName, res.photoURL, currDate);
+      await createUser(res.uid, res.email, res.phoneNumber, res.displayName, res.photoURL, currDate);
+      toast.success("Account successfully created!");
     }else{
-      alert("Account already exists")
+      toast.error("Account already exists!");
     }
-    
   }
 
-  export async function registerViaEmailPass(email, firstName, lastName, phoneNumber, password){
-    // const res;
+  export async function registerViaCredentials(email, firstName, lastName, phoneNumber, password){
     try{
       const user = await createUserWithEmailAndPassword(auth, email, password)
       const res = user.user;
       const currDate = new Date().toLocaleString();
-      await createViaEmailAndPassword(res.uid, firstName, lastName, phoneNumber, res.email, currDate);
+      await createUser(res.uid,  res.email, phoneNumber, (firstName + ' ' + lastName), null, phoneNumber, currDate);
       toast.success("Account successfully created!");
     }catch(err){
-      toast.error(err.message);
+      toast.error('Account with that email already exists');
       return;
     }
   }
