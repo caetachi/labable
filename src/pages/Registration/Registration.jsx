@@ -4,12 +4,9 @@ import labableLogo from '../../assets/labable-white.svg'
 import './registration.css'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { useState } from 'react'
-import { registerViaEmailPass } from '../../scripts/register'
-import { toast } from 'react-toastify'
-import { set } from 'firebase/database'
+import { registerViaCredentials } from '../../scripts/register'
 
 export default function Registration() {
-
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
     const [email, setEmail] = useState();
@@ -53,7 +50,7 @@ export default function Registration() {
             error.innerHTML = 'Email is required';
         }else if (!temp.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
             error.innerHTML = 'Email is invalid';
-        } else {
+        }else {
             error.innerHTML = '';
             setEmail(temp);
         }
@@ -109,16 +106,14 @@ export default function Registration() {
     }
 
     function handleRegister() {
-        registerViaEmailPass(email, firstName, lastName, phoneNumber, password);
+        registerViaCredentials(email, firstName, lastName, phoneNumber, password);
         document.getElementById('registerBtn').disabled = true;
-        document.getElementById('registerBtn').classList.add('disabled');
         document.getElementById('registerBtn').innerText = "Registering...";
         setTimeout(() => {
             document.getElementById('registerBtn').innerText = "Register";
             document.getElementById('registerBtn').disabled = false;
-            document.getElementById('registerBtn').classList.remove('disabled');
             window.location.reload();
-        }, 3000);
+        }, 2500);
     }
 
     return (
@@ -227,7 +222,7 @@ export default function Registration() {
                                 Register
                             </button>
                             :
-                            <button className="registration-btn disabled" disabled>
+                            <button className="registration-btn" disabled>
                                 Register
                             </button>
                         }

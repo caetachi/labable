@@ -136,7 +136,7 @@
     transition: .2s ease-in-out;
 }
 
-.registration-container .registration-btn.disabled {
+.registration-container .registration-btn:disabled {
     text-align: center;
     padding: 4%;
     border-radius: 50px;
@@ -151,7 +151,7 @@
     background-color: transparent;
 }
 
-.registration-container .registration-btn.disabled:hover {
+.registration-container .registration-btn:disabled:hover {
     cursor: not-allowed;
     background-color: var(--sf-dark);
     color: var(--fg-light);
