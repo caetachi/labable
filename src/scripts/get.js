@@ -25,14 +25,14 @@ export async function getWashableItemName(washableItemId) {
   const washableItemRef = child(washableItemsRef, washableItemId);
   const washableItem = await (await get(washableItemRef)).val();
   
-  console.log(washableItem);
-  return washableItem.washable_item_name;
-}
-
-export async function getItemPerKg(washableItemId) {
-  const washableItemsRef = ref(db, 'washable_items');
-  const washableItemRef = child(washableItemsRef, washableItemId);
-  const washableItem = await (await get(washableItemRef)).val();
+  export async function getWashableItemName(washableItemId) {
+    const washableItemsRef = ref(db, 'washable_items');
+    const washableItemRef = child(washableItemsRef, washableItemId);
+    const washableItem = await (await get(washableItemRef)).val();
+    
+    console.log(washableItem.washable_item_name);
+    return washableItem.washable_item_name;
+  }
   
   console.log("price "+washableItem.item_per_kilo);
   return washableItem.item_per_kilo;

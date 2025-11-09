@@ -1,5 +1,7 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
+import { toast } from 'react-toastify';
+import { getItemPerKg, getServiceName, getServicePrice, getWashableItemName } from './get';
 
 export async function createUser(authId, email, phone, name, imgUrl, currDate) {
   const usersRef = ref(db, 'users');
@@ -21,7 +23,8 @@ export async function createUser(authId, email, phone, name, imgUrl, currDate) {
 
   set(ref(db, `users/${authId}`), userData) // Auth id for ease of use
   .catch((err)=>{
-    alert(err.message);
+    localStorage.setItem("toastMessage", err.message);
+    localStorage.setItem("toastType", "error");
   })
 
   await update(usersRef, {
@@ -156,6 +159,70 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     //     "message": "Items are now in the wash cycle."
     //   }
     // },
+    //  {
+    //  itemId: id,
+    //  quantity: quant
+    // }] - array of objects
+    //
+
+    const serviceName = await getServiceName(serviceUid);
+    const currDate = new Date().toLocaleString();
+    const ordersRef = ref(db, 'orders');
+    const newOrderRef = await push(ordersRef);
+    const ordersCounter = await ((await get(child(ordersRef, 'orders_counter'))).val()) ;
+    const orderId = 'ORD-' + String(ordersCounter+1).padStart(3, '0');
+    const newOrderUid = newOrderRef.key;
+    const servicePrice = await getServicePrice(serviceUid);
+    let total = 0;
+    let orderItems = []; 
+    for(let i = 0; i < orders.length; i++){
+      const orderItem = await newOrderItem(newOrderUid , orders[i].itemUid, orders[i].quantity);
+      orderItems.push(orderItem); 
+      total += orderItem.total_kilo;
+    }
+
+    total = total * servicePrice;
+
+    const orderData = {
+      "order_id": orderId, 
+      "user_id": auth.currentUser.uid,
+      
+      "customer_name": auth.currentUser.displayName,
+      "service_name": serviceName, 
+
+      "service_type_id": serviceUid,
+      "order_items": orderItems, 
+      "address": address,
+      "payment_method": paymentMethod,
+      "amount": total,
+      "mode_of_transfer": transferMode,
+      "transfer_date": transferDate,
+      "arrival_date": arrivalDate,
+      "mode_of_claiming": claimMode,
+      "notes": {
+        "order_notes": note,
+        "cancel_notes": null // sa update lang to lalabas
+      },
+      "status": "Pending", 
+      "status_note": "Waiting for approval", 
+      
+      "created_at": currDate,
+      "created_by": auth.currentUser.uid,
+      // "updated_at": currDate,
+      // "updated_by": "uid_of_admin_2", // la pa
+      
+      // "tracking":{ // sa update lang to lalabas
+      //   "-M1kL3q5R": { // push id to, di hard coded
+      //     "timestamp": "2025-11-06T11:30:00Z",
+      //     "status": "arrived",
+      //     "message": "Order confirmed in-shop."
+      //   },
+      //   "-M1kL4a6S": { 
+      //     "timestamp": "2025-11-06T14:30:00Z",
+      //     "status": "washing",
+      //     "message": "Items are now in the wash cycle."
+      //   }
+      // },
 
     // "schedule":{ // sa update
     //   "pickup": {

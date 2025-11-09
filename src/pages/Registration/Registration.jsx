@@ -5,6 +5,7 @@ import './registration.css'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { useState } from 'react'
 import { registerViaCredentials } from '../../scripts/register'
+import { registerViaEmailPass, registerViaGoogle } from '../../scripts/register'
 
 export default function Registration() {
     const [firstName, setFirstName] = useState();
@@ -233,7 +234,7 @@ export default function Registration() {
                             <hr />
                         </div>
    
-                        <AltAccountButton/>
+                        <AltAccountButton register={registerViaGoogle}/>
 
                         <span className="signup-redirect">
                             Already have an account?

@@ -3,7 +3,7 @@ import { db } from '../firebase'
 import { useEffect } from 'react';
 import {registerViaCredentials, registerViaGoogle} from './register'
 import {newServiceType, newWashableItem, newOrder, newInventory, newPayment} from './create'
-import {getServiceName, getWashableItems, getServices, getOrders, getUsers, getInventory, getOrder} from './get'
+import {getServiceName, getWashableItems, getServices, getOrders, getUsers, getInventory, getOrder, getWashableItemName} from './get'
 import {updateUser, updateWashableItem, updateServiceType, updateInventoryItem, updateOrderDetails, updateScheduleDetails} from './update'
 import {loginViaEmailAndPassword} from './login'
 
@@ -63,6 +63,7 @@ export default function Example() {
         <button onClick={()=>newInventory('Detergent - Standard', 50, 'Pieces', 'available')}>New Inventory</button>
         <button onClick={()=>newPayment(sampleOrder, 'amount', 'completed')}>New Payment</button>
         <button onClick={()=>getServiceName(sampleService)}>Get Service Name</button>
+        <button onClick={()=>getWashableItemName(sampleWashable)}>Get Washable Name</button>
         <button onClick={()=>getWashableItems()}>Get Washables</button>
         <button onClick={()=>getServices()}>Get Services</button>
         <button onClick={()=>getOrders()}>Get Orders</button>

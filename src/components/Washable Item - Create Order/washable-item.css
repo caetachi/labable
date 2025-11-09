@@ -8,6 +8,7 @@
     flex-basis: 48%;
     flex-grow: 1;
     padding: 10px;
+    cursor: pointer;
 }
 
 .washable-item-name{
