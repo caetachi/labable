@@ -2,7 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './toast.css';
 
-function Toast() {
+function ToastWrapper() {
   return (
     <>
       <ToastContainer
@@ -22,4 +22,4 @@ function Toast() {
   );
 }
 
-export default Toast;
+export default ToastWrapper;
