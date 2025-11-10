@@ -61,7 +61,7 @@ export default function App() {
       <ToastWrapper />
       <BrowserRouter>
           {userData?.role === "admin" ? 
-            <AdminSideBar /> 
+            <AdminSideBar name={userData.fullname} image_url={userData.image_url}/> 
             : 
             <NavBar name={userData.fullname} image_url={userData.image_url}/>
           }

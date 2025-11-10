@@ -93,7 +93,7 @@ export default  function NavBar({image_url, name}){
                         </>
                     }
                 </div>
-                {name ?
+                {name && imageUrl ?
                     <div className="profile-picture" onClick={toggleFloatingNav}>
                         <img src={imageUrl} alt="Profile" />
                         <h5>{name}</h5>

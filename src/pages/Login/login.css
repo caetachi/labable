@@ -183,6 +183,27 @@
   width: 150px;
 }
 
+.login-container .error-message{
+    color: var(--error);
+    font-size: 0.6rem;
+    margin-left: 10px;
+}
+
+.login-container .login-btn.disabled {
+    text-align: center;
+    padding: 4%;
+    border-radius: 50px;
+    background-color: var(--sf-dark);
+    color: var(--fg-light);
+    font-weight: 500;
+}
+.login-container .login-btn.disabled:hover {
+    cursor: not-allowed;
+    background-color: var(--sf-dark);
+    color: var(--fg-light);
+    border: 2px solid;
+}
+
 @keyframes float {
   0% { transform: translateY(0);}
   50% { transform: translateY(-40px);}
