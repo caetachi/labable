@@ -9,11 +9,9 @@ import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { loginViaEmailAndPassword, loginViaGoogle } from '../../scripts/login.js'
 
 export default function Login() {
-    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
-
     
     function handleEmailChange(e){
         const temp = e.target.value

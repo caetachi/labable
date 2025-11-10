@@ -1,4 +1,4 @@
-import { Navigate, NavLink } from 'react-router'
+import { NavLink } from 'react-router'
 import labableLogo from '../../assets/labable-black.svg'
 import { HashLink } from 'react-router-hash-link';
 import './nav-bar.css'
