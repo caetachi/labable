@@ -2,12 +2,22 @@ import { NavLink, useParams } from 'react-router';
 import './dashboard.css'
 import DashboardCard from '../../components/Dashboard Card/DashboardCard';
 import DashboardOrderHistoryCard from '../../components/Dashboard Order History Card/DashboardOrderHistoryCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { onValue, ref } from 'firebase/database';
+import { db, auth } from '../../firebase.js';
 
 function Dashboard() {
-    const { role } = useParams()
-    const user = { name: "John Doe", role: "admin" }
+    const { role } = useParams();
+    const [userData, setUserData] = useState({});
+
+    useEffect(()=>{
+        onValue(ref(db, `users/${auth.currentUser.uid}`), (snapshot)=>{
+            if(snapshot.exists()){
+                setUserData(snapshot.val());
+            }
+        });
+    }, [auth.currentUser.uid]);
 
     {/*sample user card data*/}
     const userCardData = [
@@ -136,7 +146,7 @@ const MyAreaChart = () => {
 
 
     return (<>
-        {role === user.role && (
+        {role === userData.role && (
             <div className={`dashboard-container ${role === "admin" ? "admin-dashboard" : ""}`}>
                 <div className="page-header">
                     <div className="page-title">

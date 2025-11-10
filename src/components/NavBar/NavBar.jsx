@@ -103,7 +103,7 @@ export default  function NavBar({image_url, name}){
                                 <i className="ti ti-user"></i>
                                 <p>Profile</p>
                             </NavLink>
-                            <NavLink to='/user/dashboard' className='floating-nav-link'>
+                            <NavLink to='/customer/dashboard' className='floating-nav-link'>
                                 <i className="ti ti-layout-dashboard"></i>
                                 <p>Dashboard</p>
                             </NavLink>
