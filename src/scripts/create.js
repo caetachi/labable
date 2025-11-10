@@ -24,10 +24,12 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
   .then((newReference)=>{
     localStorage.setItem("toastMessage", "New user created!");
     localStorage.setItem("toastType", "success");
+    window.location.href = '/';
   })
   .catch((err)=>{
     localStorage.setItem("toastMessage", err.message);
     localStorage.setItem("toastType", "error");
+    window.location.reload();
   })
   await update(usersRef, {
     'user_counter': userCounter+1,
