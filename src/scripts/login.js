@@ -9,10 +9,17 @@ export async function loginViaEmailAndPassword(email, password) {
     localStorage.setItem("toastMessage", "Successfully logged in.");
     localStorage.setItem("toastType", "success");
     console.log("Logged in user:", userCredential.user);
+    if(userCredential.user.role === "admin"){
+      console.log("Redirecting to admin dashboard");
+      window.location.href = '/admin/dashboard';
+    }else{
+      window.location.href = '/';
+    }
     return userCredential.user;
   } catch (error) {
     localStorage.setItem("toastMessage", error.message);
     localStorage.setItem("toastType", "error");
+    window.location.reload();
     console.log("Login error:", error);
     throw error;
   }
@@ -29,10 +36,17 @@ export async function loginViaGoogle() {
       localStorage.setItem("toastMessage", "Successfully logged in with Google!");
       localStorage.setItem("toastType", "success");
       console.log("Logged in user:", user);
+      if(snapshot.val().role === "admin"){
+        console.log("Redirecting to admin dashboard");
+        window.location.href = '/admin/dashboard';
+      }else{
+        window.location.href = '/';
+      }
       return user;
     } else {
       localStorage.setItem("toastMessage", "No account found for this Google user.");
       localStorage.setItem("toastType", "error");
+      window.location.reload();
       console.warn("User does not exist in database:", user.uid);
       return null;
     }
