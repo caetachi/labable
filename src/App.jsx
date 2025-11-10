@@ -22,6 +22,8 @@ import { get, ref } from "firebase/database"
 import { auth, db } from "./firebase"
 import { toast } from "react-toastify"
 import ToastWrapper from "./components/Toast/ToastWrapper"
+import AdminDashboard from "./pages/Dashboard/AdminDashboard"
+import CustomerDashboard from "./pages/Dashboard/CustomerDashboard"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -86,10 +88,11 @@ function Layout({ user, userData }) {
               <Route path="/order-summary" element={<OrderSummary />} />
               <Route path="/my-orders" element={<MyOrder />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/:role/dashboard" element={<Dashboard />} />
+              <Route path="/customer/dashboard" element={<CustomerDashboard />} />
               
               {userData?.role === "admin" &&(
                 <>
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route path="/admin/:viewCategory" element={<Management />} />
                   <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
                   <Route path="/details-edit" element={<OrderManagementDetailsEdit />} />
