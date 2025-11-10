@@ -59,13 +59,13 @@ export default function App() {
     <>
       <ToastWrapper />
       <BrowserRouter>
-        <Layout userData={userData}/>
+        <Layout user={user} userData={userData} />
       </BrowserRouter>
     </>
   )
 }
 
-function Layout({ userData }) {
+function Layout({ user, userData }) {
   const location = useLocation();
   const noNavPaths = ['/login', '/registration'];
   const hideLayout = noNavPaths.includes(location.pathname);
@@ -79,18 +79,32 @@ function Layout({ userData }) {
       )}
 
       <Routes>
+          {user? 
+            <>
+            {/*public  routes*/}
+              <Route path="/create-order" element={<CreateOrder />} />
+              <Route path="/order-summary" element={<OrderSummary />} />
+              <Route path="/my-orders" element={<MyOrder />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/:role/dashboard" element={<Dashboard />} />
+              
+              {userData?.role === "admin" &&(
+                <>
+                  <Route path="/admin/:viewCategory" element={<Management />} />
+                  <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
+                  <Route path="/details-edit" element={<OrderManagementDetailsEdit />} />
+                </>
+              )}
+            </>
+            :
+            <>
+            {/*private routes*/}
+              <Route path="/login" element={<Login />} />
+              <Route path="/registration" element={<Registration />} />
+            </>
+          }
         <Route path="/" element={<Home />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/create-order" element={<CreateOrder />} />
-        <Route path="/order-summary" element={<OrderSummary />} />
-        <Route path="/my-orders" element={<MyOrder />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/registration" element={<Registration />} />
-        <Route path="/:role/dashboard" element={<Dashboard />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin/:viewCategory" element={<Management />} />
-        <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
-        <Route path="/details-edit" element={<OrderManagementDetailsEdit />} />
         <Route path="/example" element={<Example />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
