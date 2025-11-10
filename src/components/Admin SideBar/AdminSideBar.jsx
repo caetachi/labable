@@ -1,9 +1,11 @@
 import './admin-side-bar.css'
 import logo from '../../assets/labable-black.svg'
 import { NavLink } from 'react-router'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { auth } from '../../firebase.js';
+import Swal from 'sweetalert2';
 
-function AdminSideBar() {
+function AdminSideBar({image_url, name}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   function sidebarFunc() {
     if (isSidebarOpen) {
@@ -12,6 +14,42 @@ function AdminSideBar() {
       setIsSidebarOpen(true);
     }
   }
+
+  const [imageUrl, setImageUrl] = useState();
+  
+      useEffect(() => {
+        if (image_url) {
+          setImageUrl(image_url);
+        } else if (name) {
+          setImageUrl(`https://avatar.iran.liara.run/username?username=${name}&background=random`);
+        }
+      }, [image_url, name]);
+
+  function logout() {
+          Swal.fire({
+              title: 'Are you sure you want to logout?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: 'var(--error)',
+              cancelButtonColor: 'var(--bg-dark)',
+              confirmButtonText: 'Yes, logout!',
+              background: 'var(--bg-light)',
+              color: 'var(--fg-dark)'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  auth.signOut()
+                      .then(() => {
+                          localStorage.setItem("toastMessage", "Successfully logged out.");
+                          localStorage.setItem("toastType", "success");
+                          window.location.href = '/';
+                      })
+                      .catch((error) => {
+                          console.error("Logout error:", error);
+                      });
+              }
+          });
+      }
+
   return (
     <>
       <nav className={`admin-sidebar-container ${isSidebarOpen ? 'open' : 'closed'}`}>
@@ -55,7 +93,7 @@ function AdminSideBar() {
           </div>
         </div>
         <div className="admin-sidebar-logout">
-          <button>
+          <button onClick={logout}>
             <i className="hgi hgi-stroke hgi-logout-01"></i>
             <p>Logout</p>
           </button>
@@ -72,11 +110,11 @@ function AdminSideBar() {
         </div>
         <div className="admin-profile">
           <i className="fa-regular fa-bell"></i>
-          <div className="admin-profile-info">
-            <img src={logo} alt="" />
-            <h3>Jerson valdez</h3>
-            <i className="ti ti-caret-down"></i>
-          </div>
+          {name && imageUrl &&
+            <div className="admin-profile-info">
+              <img src={imageUrl} alt="" />
+              <h3>{name}</h3>
+            </div>}
         </div>
       </div>
     </>

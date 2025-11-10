@@ -6,8 +6,56 @@ import heartBubble from '../../assets/heart-bubble.svg'
 import './login.css'
 import { useState } from 'react'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
+import { loginViaEmailAndPassword, loginViaGoogle } from '../../scripts/login.js'
 
 export default function Login() {
+    
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+
+    
+    function handleEmailChange(e){
+        const temp = e.target.value
+        const error = document.getElementById('emailError');
+        setEmail(null)
+
+        if(!temp.trim()){
+            error.textContent = "Email address is required.";
+        }else if(!temp.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
+            error.textContent = "Please enter a valid email address.";
+        }else{
+            error.textContent = "";
+            setEmail(temp);
+        }
+    }
+
+    function handlePasswordChange(e){
+        const temp = e.target.value
+        const error = document.getElementById('passwordError');
+        setPassword(null)
+    
+        if(!temp.trim()){
+            error.textContent = "Password is required.";
+        }else{
+            error.textContent = "";
+            setPassword(temp);
+        }
+    }
+
+    function handleLogin() {
+        loginViaEmailAndPassword(email, password);
+        document.getElementById('loginBtn').disabled = true;
+        document.getElementById('loginBtn').classList.add('disabled');
+        document.getElementById('loginBtn').innerText = "Logging in...";
+        setTimeout(() => {
+            document.getElementById('loginBtn').innerText = "Login";
+            document.getElementById('loginBtn').disabled = false;
+            document.getElementById('loginBtn').classList.remove('disabled');
+            window.location.reload();
+        }, 1000);
+    }
+
     return (
         
         <section className="login-container">
@@ -32,8 +80,10 @@ export default function Login() {
                             </p>
                             <div className="input-field">
                                 <i className="fa-regular fa-envelope"></i>
-                                <input type="email" name="email" id="login-email" placeholder='name@example.com' />
+                                <input type="email" name="email" id="login-email" placeholder='name@example.com' 
+                                onChange={(e)=>handleEmailChange(e)} />
                             </div>
+                            <p className='error-message' id='emailError'></p>
                         </div>
 
                         <div className="field">
@@ -42,22 +92,30 @@ export default function Login() {
                             </p>
                             <div className="input-field">
                                 <i className="ti ti-lock"></i>
-                                <input type="password" name="password" id="login-password" placeholder='••••••••••' />
+                                <input type="password" name="password" id="login-password" placeholder='••••••••••' 
+                                onChange={(e)=>handlePasswordChange(e)} />
                             </div>
+                            <p className='error-message' id='passwordError'></p>
                         </div>
 
                         <div className="utils">
                             <div className="remember">
-                                <input type="radio" name="remember" id="login-remember" />
+                                <input type="checkbox" name="remember" id="login-remember" />
                                 <p>Remember me</p>
                             </div>
 
                             <NavLink to={'/'}>Forgot password?</NavLink>
                         </div>
 
-                        <button className="login-btn">
-                            Login
-                        </button>
+                        {email && password ?
+                            <button className="login-btn" id="loginBtn" onClick={handleLogin}>
+                                Login
+                            </button>
+                            :
+                            <button className="login-btn disabled" id="loginBtn" disabled>
+                                Login
+                            </button>
+                        }
 
                         <div className="alt-login-label">
                             <hr />
@@ -65,7 +123,7 @@ export default function Login() {
                             <hr />
                         </div>
 
-                        <AltAccountButton/>
+                        <AltAccountButton login={loginViaGoogle}/>
 
                         <span className="signup-redirect">
                             Don't have an account?
