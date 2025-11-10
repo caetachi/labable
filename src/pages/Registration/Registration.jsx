@@ -5,6 +5,8 @@ import './registration.css'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { useState } from 'react'
 import { registerViaEmailPass, registerViaGoogle } from '../../scripts/register'
+import bubble from '../../assets/bubble.svg'
+import heartBubble from '../../assets/heart-bubble.svg'
 
 export default function Registration() {
 
@@ -122,7 +124,19 @@ export default function Registration() {
     return (
         <>
             <section className="registration-container">
+                <i className="fa-solid fa-xmark" onClick={()=>{window.history.back()}}></i>
                 <div className="content">
+                    <img src={bubble} className="bubble" style={{top: '-3%', left: '-2%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '10%', left: '15%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '85%', left: '10%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '80%', left: '-5%'}}/>
+                    <img src={bubble} className="bubble" style={{top: '65%', left: '-1%'}}/>
+                
+                    <img src={heartBubble} className="heart-bubble" style={{top: '1%', right: '1%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '4%', right: '1%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '80%', right: '-3%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '90%', right: '-2%'}}/>
+                    <img src={heartBubble} className="heart-bubble" style={{top: '70%', right: '8%'}}/>
                     <div className="col splash">
                             <div className="logo">
                                 <img src={labableLogo} alt="Labable" className='logo'/>

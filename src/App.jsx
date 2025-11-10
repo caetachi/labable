@@ -1,5 +1,5 @@
 import NavBar from "./components/NavBar/NavBar"
-import {BrowserRouter, Route, Routes} from 'react-router'
+import {BrowserRouter, Route, Routes, useLocation} from 'react-router'
 import Home from "./pages/Home/Home"
 import AboutUs from "./pages/About Us/AboutUs"
 import Footer from "./components/Footer/Footer"
@@ -24,7 +24,6 @@ import { toast } from "react-toastify"
 import ToastWrapper from "./components/Toast/ToastWrapper"
 
 export default function App() {
-
   const [user, setUser] = useState();
   const [userData, setUserData] = useState({});
 
@@ -60,30 +59,43 @@ export default function App() {
     <>
       <ToastWrapper />
       <BrowserRouter>
-          {userData?.role === "admin" ? 
-            <AdminSideBar name={userData.fullname} image_url={userData.image_url}/> 
-            : 
-            <NavBar name={userData.fullname} image_url={userData.image_url}/>
-          }
-        <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/about-us" element={<AboutUs/>}/>
-          <Route path="/create-order" element={<CreateOrder/>}/>
-          <Route path="/order-summary" element={<OrderSummary/>}/>
-          <Route path="/my-orders" element={<MyOrder/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/registration" element={<Registration/>}/>
-          <Route path="/:role/dashboard" element={<Dashboard/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/admin/:viewCategory" element={<Management/>} />
-          <Route path="/admin/:viewCategory/:viewId" element={<ManagementView/>} />
-          <Route path="/details-edit" element={<OrderManagementDetailsEdit/>}/>
-          <Route path="*" element={<NotFound/>}/>
-          <Route path="/example" element={<Example/>}/>
-          
-        </Routes>
-        <Footer/>
+        <Layout userData={userData}/>
       </BrowserRouter>
     </>
   )
+}
+
+function Layout({ userData }) {
+  const location = useLocation();
+  const noNavPaths = ['/login', '/registration'];
+  const hideLayout = noNavPaths.includes(location.pathname);
+
+  return (
+    <>
+      {!hideLayout && (
+        userData?.role === "admin"
+          ? <AdminSideBar name={userData.fullname} image_url={userData.image_url}/>
+          : <NavBar name={userData.fullname} image_url={userData.image_url}/>
+      )}
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/create-order" element={<CreateOrder />} />
+        <Route path="/order-summary" element={<OrderSummary />} />
+        <Route path="/my-orders" element={<MyOrder />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/:role/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin/:viewCategory" element={<Management />} />
+        <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
+        <Route path="/details-edit" element={<OrderManagementDetailsEdit />} />
+        <Route path="/example" element={<Example />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+
+      {!hideLayout && <Footer />}
+    </>
+  );
 }

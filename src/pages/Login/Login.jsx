@@ -59,6 +59,7 @@ export default function Login() {
     return (
         
         <section className="login-container">
+            <i className="fa-solid fa-xmark" onClick={()=>{window.history.back()}}></i>
             <div className="content">
 
                     <img src={bubble} className="bubble" style={{top: '-3%', left: '-2%'}}/>
