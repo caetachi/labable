@@ -43,14 +43,15 @@ export default function OrderManagementDetailsEdit(){
         }
         getStuff();
     }, [])
+    
 
     useEffect(()=>{
         if(editDetail == 'order' || editDetail == 'schedule'){
             async function getOrderList(id) {
                 if(id){
-                    setOrder(await getOrder(String(id)));
-                    setOrderItems(order[1].order_items);
-                    console.log(order);
+                    const currOrder = await getOrder(String(id));
+                    setOrder(currOrder);
+                    setOrderItems(currOrder[1].order_items);
                 }
             }
             getOrderList(id)

@@ -222,6 +222,7 @@
     border: none;
     background-color: transparent;
     margin-left: 1px;
+    cursor: pointer;
 }
 .ti-trash {
     font-size: 30px;
