@@ -185,9 +185,38 @@ export async function newOrder(
       orders[i].quantity
     );
 
-    console.log(`Order Item ${i} Kilo:`, orderItem.total_kilo);
     orderItems.push(orderItem);
     total += orderItem.total_kilo;
+    
+  export async function newServiceType(serviceName, services, description, servicePrice, imageUrl) {
+    const serviceTypesRef = ref(db, 'service_types');
+    const newServiceTypeRef = await push(serviceTypesRef);
+    const serviceCounter = await ((await get(child(serviceTypesRef, 'service_counter'))).val()) ;
+    const serviceTypeId = 'SRV-' + String(serviceCounter+1).padStart(3, '0');
+    const currDate = new Date().toLocaleString();
+    const serviceTypeData = {
+      "service_type_id": serviceTypeId, 
+      "service_name": serviceName,
+      "services": services,
+      "description": description,
+      "service_price": servicePrice,
+      "image_url": imageUrl,
+      "created_at": currDate,
+      "created_by": auth.currentUser.uid,
+      // "updated_at": currDate,
+      // "updated_by": auth.currentUser.uid
+    }
+    set(newServiceTypeRef, serviceTypeData).then((res)=>{
+      console.log("success")
+    })
+    .catch((err)=>{
+      alert(err.message);
+    })
+    await update(serviceTypesRef, {
+      'service_counter': serviceCounter+1,
+    })
+    .then(()=>console.log("Increment"));
+  }
 
     console.log(`Current Summation: `, total);
   }
@@ -197,6 +226,31 @@ export async function newOrder(
   const orderData = {
     order_id: orderId,
     user_id: auth.currentUser.uid,
+  
+  export async function newOrder(serviceUid, address, paymentMethod, transferMode, transferDate, arrivalDate, claimMode, note, orders, amount) {
+    // orders = [{
+    //  itemId: id,
+    //  quantity: quant
+    // },
+    //  {
+    //  itemId: id,
+    //  quantity: quant
+    // }] - array of objects
+    //
+    const serviceName = await getServiceName(serviceUid);
+    const currDate = new Date().toLocaleString();
+    const ordersRef = ref(db, 'orders');
+    const newOrderRef = await push(ordersRef);
+    const ordersCounter = await ((await get(child(ordersRef, 'orders_counter'))).val()) ;
+    const orderId = 'ORD-' + String(ordersCounter+1).padStart(3, '0');
+    const newOrderUid = newOrderRef.key;
+    const payment = await newPayment(newOrderUid, paymentMethod, 'unpaid', ordersCounter);
+    let orderItems = []; 
+    for(let i = 0; i < orders.length; i++){
+      const orderItem = await newOrderItem(newOrderUid , orders[i].washable_item_id, orders[i].quantity);
+      orderItems.push(orderItem); 
+    }
+
 
     customer_name: auth.currentUser.displayName,
     service_name: serviceName,
@@ -216,6 +270,35 @@ export async function newOrder(
     },
     status: "Pending",
     status_note: "Waiting for approval",
+      "service_type_id": serviceUid,
+      "order_items": orderItems, 
+      "address": address,
+      "amount": amount,
+      "mode_of_transfer": transferMode,
+      "transfer_date": transferDate,
+      "arrival_date": arrivalDate,
+      "mode_of_claiming": claimMode,
+      "status": "Pending", 
+      "status_note": "Waiting for approval", 
+      "payment": payment,
+      
+      "created_at": currDate,
+      "created_by": auth.currentUser.uid,
+      // "updated_at": currDate,
+      // "updated_by": "uid_of_admin_2", // la pa
+      
+      // "tracking":{ // sa update lang to lalabas
+      //   "-M1kL3q5R": { // push id to, di hard coded
+      //     "timestamp": "2025-11-06T11:30:00Z",
+      //     "status": "arrived",
+      //     "message": "Order confirmed in-shop."
+      //   },
+      //   "-M1kL4a6S": { 
+      //     "timestamp": "2025-11-06T14:30:00Z",
+      //     "status": "washing",
+      //     "message": "Items are now in the wash cycle."
+      //   }
+      // },
 
     created_at: currDate,
     created_by: auth.currentUser.uid,
@@ -259,6 +342,41 @@ export async function newOrder(
   }
 
   console.log(orderData);
+    console.log(orderData);
+    
+    set(newOrderRef, orderData).then((res)=>{
+      console.log("success")
+    })
+    .catch((err)=>{
+      alert(err.message);
+    })
+    if(note){
+      const notesRef = child(newOrderRef, 'notes');
+      set(notesRef, {
+        "order_notes": note,
+      })
+    }
+    await update(ordersRef, {
+      'orders_counter': ordersCounter+1,
+    })
+    .then(()=>console.log("Increment"));
+  }
+
+  export async function newOrderItem(orderUid, washableItemId, quantity) {
+    const washableItemName = await getWashableItemName(washableItemId);
+    const orderItemsRef = ref(db, 'order_items');
+    const newOrderItemRef = await push(orderItemsRef);
+    const newOrderItemUid = newOrderItemRef.key;
+    const itemPerKilo = await getItemPerKg(washableItemId);
+    const totalKilo = quantity / itemPerKilo;
+    
+    const orderItemData = { 
+      "order_id": orderUid, 
+      "washable_item_id": washableItemId,
+      "washable_item_name": washableItemName, 
+      "quantity": quantity, 
+      "total_kilo": totalKilo
+    }
 
   try {
     const newOrderRef = await push(ordersRef, orderData);
@@ -367,3 +485,20 @@ export async function newPayment(orderUid, amount, status) {
     payments_counter: paymentsCounter + 1,
   }).then(() => console.log("Increment"));
 }
+  export async function newPayment(orderUid, method, status, counter) { // to din sana sa loob na ni order, pero gawan parin separate table/object for redundancy
+    const paymentId = 'PAY-' + String(counter+1).padStart(3, '0');
+    const currDate = new Date().toLocaleString();
+
+    const paymentData = {
+      "payment_id": paymentId, 
+      "order_id": orderUid, 
+      "payment_method": method,
+      "status": status, //update
+      "created_at": currDate,
+      "created_by": auth.currentUser.uid,
+      // "updated_at": currDate,
+      // "updated_by": auth.currentUser.uid
+    }
+
+    return paymentData;
+  }

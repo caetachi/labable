@@ -8,8 +8,10 @@ import { useNavigate } from 'react-router'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
-import { getServices, getWashableItems } from '../../scripts/get'
+import { getServicePrice, getServices, getWashableItems } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
+import { newOrder } from '../../scripts/create'
+import { toast } from 'react-toastify'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -21,8 +23,10 @@ export default function CreateOrder() {
     const [payment, setPayment] = useState();
     const [notes, setNotes] = useState();
     const [status, setStatus] = useState();
+    const [pricePerKg, setPricePerKg] = useState();
     const [washableItems, setWashableItems] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
+    const [amount, setAmount] = useState();
     const [minDate, setMinDate] = useState();
     const navigate = useNavigate();
 
@@ -67,7 +71,7 @@ export default function CreateOrder() {
         async function getStuff(params) {
             const washablesList = await getWashableItems();
             const serviceList = await getServices();
-
+            
             let washables = [];
             let services = [];
             
@@ -109,16 +113,46 @@ export default function CreateOrder() {
     useEffect(()=>{
         setupServices();
     }, [serviceTypes])
+    useEffect(()=>{
+        async function settingServicePrice() {
+            if(service){
+                setPricePerKg(await getServicePrice(service));                
+            }
+        }
+        settingServicePrice();
+    }, [service])
+    useEffect(()=>{
+        console.log(pricePerKg);
+    }, [pricePerKg])
+    useEffect(()=>{
+        console.log(notes);
+    }, [notes])
+    useEffect(()=>{
+        console.log(orderItems);
+    }, [orderItems])
+    useEffect(()=>{
+        console.log(amount);
+    }, [amount])
+    useEffect(()=>{
+        if(orderItems && pricePerKg){
+            let total_kilo = 0;
+            for(let i = 0; i < orderItems.length; i++){
+                total_kilo += orderItems[i].total_kilo;
+            }
+            setAmount(Number(total_kilo * pricePerKg).toFixed(2));
+        }
+    },[orderItems, pricePerKg])
 
-    function addToOrderItems(washableItemUid, washableItemName){
+
+    function addToOrderItems(washableItemUid, washableItemName, itemPerKg){
         setOrderItems(prevOrderItems => {
             const existingItemIndex = prevOrderItems.findIndex( // check kung existing na
-                item => item.itemUid === washableItemUid
+                item => item.washable_item_id === washableItemUid
             );
             if (existingItemIndex > -1) { // -1 pag wala
                 return prevOrderItems.map((item, index) => {
                     if (index === existingItemIndex) {
-                        return { ...item, quantity: item.quantity + 1 }; // update quantity
+                        return { ...item, quantity: item.quantity + 1, total_kilo: Number((item.quantity + 1) / itemPerKg)}; // update quantity and total kilo
                     }
                     return item;
                 });
@@ -126,9 +160,11 @@ export default function CreateOrder() {
                 return [
                     ...prevOrderItems,
                     {
-                        itemUid: washableItemUid,
-                        itemName: washableItemName,
-                        quantity: 1
+                        washable_item_id: washableItemUid,
+                        washable_item_name: washableItemName,
+                        quantity: 1,
+                        total_kilo:Number( 1 / itemPerKg),
+                        item_per_kilo: Number(itemPerKg)
                     }
                 ];
             }
@@ -176,6 +212,41 @@ export default function CreateOrder() {
             orders: orderItems,
             status: statusSet,
         };
+        setStatus(statusSet)
+        
+        if(!service){
+            toast.error('No service selected.');
+            return;
+        }
+        if(!address){
+            toast.error('No address indicated.');
+            return;
+        }
+        if(!payment){
+            toast.error('No payment method selected.');
+            return;
+        }
+        if(!transferDate){
+            toast.error('No transfer date indicated.');
+            return;
+        }
+        if(!modeTransfer){
+            toast.error('No mode of transfer selected.');
+            return;
+        }
+        if(!modeClaim){
+            toast.error('No mode of claiming selected.');
+            return;
+        }
+        if(orderItems.length == 0){
+            toast.error('Order list is empty');
+            return;
+        };
+        
+        
+        await newOrder(service, address, payment, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems, amount);
+        toast.success('Order created successfully!');
+    }
 
         navigate('/order-summary', { state: { orderData: draft } });
     }
@@ -225,7 +296,7 @@ export default function CreateOrder() {
                             </div>
                             <div className="items-container">
                                 {washableItems.map((washable)=>{
-                                    return <WashableItem id={washable[0]} imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name)}/>
+                                    return <WashableItem id={washable[0]} imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name, washable[1].item_per_kilo)}/>
                                 })}
                             </div>
                         </div>
@@ -238,7 +309,7 @@ export default function CreateOrder() {
                             <p className='subtext'>Action</p>
                         </div>
                         {orderItems && orderItems.map((orderItem, index)=>{
-                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.itemName} quantity={orderItem.quantity} increment={()=>addToOrderItems(orderItem.itemUid, orderItem.itemName)} decrement={()=>decrementQuantity(index)} remove={() => remove(index)}/>
+                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} decrement={()=>decrementQuantity(index)} remove={() => remove(index)}/>
                         })}
                     </div>
                 </div>
@@ -247,7 +318,7 @@ export default function CreateOrder() {
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
                     {serviceTypes && serviceTypes.map((service)=>{
-                        return <ServiceType icon='shirt' name={service[1].service_name} id={service[0]}/>
+                        return <ServiceType icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]}/>
                     })}
                     {/* <ServiceType icon="shirt" name="Dry" />
                     <ServiceType icon="ironing-2" name="Iron" />
@@ -266,9 +337,9 @@ export default function CreateOrder() {
                         </label>
                     </div>
                     <div className="radio-container">
-                        <input className='radio' type="radio" name="transfer-mode" id="drop-off-transfer" value={'Drop-off'}/>
-                        <label className='radio-label' htmlFor="drop-off-transfer">
-                            Drop-off
+                        <label className='radio-label' htmlFor="deliver-transfer">
+                            <input className='radio' type="radio" name="transfer-mode" id="deliver-transfer" value={'Deliver'}/>
+                            Deliver
                         </label>
                     </div>
                 </div>
@@ -280,13 +351,12 @@ export default function CreateOrder() {
             <div className="receive-mode-container section gray-border">
                 <p className='section-title'>How would you like to receive your clean laundry?</p>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pick-up'}/>
                     <label className='radio-label' htmlFor="pick-up-receive">
-                        Pick-up
+                        <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pickup'}/>
+                        Pickup
                     </label>
                 </div>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Drop-off'}/>
                     <label className='radio-label' htmlFor="drop-off-receive">
                         Drop-off (Delivered to your front door)
                     </label>
@@ -295,14 +365,14 @@ export default function CreateOrder() {
             <div className="payment-method-container section gray-border">
                 <p className='section-title'>Payment Method</p>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="payment-method" id="cash-payment" value={'Cash'}/>
                     <label className='radio-label' htmlFor="cash-payment">
+                        <input className='radio' type="radio" name="payment-method" id="cash-payment" value={'Cash'}/>
                         Cash
                     </label>
                 </div>
                 <div className="radio-container">
-                    <input className='radio' type="radio" name="payment-method" id="gcash-payment" value={'GCash'}/>
                     <label className='radio-label' htmlFor="gcash-payment">
+                        <input className='radio' type="radio" name="payment-method" id="gcash-payment" value={'GCash'}/>
                         GCash <img src={GCashLogo}/>
                     </label>
                 </div>
@@ -311,7 +381,7 @@ export default function CreateOrder() {
                 <p className='section-title'>Additional Notes (Optional)</p>
                 <textarea className='additional-textarea gray-border' name="notes" id="" placeholder='Any special instructions...' onChange={(e) => setNotes(e.target.value)}></textarea>
             </div>
-            <p className='section-title'>Estimated Cost: Php 295.00</p>
+            <p className='section-title'>Estimated Cost: Php {amount ? amount : Number(0).toFixed(2)}</p>
             <div className="action-buttons">
                 <button className='action-button draft-button' onClick={() => submit('draft')}>Save as Draft</button>
                 <button className='action-button summary-button' onClick={() => submit('pending')}>Review Order Summary <p className='summary-number'>(15)</p></button>
@@ -320,4 +390,3 @@ export default function CreateOrder() {
         </div>
     )
 }
-
