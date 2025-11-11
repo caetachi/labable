@@ -171,3 +171,9 @@
 .management-view-container .map-msg.error {
     color: var(--error);
 }
+
+.management-view-container .placeholder-msg {
+    font-size: 1rem;
+    color: var(--hl-gray);
+    text-align: center;
+}

@@ -10,7 +10,6 @@ import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
 import { getServices, getWashableItems } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
-import { newOrder } from '../../scripts/create'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -49,7 +48,6 @@ export default function CreateOrder() {
 
         const offset = now.getTimezoneOffset() * 60000; 
         const localTime = new Date(now.getTime() - offset);
-        console.log(localTime.toISOString().slice(0, 16));
         return localTime.toISOString().slice(0, 16);
     }
 
@@ -60,8 +58,6 @@ export default function CreateOrder() {
                 input.value = input.min;
             }
             setTransferDate(input.value);
-            console.log(input.value);
-            
         });
     }
     
@@ -71,8 +67,7 @@ export default function CreateOrder() {
         async function getStuff(params) {
             const washablesList = await getWashableItems();
             const serviceList = await getServices();
-            console.log(serviceList);
-            
+
             let washables = [];
             let services = [];
             
@@ -114,17 +109,8 @@ export default function CreateOrder() {
     useEffect(()=>{
         setupServices();
     }, [serviceTypes])
-    useEffect(()=>{
-        console.log(service);
-    }, [service])
-    useEffect(()=>{
-        console.log(notes);
-    }, [notes])
-
 
     function addToOrderItems(washableItemUid, washableItemName){
-        console.log('click');
-    
         setOrderItems(prevOrderItems => {
             const existingItemIndex = prevOrderItems.findIndex( // check kung existing na
                 item => item.itemUid === washableItemUid
@@ -147,7 +133,6 @@ export default function CreateOrder() {
                 ];
             }
         });
-        console.log(orderItems);
     }
 
     function decrementQuantity(decrementIndex) {
@@ -170,33 +155,30 @@ export default function CreateOrder() {
     }
     
     function remove(removeIndex) {
-        console.log('re');
-        
         setOrderItems(prevOrderItems =>{
             return prevOrderItems.filter((current, index) => index != removeIndex);
         })
     }
 
     async function submit(stats){
-        console.log(orderItems);
-        
         const statusSet = stats;
-        setStatus(statusSet)
-        
+        setStatus(statusSet);
 
-        
-        await newOrder(service, address, payment, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems);
-        
+        const draft = {
+            serviceUid: service,
+            address: address,
+            paymentMethod: payment,
+            transferMode: modeTransfer,
+            transferDate: transferDate,
+            arrivalDate: transferDate,
+            claimMode: modeClaim,
+            note: notes,
+            orders: orderItems,
+            status: statusSet,
+        };
+
+        navigate('/order-summary', { state: { orderData: draft } });
     }
-
-    // const [service, setService] = useState();
-    // const [modeTransfer, setModeTransfer] = useState();
-    // const [modeClaim, setModeClaim] = useState();
-    // const [payment, setPayment] = useState();
-    // const [notes, setNotes] = useState();
-    // const [status, setStatus] = useState();
-    
-    
     
     return(
         <div className='create-order-container'>
@@ -280,7 +262,7 @@ export default function CreateOrder() {
                     <div className="radio-container">
                         <label className='radio-label' htmlFor="pick-up-transfer">
                             <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" value={'Pick-up'}/>
-                            Pick-up
+                            Pick-up (Collected from your address)
                         </label>
                     </div>
                     <div className="radio-container">
@@ -306,7 +288,7 @@ export default function CreateOrder() {
                 <div className="radio-container">
                     <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Drop-off'}/>
                     <label className='radio-label' htmlFor="drop-off-receive">
-                        Drop-off (Deliver to your front door)
+                        Drop-off (Delivered to your front door)
                     </label>
                 </div>
             </div>

@@ -2,11 +2,61 @@ import './order-summary.css'
 import EditLogo from '../../assets/edit.svg'
 import SmallPantsLogo from '../../assets/pants-small.svg'
 import GCashLogo from '../../assets/gcash.svg'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
+import { getService } from '../../scripts/get'
+import { newOrder } from '../../scripts/create'
 import OrderItem from '../../components/Order Item - Order Summary/OrderItem'
+import { useState, useEffect } from 'react'
 
 export default function OrderSummary() {
+    const {state} = useLocation();
     const navigate = useNavigate();
+    const order = state?.orderData ?? null;
+
+    const [loading, setLoading] = useState(false);
+    const [serviceObj, setServiceObj] = useState(null);
+
+    useEffect(() => {
+        if (!order?.serviceUid) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const svc = await getService(order.serviceUid);
+                if (!cancelled) setServiceObj(svc);
+            } catch (err) {
+                console.error('Failed to fetch service for order summary', err);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [order]);
+
+    async function confirmAndInsert() {
+        if (!order) return;
+        setLoading(true);
+        try {
+            const [insertedUid, insertedOrder] = await newOrder(
+                order.serviceUid,
+                order.address,
+                order.paymentMethod,
+                order.transferMode,
+                order.transferDate,
+                order.arrivalDate,
+                order.claimMode,
+                order.note,
+                order.orders
+            );
+
+            navigate(`/order/${insertedUid}`, { state: { order: insertedOrder } });
+        } catch (err) {
+            console.error('Failed to create order on confirm', err);
+            alert('Failed to submit order. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return(
         <div className='order-summary-container'>
             <div className="title-container">
@@ -22,8 +72,7 @@ export default function OrderSummary() {
                     <p className='section-title'>Address</p>
                 </div>
                 <div className="address-input-container">
-                    <input className='address-input gray-border' type="text" value={'454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan'}/>
-                    <img className='address-edit' src={EditLogo} alt="" />
+                    <input className='address-input gray-border' type="text" value={order?.address ?? ''} disabled />
                 </div>
                 <div className="order-items-container">
                     <div className="order-summary-details-container">
@@ -33,26 +82,47 @@ export default function OrderSummary() {
                                 <p className='subtext'>Item</p>
                                 <p className='subtext'>Quantity</p>
                             </div>
-                            <OrderItem imgUrl={SmallPantsLogo} itemName='Pants (Regular)' quantity='3'/>
-                            <OrderItem imgUrl={SmallPantsLogo} itemName='Pants (Cotton)' quantity='3'/>
-                            <OrderItem imgUrl={SmallPantsLogo} itemName='Skirt (Regular)' quantity='3'/>
-                            <OrderItem imgUrl={SmallPantsLogo} itemName='Skirt (Cotton)' quantity='3'/>
-                            <OrderItem imgUrl={SmallPantsLogo} itemName='Dress (Regular)' quantity='3'/>
+
+                            <div className='orders-items-list-container'>
+                                {order?.orders?.length > 0 ? (
+                                    order.orders.map((oi, idx) => (
+                                        <OrderItem
+                                            key={oi.itemUid + '-' + idx}
+                                            imgUrl={SmallPantsLogo}
+                                            itemName={oi.itemName}
+                                            quantity={String(oi.quantity)}
+                                        />
+                                    ))
+                                ) : (
+                                    <p className='subtext'>No items</p>
+                                )}
+                            </div>
+
                         </div>
                         <div className="order-summary-date-service-payment">
                             <div className="order-summary-date-container container gray-border">
                                 <p className='section-title'>Laundry Transfer Date</p>
-                                <input className='order-summary-date-input gray-border' type="datetime-local" name="" id="" disabled="true" />
+                                <input className='order-summary-date-input gray-border' type="datetime-local" name="" id="" value={order?.transferDate ?? ''} disabled />
                             </div>
                             <div className="order-summary-service-container container gray-border">
                                 <p className='section-title'>Type of Service</p>
-                                <p>Wash and Fold</p>
+                                <div className="radio-container">
+                                    <div>
+                                        <input className='radio' type="radio" name="service-type" id="service" checked={true} disabled />
+                                    </div>
+                                    <label className='radio-label' htmlFor="service">{serviceObj?.service_name ?? '—'}</label>
+                                </div>
                             </div>
                             <div className="order-summary-payment-container container gray-border">
                                 <p className='section-title'>Payment Method</p>
-                                <label className='radio-label' htmlFor="gcash-payment">
-                                    GCash <img src={GCashLogo}/>
-                                </label>
+                                <div className="radio-container">
+                                    <div>
+                                        <input className='radio' type="radio" name="payment-method" id="payment" checked={true} disabled />
+                                    </div>
+                                    <label className='radio-label' htmlFor="payment">
+                                        {order?.paymentMethod ?? '—'} {order?.paymentMethod === 'GCash' ? <img src={GCashLogo}/> : null}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -61,30 +131,36 @@ export default function OrderSummary() {
                     <div className="transfer-mode-container gray-border">
                         <p className='section-title'>Mode of Laundry Transfer</p>
                         <div className="radio-container">
+                            <div>
+                                <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" checked={true} disabled />
+                            </div>
                             <label className='radio-label' htmlFor="pick-up-transfer">
-                                <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" />
-                                Pick-up
+                                {order?.transferMode === 'Pick-up' ? 'Pick-up (Laundry will be collected from your address)' : 'Drop-off'}
                             </label>
                         </div>
                     </div>
                     <div className="receive-mode-container section gray-border">
                         <p className='section-title'>How would you like to receive your clean laundry?</p>
                         <div className="radio-container">
-                            <input className='radio' type="radio" name="receive-mode" id="drop-off-receive" />
+                            <div>
+                                <input className='radio' type="radio" name="receive-mode" id="drop-off-receive" checked={true} disabled />
+                            </div>
                             <label className='radio-label' htmlFor="drop-off-receive">
-                                Drop-off (Deliver to your front door)
+                                {order?.claimMode === 'Drop-off' ? 'Drop-off (Laundry will be delivered to your front door)' : 'Pick-up'}
                             </label>
                         </div>
                     </div>
                 </div>
                 <div className="additional-notes-container section gray-border">
                     <p className='section-title'>Notes</p>
-                    <textarea className='additional-textarea gray-border' name="" id="" placeholder='Please make sure you clean all of my underwear.' ></textarea>
+                    <textarea className='additional-textarea gray-border' name="" id="" placeholder='Notes' value={order?.note ?? ''} disabled ></textarea>
                 </div>
                 <p className='section-title'>Estimated Cost: Php 295.00</p>
                 <div className="action-buttons">
-                    <button className='action-button draft-button'>Back</button>
-                    <button className='action-button summary-button' onClick={() => navigate('/order-summary')}>Checkout</button>
+                    <button className='action-button draft-button' onClick={() => navigate(-1)}>Back</button>
+                    <button className='action-button summary-button' onClick={confirmAndInsert} disabled={loading}>
+                        {loading ? 'Submitting...' : 'Checkout'}
+                    </button>
                 </div>
             </div>
         </div>

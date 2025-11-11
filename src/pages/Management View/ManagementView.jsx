@@ -5,6 +5,7 @@ import "./management-view.css";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import BigNumber from "bignumber.js";
+import { getView } from "../../scripts/get";
 
 const statusMap = {
 	accepted: {
@@ -40,19 +41,20 @@ const statusMap = {
 
 const fieldGroups = {
 	order: [
-		["Order ID", (v) => v.id],
-		["Order Date", (v) => v.orderDate],
+		["Order ID", (v) => v.order_id],
+		["Order Date", (v) => new Date(v.order_date).toDateString()],
 		["Address", (v) => v.address],
-		["Mode of Transfer", (v) => v.transferType],
-		["Service Type", (v) => v.service],
-		["Mode of Claim", (v) => v.claimType],
-		["Payment Method", (v) => v.paymentMethod],
-		["Transfer Date", (v) => v.transferDate],
-		["No. of Items", (v) => v.items?.length],
-		["Additional Notes", (v) => v.notes],
+		["Mode of Transfer", (v) => v.mode_of_transfer],
+		["Service Type", (v) => v.service_name],
+		["Mode of Claim", (v) => v.mode_of_claiming],
+		["Payment Method", (v) => v.payment_method],
+		["Transfer Date", (v) => v.transfer_date],
+		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(v.amount)],
+		["No. of Items", (v) => Object.keys(v.order_items).length],
+		["Additional Notes", (v) => v.notes.order_notes || "None"],
 		["Current Status", (v) => titlecase(v.status)],
-		["Claim Date", (v) => v.claimDate],
-		["Customer", (v) => titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`)],
+		["Claim Date", (v) => Object.values(v.schedule)[0]?.scheduled_date || "N/A"],
+		["Customer", (v) => titlecase(`${v.customer_name}`)],
 	],
 	schedule: [
 		["Schedule ID", (v) => v.id],
@@ -66,34 +68,35 @@ const fieldGroups = {
 		["Customer", (v) => titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`)],
 	],
 	inventory: [
-		["Item ID", (v) => v.id],
-		["Date Added", (v) => v.addDate],
-		["Item Name", (v) => v.name],
-		["Last Restock Date", (v) => v.restockDate],
-		["Quantity", (v) => v.quantity],
-		["Unit", (v) => v.unit],
+		["Item ID", (v) => v.inventory_item_id],
+		["Date Added", (v) => new Date(v.created_at).toDateString()],
+		["Item Name", (v) => v.inventory_item_name],
+		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
+		["Last Restock Date", (v) => v.last_restocked],
+		["Quantity", (v) => v.quantity_in_stock],
+		["Unit", (v) => titlecase(v.unit_name)],
 		["Current Status", (v) => titlecase(v.status)],
-		["Updated By", (v) => titlecase(`${v.staff?.firstName} ${v.staff?.lastName}`)],
+		["Updated By", (v) => titlecase(`${getUser(v.updated_by)?.fullname}` )],
 	],
 	service: [
-		["Service ID", (v) => v.id],
-		["Date Created", (v) => v.addDate],
-		["Service Name", (v) => v.name],
-		["Created By", (v) => titlecase(`${v.creator?.firstName} ${v.creator?.lastName}`)],
-		["Included Services", (v) => titlecase(`${v.inclusions.join(', ')}`)],
-		["Date Modified", (v) => v.modifyDate],
-		["Price", (v) => `₱ ${new BigNumber(v.price).toFormat(2)}`],
-		["Modified By", (v) => titlecase(`${v.modifier?.firstName} ${v.modifier?.lastName}`)]
+		["Service ID", (v) => v.service_type_id],
+		["Date Created", (v) => new Date(v.created_at).toDateString()],
+		["Service Name", (v) => v.service_name],
+		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
+		["Included Services", (v) => titlecase(`${Object.values(v.included_services).join(', ')}`)],
+		["Date Modified", (v) => new Date(v.modified_at).toDateString()],
+		["Price", (v) => `₱ ${new BigNumber(v.service_price).toFormat(2)}`],
+		["Modified By", (v) => titlecase(`${v.modified_by}`)]
 	],
 	washable: [
-		["Item ID", (v) => v.id],
-		["Date Created", (v) => v.addDate],
-		["Item Name", (v) => v.name],
-		["Created By", (v) => titlecase(`${v.creator?.firstName} ${v.creator?.lastName}`)],
-		["Price per Piece", (v) => `₱ ${new BigNumber(v.pricePerPiece).toFormat(2)}`],
-		["Date Modified", (v) => v.modifyDate],
-		["Item per Kg", (v) => v.itemPerKg],
-		["Modified By", (v) => titlecase(`${v.modifier?.firstName} ${v.modifier?.lastName}`)]
+		["Item ID", (v) => v.washable_item_id],
+		["Date Created", (v) => new Date(v.created_at).toDateString()],
+		["Item Name", (v) => v.washable_item_name],
+		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
+		// ["Price per Piece", (v) => `₱ ${new BigNumber(v.pricePerPiece).toFormat(2)}`],
+		["Date Modified", (v) => new Date(v.modified_at).toDateString()],
+		["Item per Kg", (v) => v.item_per_kilo],
+		["Modified By", (v) => titlecase(`${v.modified_by}`)]
 	]
 };
 
@@ -108,31 +111,13 @@ const DetailsCard = ({ category, data }) => (
 	</div>
 );
 
-const TrackNode = ({ label, value, date }) => (
-	<div className='detail-track'>
-		<div className='visual'>
-			<div className='connector connector-lead' />
-			<i className='ti ti-clock' />
-			<div className='connector connector-trail' />
-		</div>
-		<div className='content'>
-			<p className='title'>{label}</p>
-			<span className='desc'>
-				<p className='value'>{value}</p>
-				<p className='date'>{date}</p>
-			</span>
-		</div>
-	</div>
-);
-
 const DetailsTrackCard = ({ tracks }) => (
 	<div className='track-card'>
-		{tracks.map((t) => (
+		{Object.values(tracks).map((t) => (
 			<TrackNode
-				key={t.date}
-				label={statusMap[t.status]?.label}
-				value={statusMap[t.status]?.value}
-				date={t.date}
+				key={t.timestamp}
+				label={titlecase(t.status)}				
+				timestamp={t.timestamp}
 			/>
 		))}
 	</div>
@@ -143,15 +128,16 @@ const ActionButtons = ({ category, status }) => {
 	const actions =
 		{
 			order:
-				status === "pending"
-					? [
+				status === "pending" ? 
+					[
 							["Reject", "reject-btn"],
 							["Accept", "accept-btn"],
-					  ]
-					: [
+					]
+					: 
+					[
 							["Cancel", "cancel-btn"],
 							["Update", "update-btn"],
-					  ],
+					],
 			schedule: [
 				["Cancel", "cancel-btn"],
 				["Delete", "delete-btn"],
@@ -213,85 +199,92 @@ const InteractiveMap = ({ address }) => {
 
 export default function ManagementView() {
 	const { viewCategory, viewId } = useParams();
+	const { viewData, setViewData } = useState({});
 
-	const mockData = {
-		order: {
-			id: viewId,
-			orderDate: "10/26/2025",
-			address: "Sitio Uli-Uli, Pinalagdan, Paombong, Bulacan",
-			transferType: "Pick-up",
-			service: "Wash & Fold",
-			claimType: "Delivery",
-			paymentMethod: "Cash",
-			transferDate: "10/26/2025 - 8:00 AM",
-			items: Array(13).fill({}),
-			notes: "palinis nang maayos",
-			status: "Washing",
-			claimDate: "10/26/2025 - 9:00 AM",
-			customer: { firstName: "FirstName", lastName: "LastName" },
-			statusHistory: [
-				{ status: "pending", date: "10/20/2025 - 11:00 AM" },
-				{ status: "accepted", date: "10/20/2025 - 11:05 AM" },
-				{ status: "received", date: "10/20/2025 - 11:34 AM" },
-				{ status: "ongoing", date: "10/20/2025 - 11:37 AM" },
-				{ status: "done", date: "10/20/2025 - 12:24 PM" },
-				{ status: "completed", date: "10/20/2025 - 1:22 PM" },
-			],
-		},
-		schedule: {
-			id: viewId,
-			scheduleDate: "10/27/2025",
-			orderId: "ORDER-123",
-			orderDate: "10/26/2025",
-			address: "ADFUHFAUJDHFSd",
-			claimDate: "10/26/2025 - 9:00 AM",
-			claimType: "Delivery",
-			status: "pending",
-			customer: { firstName: "FirstName", lastName: "LastName" },
-		},
-		inventory: {
-			id: viewId,
-			addDate: "10/16/2025",
-			name: "Baskets",
-			restockDate: "10/29/2025",
-			quantity: 12,
-			unit: "Pieces",
-			status: "Good",
-			staff: { firstName: "FirstName", lastName: "LastName" },
-		},
-		service: {
-			id: viewId,
-			addDate: "10/24/2025",
-			name: "Superb Service",
-			creator: {
-				firstName: "Jerson",
-				lastName: "Valdez"
-			},
-			inclusions: ["Wash", "Dry", "Fold", "Iron"],
-			modifyDate: "10/24/2025",
-			price: 120.00,
-			modifier: {
-				firstName: "Jerson",
-				lastName: "Valdez"
-			}
-		},
-		washable: {
-			id: viewId,
-			addDate: "10/24/2025",
-			name: "Pants (Regular)",
-			creator: {
-				firstName: "Jerson",
-				lastName: "Valdez"
-			},
-			pricePerPiece: 8.00,
-			modifyDate: "10/24/2025",
-			itemPerKg: 4,
-			modifier: {
-				firstName: "Jerson",
-				lastName: "Valdez"
-			}
-		},
-	};
+	useEffect(() =>{
+		getView(viewCategory, viewId).then((data) => {
+			setViewData(data);
+		});
+	}, [viewCategory, viewId]);
+
+	// const mockData = {
+	// 	order: {
+	// 		id: viewId,
+	// 		orderDate: "10/26/2025",
+	// 		address: "Sitio Uli-Uli, Pinalagdan, Paombong, Bulacan",
+	// 		transferType: "Pick-up",
+	// 		service: "Wash & Fold",
+	// 		claimType: "Delivery",
+	// 		paymentMethod: "Cash",
+	// 		transferDate: "10/26/2025 - 8:00 AM",
+	// 		items: Array(13).fill({}),
+	// 		notes: "palinis nang maayos",
+	// 		status: "Washing",
+	// 		claimDate: "10/26/2025 - 9:00 AM",
+	// 		customer: { firstName: "FirstName", lastName: "LastName" },
+	// 		statusHistory: [
+	// 			{ status: "pending", date: "10/20/2025 - 11:00 AM" },
+	// 			{ status: "accepted", date: "10/20/2025 - 11:05 AM" },
+	// 			{ status: "received", date: "10/20/2025 - 11:34 AM" },
+	// 			{ status: "ongoing", date: "10/20/2025 - 11:37 AM" },
+	// 			{ status: "done", date: "10/20/2025 - 12:24 PM" },
+	// 			{ status: "completed", date: "10/20/2025 - 1:22 PM" },
+	// 		],
+	// 	},
+	// 	schedule: {
+	// 		id: viewId,
+	// 		scheduleDate: "10/27/2025",
+	// 		orderId: "ORDER-123",
+	// 		orderDate: "10/26/2025",
+	// 		address: "ADFUHFAUJDHFSd",
+	// 		claimDate: "10/26/2025 - 9:00 AM",
+	// 		claimType: "Delivery",
+	// 		status: "pending",
+	// 		customer: { firstName: "FirstName", lastName: "LastName" },
+	// 	},
+	// 	inventory: {
+	// 		id: viewId,
+	// 		addDate: "10/16/2025",
+	// 		name: "Baskets",
+	// 		restockDate: "10/29/2025",
+	// 		quantity: 12,
+	// 		unit: "Pieces",
+	// 		status: "Good",
+	// 		staff: { firstName: "FirstName", lastName: "LastName" },
+	// 	},
+	// 	service: {
+	// 		id: viewId,
+	// 		addDate: "10/24/2025",
+	// 		name: "Superb Service",
+	// 		creator: {
+	// 			firstName: "Jerson",
+	// 			lastName: "Valdez"
+	// 		},
+	// 		inclusions: ["Wash", "Dry", "Fold", "Iron"],
+	// 		modifyDate: "10/24/2025",
+	// 		price: 120.00,
+	// 		modifier: {
+	// 			firstName: "Jerson",
+	// 			lastName: "Valdez"
+	// 		}
+	// 	},
+	// 	washable: {
+	// 		id: viewId,
+	// 		addDate: "10/24/2025",
+	// 		name: "Pants (Regular)",
+	// 		creator: {
+	// 			firstName: "Jerson",
+	// 			lastName: "Valdez"
+	// 		},
+	// 		pricePerPiece: 8.00,
+	// 		modifyDate: "10/24/2025",
+	// 		itemPerKg: 4,
+	// 		modifier: {
+	// 			firstName: "Jerson",
+	// 			lastName: "Valdez"
+	// 		}
+	// 	},
+	// };
 
 	useEffect(() => {
 		const card = document.querySelector(".track-card");
@@ -305,8 +298,6 @@ export default function ManagementView() {
 
 	if (!["order", "schedule", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
-
-	const data = mockData[viewCategory];
 
 	return (
 		<div className='management-view-container'>
@@ -338,19 +329,17 @@ export default function ManagementView() {
 						details
 					</h2>
 
-					<DetailsCard category={viewCategory} data={data} />
+					<DetailsCard category={viewCategory} data={viewData} />
 
 					{viewCategory === "order" ? (
-						<DetailsTrackCard
-							tracks={mockData.order.statusHistory}
-						/>
+						<DetailsTrackCard tracks={viewData.tracking || {}} />
 					) : viewCategory === "schedule" ? (
-						<InteractiveMap address={"GAJFHGJHGHGFJHDGHJFHVJDHJV"} />
+						<InteractiveMap address={viewData.address} />
 					) : null}
 
 					<ActionButtons
 						category={viewCategory}
-						status={data.status}
+						status={viewData.status}
 					/>
 				</div>
 			</div>

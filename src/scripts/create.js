@@ -6,6 +6,9 @@ import {
   getServicePrice,
   getWashableItemName,
 } from "./get";
+import BigNumber from "bignumber.js";
+
+BigNumber.config({ DECIMAL_PLACES: 2, ROUNDING_MODE: BigNumber.ROUND_CEIL });
 
 export async function createWithGoogle(
   authId,
@@ -162,15 +165,6 @@ export async function newOrder(
   note,
   orders
 ) {
-  // orders = [{
-  //  itemId: id,
-  //  quantity: quant
-  // },
-  //  {
-  //  itemId: id,
-  //  quantity: quant
-  // }] - array of objects
-  //
 
   const serviceName = await getServiceName(serviceUid);
   const currDate = new Date().toLocaleString();
@@ -190,8 +184,12 @@ export async function newOrder(
       orders[i].itemUid,
       orders[i].quantity
     );
+
+    console.log(`Order Item ${i} Kilo:`, orderItem.total_kilo);
     orderItems.push(orderItem);
     total += orderItem.total_kilo;
+
+    console.log(`Current Summation: `, total);
   }
 
   total = total * servicePrice;
@@ -262,13 +260,16 @@ export async function newOrder(
 
   console.log(orderData);
 
-  set(newOrderRef, orderData)
-    .then(() => {
-      console.log("success");
-    })
-    .catch((err) => {
-      alert(err.message);
-    });
+  try {
+    const newOrderRef = await push(ordersRef, orderData);
+    const insertedOrderUid = newOrderRef.key;
+    const snapshot = await get(newOrderRef);
+    const insertedOrder = snapshot.val();
+    console.log("Inserted order:", insertedOrder);
+    return [insertedOrderUid, insertedOrder];
+  } catch (err) {
+    alert(err.message);
+  }
 
   await update(ordersRef, {
     orders_counter: ordersCounter + 1,
@@ -281,8 +282,11 @@ export async function newOrderItem(orderUid, washableItemId, quantity) {
   const newOrderItemRef = await push(orderItemsRef);
   const newOrderItemUid = newOrderItemRef.key;
   const itemPerKilo = await getItemPerKg(washableItemId);
-  const totalKilo = quantity / itemPerKilo;
+  const totalKilo = new BigNumber(quantity / itemPerKilo).toNumber();
 
+  console.log(`Item Per Kilo: ${itemPerKilo}, Quantity: ${quantity}, Total Kilo: ${quantity / itemPerKilo}`);
+  console.log("BigNumber calculation:", totalKilo);
+  
   const orderItemData = {
     order_item_id: newOrderItemUid,
     order_id: orderUid,

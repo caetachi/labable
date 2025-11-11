@@ -15,12 +15,10 @@ import { db } from '../firebase'
     const servicesRef = ref(db, 'service_types');
     const serviceRef = child(servicesRef, serviceUid);
     const service = await (await get(serviceRef)).val();
-    
+
     console.log(service);
     return service.service_price;
   }
-
-  
   
   export async function getWashableItemName(washableItemId) {
     const washableItemsRef = ref(db, 'washable_items');
@@ -52,6 +50,60 @@ import { db } from '../firebase'
     return [orderId, order];
   }
 
+  export async function getService(serviceId) {
+    const servicesRef = ref(db, 'service_types');
+    const serviceRef = child(servicesRef, serviceId);
+    const serviceSnap = await get(serviceRef);
+    const service = await serviceSnap.val();
+    
+    return service;
+  }
+
+  export async function getWashableItem(washableItemId) {
+    const washableItemsRef = ref(db, 'washable_items');
+    const washableItemRef = child(washableItemsRef, washableItemId);
+    const washableItemSnap = await get(washableItemRef);
+    const washableItem = await washableItemSnap.val();
+    
+    return washableItem;
+  }
+
+  export async function getInventoryItem(inventoryItemId) {
+    const inventoryItemsRef = ref(db, 'inventory_items');
+    const inventoryItemRef = child(inventoryItemsRef, inventoryItemId);
+    const inventoryItemSnap = await get(inventoryItemRef);
+    const inventoryItem = await inventoryItemSnap.val();
+    
+    return inventoryItem;
+  }
+
+  export async function getView(category, viewId) {
+    const categoryMap = {
+      order: 'orders',
+      schedule: 'schedules',
+      inventory: 'inventory_items',
+      service: 'service_types',
+      washable: 'washable_items'
+    };
+
+    category = categoryMap[category] || category;
+
+    const viewsRef = ref(db, category);
+    const viewRef = child(viewsRef, viewId);
+    const viewSnap = await get(viewRef);
+    const view = await viewSnap.val();
+
+    return view;
+  }
+
+  export async function getUser(userId) {
+    const usersRef = ref(db, 'users');
+    const userRef = child(usersRef, userId);
+    const userSnap = await get(userRef);
+    const user = await userSnap.val();
+
+    return user;
+  }
 
   // BULK
 
