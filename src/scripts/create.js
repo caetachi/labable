@@ -141,7 +141,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     //  quantity: quant
     // }] - array of objects
     //
-
     const serviceName = await getServiceName(serviceUid);
     const currDate = new Date().toLocaleString();
     const ordersRef = ref(db, 'orders');
@@ -172,10 +171,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       "transfer_date": transferDate,
       "arrival_date": arrivalDate,
       "mode_of_claiming": claimMode,
-      "notes": {
-        "order_notes": note,
-        "cancel_notes": null // sa update lang to lalabas
-      },
       "status": "Pending", 
       "status_note": "Waiting for approval", 
       
@@ -228,7 +223,12 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     .catch((err)=>{
       alert(err.message);
     })
-
+    if(note){
+      const notesRef = ref(newOrderRef, 'notes');
+      set(notesRef, {
+        "order_notes": note,
+      })
+    }
     await update(ordersRef, {
       'orders_counter': ordersCounter+1,
     })
