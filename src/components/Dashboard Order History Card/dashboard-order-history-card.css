@@ -66,12 +66,52 @@
     color: var(--error);
 }
 
-.order-history-card .order-history-details .infos .first-row .status.inprogress{
+.order-history-card .order-history-details .infos .first-row .status.cancelled{
+    background-color: color-mix(in srgb, var(--error) 20%, transparent);
+    color: var(--error);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.pending{
+    background-color: color-mix(in srgb, var(--hl-yellow) 20%, transparent);
+    color: var(--hl-yellow);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.accepted{
+    background-color: color-mix(in srgb, var(--success) 20%, transparent);
+    color: var(--success);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.transferred{
     background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
     color: var(--hl-blue);
 }
 
-.order-history-card .order-history-details .infos .first-row .status.pending{
+.order-history-card .order-history-details .infos .first-row .status.washing{
+    background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
+    color: var(--hl-blue);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.drying{
+    background-color: color-mix(in srgb, var(--hl-brown) 20%, transparent);
+    color: var(--hl-brown);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.ironing{
+    background-color: color-mix(in srgb, var(--hl-gray) 20%, transparent);
+    color: var(--hl-gray);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.folding{
+    background-color: color-mix(in srgb, var(--hl-purple) 20%, transparent);
+    color: var(--hl-purple);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.readytoclaim{
+    background-color: color-mix(in srgb, var(--hl-gray) 20%, transparent);
+    color: var(--hl-gray);
+}
+
+.order-history-card .order-history-details .infos .first-row .status.outfordeliver{
     background-color: color-mix(in srgb, var(--hl-yellow) 20%, transparent);
     color: var(--hl-yellow);
 }

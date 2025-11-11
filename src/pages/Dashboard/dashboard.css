@@ -30,7 +30,7 @@
     color: var(--sf-dark);
 }
 
-.dashboard-container .page-header button{
+.dashboard-container .page-header .header-button{
     display: flex;
     gap: 10px;
     align-items: center;
@@ -41,10 +41,11 @@
     border-radius: 100px;
     border: 2px solid var(--bg-dark);
     font-size: 1rem;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.dashboard-container .page-header button:hover{
+.dashboard-container .page-header .header-button:hover{
     background-color: var(--bg-light);
     color: var(--fg-dark);
     transition: 0.3s ease;

@@ -13,7 +13,7 @@ function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, servic
                     {/* ... first row ... */}
                     <div className="first-row">
                         <h4>ORD-{orderId}</h4>
-                        <span className={`status ${status.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
+                        <span className={`status ${status?.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
                     </div>
 
                     <p>{serviceType} • {items} items</p>
@@ -21,7 +21,7 @@ function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, servic
                 </div>
             </div>
             <div className="order-history-amount">
-                <h3>Php {total}</h3>
+                <h3>Php {parseFloat(total).toFixed(2)}</h3>
                 <button><i className="ti ti-eye"></i>View Details</button>
             </div>
         </div>
