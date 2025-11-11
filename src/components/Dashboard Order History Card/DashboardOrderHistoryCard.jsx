@@ -1,6 +1,7 @@
+import { NavLink } from 'react-router';
 import './dashboard-order-history-card.css';
 
-function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, serviceType, items, deliveryDate }) {
+function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, total, serviceType, items, deliveryDate }) {
     return (
         <div className="order-history-card">
             <div className="order-history-details">
@@ -22,7 +23,12 @@ function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, servic
             </div>
             <div className="order-history-amount">
                 <h3>Php {parseFloat(total).toFixed(2)}</h3>
-                <button><i className="ti ti-eye"></i>View Details</button>
+                <NavLink 
+                    to={`/${orderHashId}`}
+                    className='view-details'>
+                    <i className="ti ti-eye"></i>
+                    View Details
+                </NavLink>
             </div>
         </div>
     )

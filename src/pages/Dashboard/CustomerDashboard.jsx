@@ -108,6 +108,7 @@ function CustomerDashboard() {
                             return (
                                 <DashboardOrderHistoryCard
                                     key={orderId}
+                                    orderHashId={orderId}
                                     orderId={order.order_id ?? "N/A"}
                                     orderedDate={order.created_at ?? "N/A"}
                                     status={order.status ?? "Pending"}

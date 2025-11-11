@@ -137,7 +137,7 @@
     color: var(--fg-dark);
 }
 
-.order-history-card .order-history-amount button{
+.order-history-card .order-history-amount .view-details{
     display: flex;
     align-items: center;
     background-color: var(--bg-light);
@@ -148,15 +148,17 @@
     font-size: 0.9rem;
     font-weight: 600;
     gap: 5px;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.order-history-card .order-history-amount button:hover{
+.order-history-card .order-history-amount .view-details:hover{
     background-color: var(--bg-dark);
     color: var(--fg-light);
     transition: 0.3s ease;
 }
 
-.order-history-card .order-history-amount button i{
+.order-history-card .order-history-amount .view-details i{
     font-size: 1.3rem;
+    padding: 5px;
 }
