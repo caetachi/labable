@@ -4,9 +4,11 @@ import DashboardOrderHistoryCard from '../../components/Dashboard Order History 
 import { useEffect, useState } from 'react';
 import { onValue, ref } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
+import { useNavigate } from 'react-router';
 
 function CustomerDashboard() {
     const [userData, setUserData] = useState({});
+    const navigate = useNavigate();
 
     useEffect(()=>{
         onValue(ref(db, `users/${auth.currentUser.uid}`), (snapshot)=>{
@@ -52,7 +54,7 @@ function CustomerDashboard() {
                         <h1>My Dashboard</h1>
                         <p>Manage your laundry orders and track progress</p>
                     </div>
-                    <button className="header-button">
+                    <button className="header-button" onClick={() => navigate('/create-order')}>
                         <i className="ti ti-plus"></i>
                         New Order
                     </button>

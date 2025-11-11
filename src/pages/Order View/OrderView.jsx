@@ -1,4 +1,4 @@
-import { Navigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import { useEffect, useState } from "react";
 import { getView } from "../../scripts/get";
@@ -116,6 +116,7 @@ const ActionButtons = ({ category, status }) => {
 export default function OrderView() {
 	const { viewId } = useParams();
 	const [viewData, setViewData] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -152,7 +153,7 @@ export default function OrderView() {
 							Manage your laundry orders and track progress
 						</h3>
 					</div>
-					<button className='return-btn' onClick={(e) => <Navigate to="/customer/dashboard" />}>Back</button>
+					<button className='return-btn' onClick={(e) => navigate("/customer/dashboard")}>Back</button>
 				</div>
 
 				<div className='details-container'>

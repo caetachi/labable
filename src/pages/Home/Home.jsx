@@ -7,12 +7,13 @@ import budget from "../../assets/Budget.png";
 import superbThick from "../../assets/Superb-Thick.png";
 import dryClean from "../../assets/Dry Cleaning.png";
 import studentPack from "../../assets/Student Pack.png";
-import { useState } from "react";
+import { auth } from "../../firebase";
 import PackageServiceCard from "../../components/Package Service Card/PackageServiceCard";
+import { useNavigate } from "react-router";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-  
+  const navigate = useNavigate();
+
   return (
     <main className="homepage-container">
       <section className="hero-section">
@@ -28,12 +29,17 @@ export default function Home() {
             anywhere.
           </p>
           <div className="hero-buttons">
-            <button className="btn create-order-btn">
+            <button className="btn create-order-btn" onClick={() => navigate('/create-order')}>
               Create Your Order <i className="fa-regular fa-heart"></i>
             </button>
-            <button className="btn signup-btn">
-              Signup now <i className="fa-regular fa-heart"></i>
-            </button>
+            {
+              !auth.currentUser && (
+                <button className="btn signup-btn">
+                  Signup now <i className="fa-regular fa-heart"></i>
+                </button>
+              )
+            }
+
           </div>
         </div>
         <div className="hero-image">
