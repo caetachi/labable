@@ -21,6 +21,9 @@ export default function Example() {
      itemUid: sampleWashable,
      quantity: 9
     }];
+  let services = ['Wash', 'Dry', 'Fold'
+    // , 'Iron'
+  ];
 
   // example using onValue
   useEffect(()=>{
@@ -57,7 +60,7 @@ export default function Example() {
       <div className="sample-buttons" style={{display: "flex", marginTop: "100px", flexWrap: "wrap", gap: "10px", width: "100"}}>
         <button onClick={()=>registerViaGoogle()}>Register via Google</button>
         <button onClick={()=>registerViaEmailPass('janrei@gmail.com', 'hakdog321')}>Register via Email and Password</button>
-        <button onClick={()=>newServiceType('Wash & Fold', 'Standard washing and folding service priced per piece', 40.00, null)}>New Service Type</button>
+        <button onClick={()=>newServiceType('Student Pack', services, 'a tailored laundry solution designed specifically for students, offering convenience and affordability for their busy lifestyles.', 40.00, 'https://mega.nz/file/K9AzzS6S#LolJn0WV0RQM44QB4P-raLIH3qzyETORwV5aXv9iqoc')}>New Service Type</button>
         <button onClick={()=>newWashableItem('T-Shirt', 10.00, null)}>New Washable Item</button>
         <button onClick={()=>newOrder(sampleService, 'address', 'paymentMethod', 'Pick-up', 'transferDate', 'arrivalDate', 'claimMode', 'note', orders)}>New Order</button>
         <button onClick={()=>newInventory('Detergent - Standard', 50, 'Pieces', 'available')}>New Inventory</button>
