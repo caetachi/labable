@@ -15,7 +15,18 @@ export async function registerViaGoogle(){
     if(!snapshot.exists()){
       const currDate = new Date().toLocaleString();
       await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
-    }    
+    }else{
+      localStorage.setItem("toastMessage", "Successfully logged in with Google!");
+      localStorage.setItem("toastType", "success");
+      if(snapshot.val().role === "admin"){
+        console.log("Redirecting to admin dashboard");
+        window.location.href = '/admin/dashboard';
+      }else{
+        window.location.href = '/';
+      }
+      return;
+    }
+    
   }
 
 export async function registerViaEmailPass(email, firstName, lastName, phoneNumber, password){

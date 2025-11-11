@@ -1,6 +1,7 @@
+import { NavLink } from 'react-router';
 import './dashboard-order-history-card.css';
 
-function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, serviceType, items, deliveryDate }) {
+function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, total, serviceType, items, deliveryDate }) {
     return (
         <div className="order-history-card">
             <div className="order-history-details">
@@ -12,8 +13,8 @@ function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, servic
 
                     {/* ... first row ... */}
                     <div className="first-row">
-                        <h4>ORD-{orderId}</h4>
-                        <span className={`status ${status.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
+                        <h4>{orderId}</h4>
+                        <span className={`status ${status?.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
                     </div>
 
                     <p>{serviceType} • {items} items</p>
@@ -21,8 +22,13 @@ function DashboardOrderHistoryCard({ orderId, orderedDate, status, total, servic
                 </div>
             </div>
             <div className="order-history-amount">
-                <h3>Php {total}</h3>
-                <button><i className="ti ti-eye"></i>View Details</button>
+                <h3>Php {parseFloat(total).toFixed(2)}</h3>
+                <NavLink 
+                    to={`/${orderHashId}`}
+                    className='view-details'>
+                    <i className="ti ti-eye"></i>
+                    View Details
+                </NavLink>
             </div>
         </div>
     )

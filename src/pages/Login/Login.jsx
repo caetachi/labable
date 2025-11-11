@@ -6,7 +6,8 @@ import heartBubble from '../../assets/heart-bubble.svg'
 import './login.css'
 import { useState } from 'react'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
-import { loginViaEmailAndPassword, loginViaGoogle } from '../../scripts/login.js'
+import { loginViaEmailAndPassword } from '../../scripts/login.js'
+import { registerViaGoogle } from '../../scripts/register.js'
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -122,7 +123,7 @@ export default function Login() {
                             <hr />
                         </div>
 
-                        <AltAccountButton login={loginViaGoogle}/>
+                        <AltAccountButton register={registerViaGoogle}/>
 
                         <span className="signup-redirect">
                             Don't have an account?

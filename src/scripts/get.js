@@ -46,9 +46,61 @@ import { db } from '../firebase'
     const order = await orderSnap.val();
 
     console.log([orderId, order]);
-    
     return [orderId, order];
   }
+  
+  export async function getInventoryItem(inventoryUid) {
+    const inventoryRef = ref(db, 'inventory_items');
+    const inventoryItem = child(inventoryRef, inventoryUid);
+    const inventoryItemSnap = await get(inventoryItem);
+    const inventoryItemUid = inventoryItemSnap.key;
+    const inventory = await inventoryItemSnap.val();
+
+    console.log([inventoryItemUid, inventory]);
+    return [inventoryItemUid, inventory];
+  }
+  export async function getServiceType(serviceUid) {
+    const servicesRef = ref(db, 'service_types');
+    const serviceTypeRef = child(servicesRef, serviceUid);
+    const serviceTypeSnap = await get(serviceTypeRef);
+    const serviceTypeUid = serviceTypeSnap.key;
+    const serviceType = await serviceTypeSnap.val();
+
+    console.log([serviceTypeUid, serviceType]);
+    return [serviceTypeUid, serviceType];
+  }
+  export async function getWashableItem(washableUid) {
+    const washablesRef = ref(db, 'washable_items');
+    const washableItemRef = child(washablesRef, washableUid);
+    const washableItemSnap = await get(washableItemRef);
+    const washableItemUid = washableItemSnap.key;
+    const washableItem = await washableItemSnap.val();
+
+    console.log([washableItemUid, washableItem]);
+    return [washableItemUid, washableItem];
+  }
+
+  export async function getActiveOrderCount(userUid) {
+    const ordersRef = ref(db, "orders");
+    const ordersSnap = await get(ordersRef);
+    const orders = ordersSnap.val();
+
+    if (!orders) return 0;
+
+    let count = 0;
+
+    for (const [orderId, order] of Object.entries(orders)) {
+      if (
+        order.user_id === userUid &&
+        order.status !== "Completed" &&
+        order.status !== "Rejected" &&
+        order.status !== "Cancelled"
+      ) {
+        count++;
+      }
+  }
+  return count;
+}
 
   export async function getService(serviceId) {
     const servicesRef = ref(db, 'service_types');
@@ -104,13 +156,70 @@ import { db } from '../firebase'
 
     return user;
   }
+  export async function getCompleteOrderCount(userUid) {
+    const ordersRef = ref(db, "orders");
+    const ordersSnap = await get(ordersRef);
+    const orders = ordersSnap.val();
+
+    if (!orders) return 0;
+
+    let count = 0;
+
+    for (const [orderId, order] of Object.entries(orders)) {
+      if (
+        order.user_id === userUid &&
+        order.status === "Completed"
+      ) {
+        count++;
+      }
+  }
+  return count;
+}
+
+export async function getTotalSpentAmount(userUid) {
+  const ordersRef = ref(db, "orders");
+  const ordersSnap = await get(ordersRef);
+  const orders = ordersSnap.val();
+
+  if (!orders) return 0;
+
+  let amount = 0;
+
+  for (const [orderId, order] of Object.entries(orders)) {
+    console.log(orderId, order.user_id, order.status, order.amount);
+    if (
+      order.user_id === userUid &&
+      order.status !== "Rejected" &&
+      order.status !== "Cancelled"
+    ) {
+      amount += Number(order?.amount ?? 0);
+    }
+  }
+  return amount;
+}
+
+  export async function getUserRecentOrders(userUid) {
+  const ordersRef = ref(db, "orders");
+  const ordersSnap = await get(ordersRef);
+  const orders = ordersSnap.val();
+
+  const recentOrders = [];
+
+  if (!orders) return recentOrders;
+
+  for (const [orderId, order] of Object.entries(orders)) {
+    if (order.user_id === userUid) {
+      recentOrders.push([orderId, order]);
+    }
+  }
+  return recentOrders;
+}
 
   // BULK
 
   export async function getWashableItems() {
     const washableItemsRef = ref(db, 'washable_items')
     const washableItems = await (await get(washableItemsRef)).val();
-    console.log(Object.entries(washableItems));
     // return Object.values(washableItems); // returns only values
     return Object.entries(washableItems); // [key, value] parang property pero array
   }
@@ -118,28 +227,24 @@ import { db } from '../firebase'
   export async function getServices() {
     const serviceTypesRef = ref(db, 'service_types')
     const serviceTypes = await (await get(serviceTypesRef)).val();
-    console.log(Object.entries(serviceTypes));
     // return Object.values(serviceTypes);
     return Object.entries(serviceTypes);
   }
   export async function getOrders() { // eto nalang din sa Schedule Management
     const ordersRef = ref(db, 'orders')
     const orders = await (await get(ordersRef)).val();
-    console.log(Object.entries(orders));
     // return Object.values(serviceTypes);
     return Object.entries(orders);
   }
   export async function getInventory() { // eto nalang din sa Schedule Management
     const inventoryRef = ref(db, 'inventory_items')
     const inventory = await (await get(inventoryRef)).val();
-    console.log(Object.entries(inventory));
     // return Object.values(serviceTypes);
     return Object.entries(inventory);
   }
   export async function getUsers() { // eto nalang din sa Schedule Management
     const usersRef = ref(db, 'users')
     const users = await (await get(usersRef)).val();
-    console.log(Object.entries(users));
     // return Object.values(serviceTypes);
     return Object.entries(users);
   }
