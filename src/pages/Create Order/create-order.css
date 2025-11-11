@@ -232,6 +232,12 @@
     flex-direction: row;
 }
 
+.radio-container *{
+    display: flex;
+    flex-direction: row;
+    cursor: pointer; 
+}
+
 
 .radio{
     appearance: none; 
@@ -240,7 +246,6 @@
     border: 2px solid black; 
     border-radius: 50%;
     outline: none; 
-    cursor: pointer; 
     position: relative;
 }
 

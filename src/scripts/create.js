@@ -72,7 +72,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
 
 
 
-  export async function newServiceType(serviceName, description, servicePrice, imageUrl) {
+  export async function newServiceType(serviceName, services, description, servicePrice, imageUrl) {
     const serviceTypesRef = ref(db, 'service_types');
     const newServiceTypeRef = await push(serviceTypesRef);
     const serviceCounter = await ((await get(child(serviceTypesRef, 'service_counter'))).val()) ;
@@ -81,6 +81,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     const serviceTypeData = {
       "service_type_id": serviceTypeId, 
       "service_name": serviceName,
+      "services": services,
       "description": description,
       "service_price": servicePrice,
       "image_url": imageUrl,
@@ -130,7 +131,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     .then(()=>console.log("Increment"));
   }
   
-  export async function newOrder(serviceUid, address, paymentMethod, transferMode, transferDate, arrivalDate, claimMode, note, orders) {
+  export async function newOrder(serviceUid, address, paymentMethod, transferMode, transferDate, arrivalDate, claimMode, note, orders, amount) {
     // orders = [{
     //  itemId: id,
     //  quantity: quant
@@ -148,16 +149,12 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     const ordersCounter = await ((await get(child(ordersRef, 'orders_counter'))).val()) ;
     const orderId = 'ORD-' + String(ordersCounter+1).padStart(3, '0');
     const newOrderUid = newOrderRef.key;
-    const servicePrice = await getServicePrice(serviceUid);
-    let total = 0;
     let orderItems = []; 
     for(let i = 0; i < orders.length; i++){
       const orderItem = await newOrderItem(newOrderUid , orders[i].itemUid, orders[i].quantity);
       orderItems.push(orderItem); 
-      total += orderItem.total_kilo;
     }
 
-    total = total * servicePrice;
 
     const orderData = {
       "order_id": orderId, 
@@ -170,7 +167,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       "order_items": orderItems, 
       "address": address,
       "payment_method": paymentMethod,
-      "amount": total,
+      "amount": amount,
       "mode_of_transfer": transferMode,
       "transfer_date": transferDate,
       "arrival_date": arrivalDate,
@@ -247,7 +244,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     const totalKilo = quantity / itemPerKilo;
     
     const orderItemData = { 
-      'order_item_id': newOrderItemUid,
       "order_id": orderUid, 
       "washable_item_id": washableItemId,
       "washable_item_name": washableItemName, 
