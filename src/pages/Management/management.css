@@ -268,3 +268,12 @@
         padding: 12px 8px;
     }
 }
+
+.filter-dropdown-container{
+    position: relative;
+    flex: 1;
+}
+.filter-dropdown-container .filter-dropdown{
+    width: 100%;
+    padding-left: 30px;
+}

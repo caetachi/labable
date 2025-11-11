@@ -230,7 +230,6 @@ export default function OrderManagementDetailsEdit(){
                         <p className='small-container-title'>Status</p>
                         <div className="small-container-input-container">
                             <i className="ti ti-circle-check input-icon left-icon"></i>
-                            <span className="material-symbols--laundry-outline input-icon left-icon"></span>
                             <input className='small-container-input gray-border' type="text" placeholder='Washing'/>
                             <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>
@@ -325,7 +324,6 @@ export default function OrderManagementDetailsEdit(){
                         <p className='small-container-title'>Status</p>
                         <div className="small-container-input-container">
                             <i className="ti ti-circle-check input-icon left-icon"></i>
-                            <span className="material-symbols--laundry-outline input-icon left-icon"></span>
                             <input className='small-container-input gray-border' type="text" placeholder='Out for Delivery'/>
                             <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                         </div>

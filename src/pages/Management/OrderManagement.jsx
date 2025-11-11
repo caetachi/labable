@@ -83,15 +83,25 @@ export default function OrderManagement() {
                     <i className="ti ti-search search-icon"></i>
                     <input type="text" placeholder="Search laundry orders by ID..." />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
-                </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Status</option>
-                </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Service</option>
-                </select>
+                <div className="filter-dropdown-container">
+                    <i className="far fa-calendar" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
+                    <select className="filter-dropdown"> 
+                        <option value="" disabled selected hidden><div><i class="far fa-calendar"></i></div>Date</option>
+                    </select>
+                </div>
+                <div className="filter-dropdown-container">
+                    <i className="far fa-check-circle" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
+                    <select className="filter-dropdown">
+                        <option value="" disabled selected hidden>Status</option>
+                    </select>
+                </div>
+                <div className="filter-dropdown-container">
+                    <i className="ti ti-wash-machine" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
+                    <select className="filter-dropdown">
+                        <option value="" disabled selected hidden>Service</option>
+                    </select>
+                </div>
+                
             </div>
 
             <div className="management-table-container">
@@ -115,7 +125,7 @@ export default function OrderManagement() {
                                 <td>{order[1].service_name}</td>
                                 <td>{getNumberOfItems(order[1].order_items)}</td>
                                 <td>
-                                    <span className={`status ${order[1].status}`}>
+                                    <span className={`status ${getStatusClass(order[1].status)}`}>
                                         {order[1].status}
                                     </span>
                                 </td>
