@@ -48,8 +48,38 @@ import { db } from '../firebase'
     const order = await orderSnap.val();
 
     console.log([orderId, order]);
-    
     return [orderId, order];
+  }
+  
+  export async function getInventoryItem(inventoryUid) {
+    const inventoryRef = ref(db, 'inventory_items');
+    const inventoryItem = child(inventoryRef, inventoryUid);
+    const inventoryItemSnap = await get(inventoryItem);
+    const inventoryItemUid = inventoryItemSnap.key;
+    const inventory = await inventoryItemSnap.val();
+
+    console.log([inventoryItemUid, inventory]);
+    return [inventoryItemUid, inventory];
+  }
+  export async function getServiceType(serviceUid) {
+    const servicesRef = ref(db, 'service_types');
+    const serviceTypeRef = child(servicesRef, serviceUid);
+    const serviceTypeSnap = await get(serviceTypeRef);
+    const serviceTypeUid = serviceTypeSnap.key;
+    const serviceType = await serviceTypeSnap.val();
+
+    console.log([serviceTypeUid, serviceType]);
+    return [serviceTypeUid, serviceType];
+  }
+  export async function getWashableItem(washableUid) {
+    const washablesRef = ref(db, 'washable_items');
+    const washableItemRef = child(washablesRef, washableUid);
+    const washableItemSnap = await get(washableItemRef);
+    const washableItemUid = washableItemSnap.key;
+    const washableItem = await washableItemSnap.val();
+
+    console.log([washableItemUid, washableItem]);
+    return [washableItemUid, washableItem];
   }
 
   export async function getActiveOrderCount(userUid) {

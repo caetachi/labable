@@ -95,7 +95,7 @@ function Layout({ user, userData }) {
                   <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route path="/admin/:viewCategory" element={<Management />} />
                   <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
-                  <Route path="/details-edit/:toEdit" element={<OrderManagementDetailsEdit />} />
+                  <Route path="/details-edit/:toEdit/:id" element={<OrderManagementDetailsEdit />} />
                 </>
               )}
             </>

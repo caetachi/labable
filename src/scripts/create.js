@@ -148,9 +148,10 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     const ordersCounter = await ((await get(child(ordersRef, 'orders_counter'))).val()) ;
     const orderId = 'ORD-' + String(ordersCounter+1).padStart(3, '0');
     const newOrderUid = newOrderRef.key;
+    const payment = await newPayment(newOrderUid, paymentMethod, 'unpaid', ordersCounter);
     let orderItems = []; 
     for(let i = 0; i < orders.length; i++){
-      const orderItem = await newOrderItem(newOrderUid , orders[i].itemUid, orders[i].quantity);
+      const orderItem = await newOrderItem(newOrderUid , orders[i].washable_item_id, orders[i].quantity);
       orderItems.push(orderItem); 
     }
 
@@ -165,7 +166,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       "service_type_id": serviceUid,
       "order_items": orderItems, 
       "address": address,
-      "payment_method": paymentMethod,
       "amount": amount,
       "mode_of_transfer": transferMode,
       "transfer_date": transferDate,
@@ -173,6 +173,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       "mode_of_claiming": claimMode,
       "status": "Pending", 
       "status_note": "Waiting for approval", 
+      "payment": payment,
       
       "created_at": currDate,
       "created_by": auth.currentUser.uid,
@@ -224,7 +225,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
       alert(err.message);
     })
     if(note){
-      const notesRef = ref(newOrderRef, 'notes');
+      const notesRef = child(newOrderRef, 'notes');
       set(notesRef, {
         "order_notes": note,
       })
@@ -286,33 +287,20 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     .then(()=>console.log("Increment"));
   }
 
-  export async function newPayment(orderUid, amount, status) { // to din sana sa loob na ni order, pero gawan parin separate table/object for redundancy
-    const paymentsRef = ref(db, 'payments');
-    const newPaymentRef = await push(paymentsRef);
-    const paymentsCounter = await ((await get(child(paymentsRef, 'payments_counter'))).val()) ;
-    const paymentId = 'PAY-' + String(paymentsCounter+1).padStart(3, '0');
+  export async function newPayment(orderUid, method, status, counter) { // to din sana sa loob na ni order, pero gawan parin separate table/object for redundancy
+    const paymentId = 'PAY-' + String(counter+1).padStart(3, '0');
     const currDate = new Date().toLocaleString();
 
     const paymentData = {
       "payment_id": paymentId, 
       "order_id": orderUid, 
-      "amount_paid": amount,
-      "payment_date": currDate,
+      "payment_method": method,
       "status": status, //update
       "created_at": currDate,
       "created_by": auth.currentUser.uid,
       // "updated_at": currDate,
       // "updated_by": auth.currentUser.uid
     }
-  
-    set(newPaymentRef, paymentData).then((res)=>{
-      console.log("success");
-    })
-    .catch((err)=>{
-      alert(err.message);
-    })
-    await update(paymentsRef, {
-      'payments_counter': paymentsCounter+1,
-    })
-    .then(()=>console.log("Increment"));
+
+    return paymentData;
   }

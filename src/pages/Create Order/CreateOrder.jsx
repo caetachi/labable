@@ -147,7 +147,7 @@ export default function CreateOrder() {
     function addToOrderItems(washableItemUid, washableItemName, itemPerKg){
         setOrderItems(prevOrderItems => {
             const existingItemIndex = prevOrderItems.findIndex( // check kung existing na
-                item => item.itemUid === washableItemUid
+                item => item.washable_item_id === washableItemUid
             );
             if (existingItemIndex > -1) { // -1 pag wala
                 return prevOrderItems.map((item, index) => {
@@ -160,8 +160,8 @@ export default function CreateOrder() {
                 return [
                     ...prevOrderItems,
                     {
-                        itemUid: washableItemUid,
-                        itemName: washableItemName,
+                        washable_item_id: washableItemUid,
+                        washable_item_name: washableItemName,
                         quantity: 1,
                         total_kilo:Number( 1 / itemPerKg),
                         item_per_kilo: Number(itemPerKg)
@@ -301,7 +301,7 @@ export default function CreateOrder() {
                             <p className='subtext'>Action</p>
                         </div>
                         {orderItems && orderItems.map((orderItem, index)=>{
-                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.itemName} quantity={orderItem.quantity} increment={()=>addToOrderItems(orderItem.itemUid, orderItem.itemName, orderItem.item_per_kilo)} decrement={()=>decrementQuantity(index)} remove={() => remove(index)}/>
+                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} decrement={()=>decrementQuantity(index)} remove={() => remove(index)}/>
                         })}
                     </div>
                 </div>
@@ -344,13 +344,13 @@ export default function CreateOrder() {
                 <p className='section-title'>How would you like to receive your clean laundry?</p>
                 <div className="radio-container">
                     <label className='radio-label' htmlFor="pick-up-receive">
-                        <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pick-up'}/>
-                        Pick-up
+                        <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pickup'}/>
+                        Pickup
                     </label>
                 </div>
                 <div className="radio-container">
                     <label className='radio-label' htmlFor="drop-off-receive">
-                        <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Drop-off'}/>
+                        <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Deliver'}/>
                         Deliver (Deliver to your front door)
                     </label>
                 </div>
