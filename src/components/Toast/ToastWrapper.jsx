@@ -7,10 +7,10 @@ function ToastWrapper() {
     <>
       <ToastContainer
         position="bottom-left"
-        autoClose={3000} // closes in 3 seconds
+        autoClose={2500} // closes in 2.5 seconds
         hideProgressBar={true}
         newestOnTop={true}
-        closeOnClick
+        closeOnClick = {true}
         pauseOnHover
         draggable
         className="toast-container"

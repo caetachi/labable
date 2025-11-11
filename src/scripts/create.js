@@ -218,24 +218,70 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
   } catch (err) {
     alert(err.message);
   }
-
-
-  // set(newOrderRef, orderData).then((res) => {
-  //   const insertedOrderUid = newOrderRef.key;
-  //   const insertedOrder = orderData;
-
-  //   console.log("Inserted order uid:", insertedOrderUid);
-  //   console.log("Inserted order:", insertedOrder);
-
-  //   return [insertedOrderUid, insertedOrder];
-  // })
-  //   .catch((err) => {
-  //     alert(err.message);
-  //   })
+  
   await update(ordersRef, {
     'orders_counter': ordersCounter + 1,
   })
     .then(() => console.log("Increment"));
+}
+
+export async function newOrderTrack(orderUid, status) {
+  const statusMap = {
+    Pending: {
+      label: "Order Pending",
+      value: "Your order is currently under approval.",
+    },
+    Canceled: {
+      label: "Order Canceled",
+      value: "Your order has been canceled.",
+    },
+    Rejected: {
+      label: "Order Rejected",
+      value: "Your order has been rejected.",
+    },
+    Accepted: {
+      label: "Order Approved",
+      value: "Your order has been accepted.",
+    },
+    Received: {
+      label: "Received Laundry",
+      value: "We have received your laundry load.",
+    },
+    Washing: {
+      label: "Washing Laundry",
+      value: "Your laundry is now being washed and cleaned.",
+    },
+    Done: { 
+      label: "Finished Laundry", 
+      value: "Laundry has been finished." 
+    },
+    Delivery: { 
+      label: "Out for Delivery", 
+      value: "Your laundry is out for delivery." 
+    },
+    Completed: {
+      label: "Completed",
+      value: "You have received your laundry and completed your order.",
+    },
+    Error: {
+      label: "Process Error",
+      value: "Something went wrong while trying to process your order.",
+    },
+  };
+
+  const orderTracksRef = ref(db, `orders/${orderUid}/tracking`);
+  const newOrderTrackRef = await push(orderTracksRef);
+  const currDate = new Date().toLocaleString();
+  const orderTrackData = {
+    "timestamp": currDate,
+    "status": status,
+    "label": statusMap[status].label,
+    "message": statusMap[status].value
+  }
+
+  await update(newOrderTrackRef, orderTrackData);
+
+  return orderTrackData;
 }
 
 export async function newOrderItem(orderUid, washableItemId, quantity) {

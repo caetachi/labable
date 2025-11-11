@@ -6,38 +6,8 @@ import { getView } from "../../scripts/get";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import { formatTextualDateTime } from "../../scripts/dateformat";
 import BigNumber from "bignumber.js";
-
-const statusMap = {
-	accepted: {
-		label: "Order Approved",
-		value: "Your order has been accepted.",
-	},
-	pending: {
-		label: "Order Pending",
-		value: "Your order is currently under approval.",
-	},
-	rejected: {
-		label: "Order Cancelled",
-		value: "Your order has been rejected.",
-	},
-	received: {
-		label: "Received Laundry",
-		value: "We have received your laundry load.",
-	},
-	ongoing: {
-		label: "In Process",
-		value: "Your laundry is now being washed and cleaned.",
-	},
-	done: { label: "Finished Laundry", value: "Laundry has been finished." },
-	completed: {
-		label: "Completed",
-		value: "You have received your laundry and completed your order.",
-	},
-	error: {
-		label: "Process Error",
-		value: "Something went wrong while trying to process your order.",
-	},
-};
+import Swal from "sweetalert2";
+import { cancelOrder } from "../../scripts/update";
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
@@ -46,75 +16,34 @@ const fieldGroup = [
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
-		["Payment Method", (v) =>  v.payment ? v.payment.payment_method : "N/A"],
+		["Payment Method", (v) =>  v.payment?.payment_method || "N/A"],
 		["Transfer Date", (v) => formatTextualDateTime(v.transfer_date)],
         ["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
-		["No. of Items", (v) => Object.keys(v.order_items).length],
-		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
+		["No. of Items", (v) => new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0))],
+		["Additional Notes", (v) => v.notes?.order_notes || "No additional notes."],
 		["Current Status", (v) => titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
-];
+		["Cancel Reason", (v) => v.notes?.cancel_reason || ""],
+	];
 
-const DetailsCard = ({ data }) => (
-	<div className='details-card'>
-		{fieldGroup.map(([label, getter], i) => (
-			<div key={i} className='detail-cell'>
-				<p className='label'>{label}</p>
-				<p className='value'>{getter(data)}</p>
-			</div>
-		))}
-	</div>
-);
-
-const ActionButtons = ({ category, status }) => {
-	const base = <button className='edit-btn'>Edit</button>;
-	const actions =
-		{
-			order:
-                status === "out for delivery" ?
-                    [
-                        ["Order Received", "accept-btn"],
-                    ]
-                    : 
-                status === "pending" ?
-                    [
-                        ["Cancel Order", "cancel-btn"],
-                ]
-                    :
-                status === "received" ?
-                    [
-                        ["Rate", "rate-btn"],
-                        ["Order Again", "order-again-btn"],
-                    ] 
-                    : 
-                    [],
-			schedule: [
-				["Cancel", "cancel-btn"],
-				["Delete", "delete-btn"],
-			],
-			inventory: [
-				["Delete", "delete-btn"],
-				["Restock", "update-btn"],
-			],
-			service: [
-				["Delete", "delete-btn"]
-			],
-			washable: [
-				["Delete", "delete-btn"]
-			]
-		}[category] || [];
-
+function DetailsCard({ data }) {
 	return (
-		<div className='btn-container'>
-			{base}
-			{actions.map(([txt, cls]) => (
-				<button key={cls} className={cls}>
-					{txt}
-				</button>
-			))}
+		<div className='details-card'>
+			{fieldGroup.map(([label, getter]) => {
+				const value = getter(data);
+				if (label === "Cancel Reason" && (value == null || (typeof value === "string" && value.trim() === ""))
+				) return null;
+				
+				return (
+				<div key={label} className='detail-cell'>
+					<p className='label'>{label}</p>
+					<p className='value'>{value}</p>
+				</div>
+				);
+			})}
 		</div>
 	);
-};
+}
 
 export default function OrderView() {
 	const { viewId } = useParams();
@@ -146,6 +75,98 @@ export default function OrderView() {
 		if (last) last.style.visibility = "hidden";
 	}, []);
 
+	const cancelNotice = () => {
+		Swal.fire({
+			title: 'Are you sure you want to cancel this order?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--error)',
+			cancelButtonColor: 'var(--bg-dark)',
+			confirmButtonText: 'Yes, cancel it!',
+			background: 'var(--bg-light)',
+			color: 'var(--fg-dark)',
+			input: 'textarea',
+			inputPlaceholder: 'Please enter the reason for cancellation (optional)'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				const reason = result.value || 'No reason provided';
+				try {
+					await cancelOrder(viewId, "Canceled", reason);
+					Swal.fire({
+						title: 'Order Canceled',
+						text: 'Your order has been successfully canceled.',
+						icon: 'success',
+						background: 'var(--bg-light)',
+						color: 'var(--fg-dark)',
+						showConfirmButton: false,
+						timer: 1500
+					})
+				} catch (err) {
+					Swal.fire({
+						title: 'Failed to cancel order',
+						text: 'An error occurred while canceling your order. Please try again later.',
+						icon: 'error',
+						background: 'var(--bg-light)',
+						color: 'var(--fg-dark)',
+						showConfirmButton: true
+					})
+				}
+				window.location.reload();
+			}
+		});
+	}
+
+	const ActionButtons = ({ category, status }) => {
+		const base = <button className='edit-btn'>Edit</button>;
+		const actions =
+			{
+				order:
+					status === "Out for delivery" ?
+						[
+							["Order Received", "accept-btn"],
+						]
+						: 
+					status === "Pending" ?
+						[
+							["Cancel Order", "cancel-btn", { onClick: () => cancelNotice() }],
+						]
+						:
+					status === "Received" ?
+						[
+							["Rate", "rate-btn"],
+							["Order Again", "order-again-btn"],
+						] 
+						:
+					status ===  "Accepted" ?
+						[
+							["Processing Order", "processing-btn"]
+						]
+						:
+					status === "Canceled" ?
+						[
+							["You have canceled this order", "canceled-btn"]
+						] 
+						:
+					status === "Rejected" ?
+						[
+							["Your order was rejected", "rejected-btn"]
+						]
+						:
+						[]
+			}[category] || [];
+
+		return (
+			<div className='btn-container'>
+				{status === "Pending" && base}
+				{actions.map(([txt, cls, props]) => (
+					<button key={cls} className={cls} {...props} disabled={["Accepted", "Canceled", "Rejected"].includes(status)}>
+						{txt}
+					</button>
+				))}
+			</div>
+		);
+	};
+
 	return (
 		<div className='management-view-container'>
 			<div className='content'>
@@ -169,11 +190,11 @@ export default function OrderView() {
 							<DetailsCard data={viewData} />
 
 							<div className='track-card'>
-								{Object.values(viewData.tracking || {}).map((t) => (
+								{Object.values(viewData.tracking || {}).map((t, i) => (
 									<TrackNode
-										key={t.timestamp}
-										label={statusMap[t.status]?.label}
-										value={statusMap[t.status]?.value}
+										key={i + t.timestamp}
+										label={t.label}
+										value={t.message}
 										date={t.timestamp}
 									/>
 								))}

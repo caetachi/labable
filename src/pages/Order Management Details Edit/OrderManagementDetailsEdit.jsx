@@ -11,7 +11,7 @@ import "leaflet/dist/leaflet.css";
 import Leaflet from '../../components/Leaflet/Leaflet'
 import Buttons from '../../components/Buttons - Edit Details/Buttons'
 import { useParams } from 'react-router'
-import { getInventory, getInventoryItem, getOrder, getServiceType, getWashableItem, getWashableItems } from '../../scripts/get'
+import { getInventoryItem, getOrder, getServiceType, getWashableItem, getWashableItems } from '../../scripts/get'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 

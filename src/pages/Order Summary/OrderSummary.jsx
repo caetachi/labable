@@ -3,12 +3,13 @@ import SmallPantsLogo from '../../assets/pants-small.svg'
 import GCashLogo from '../../assets/gcash.svg'
 import { useLocation, useNavigate } from 'react-router'
 import { getService } from '../../scripts/get'
-import { newOrder } from '../../scripts/create'
+import { newOrder, newOrderTrack } from '../../scripts/create'
 import OrderItem from '../../components/Order Item - Order Summary/OrderItem'
 import { getServicePrice, getItemPerKg } from '../../scripts/get'
 import BigNumber from 'bignumber.js'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
+import Swal from 'sweetalert2'
 
 export default function OrderSummary() {
     const {state} = useLocation();
@@ -80,13 +81,24 @@ export default function OrderSummary() {
                 order.orders,
                 order.amount
             );
+            
+            await newOrderTrack(insertedUid, insertedOrder.status);
 
-            toast.success('Order created successfully!');
-
-            navigate(`/order/${insertedUid}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Created',
+                text: 'Your order has been created successfully! Please wait for approval.',
+                showConfirmButton: true,
+                confirmButtonText: 'OK',
+                confirmButtonColor: 'var(--bg-dark)',
+                background: 'var(--bg-light)',
+                color: 'var(--fg-dark)',
+            }).then(() => {
+                navigate(`/order/${insertedUid}`);  
+            });
         } catch (err) {
-            console.error('Failed to create order on confirm', err);
-            alert('Failed to submit order. Please try again.');
+            console.error('Failed to create order on confirm', err); 
+            toast.error('Failed to create order. Please try again.');
         } finally {
             setLoading(false);
         }

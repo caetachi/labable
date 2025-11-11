@@ -45,7 +45,6 @@ function CustomerDashboard() {
         });
     }, [auth.currentUser.uid]);
 
-    {/*sample user card data*/}
     const userCardData = [
       {
         key: "activeOrdersCount", 
@@ -114,7 +113,7 @@ function CustomerDashboard() {
                                     status={order.status ?? "Pending"}
                                     total={order.amount ?? 0}
                                     serviceType={order.service_name ?? "N/A"}
-                                    items={0}
+                                    items={order.order_items ?? {}}
                                     deliveryDate={0}
                                 />
                             );
