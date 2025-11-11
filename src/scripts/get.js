@@ -52,6 +52,86 @@ import { db } from '../firebase'
     return [orderId, order];
   }
 
+  export async function getActiveOrderCount(userUid) {
+    const ordersRef = ref(db, "orders");
+    const ordersSnap = await get(ordersRef);
+    const orders = ordersSnap.val();
+
+    if (!orders) return 0;
+
+    let count = 0;
+
+    for (const [orderId, order] of Object.entries(orders)) {
+      if (
+        order.user_id === userUid &&
+        order.status !== "Completed" &&
+        order.status !== "Rejected" &&
+        order.status !== "Cancelled"
+      ) {
+        count++;
+      }
+  }
+  return count;
+}
+
+  export async function getCompleteOrderCount(userUid) {
+    const ordersRef = ref(db, "orders");
+    const ordersSnap = await get(ordersRef);
+    const orders = ordersSnap.val();
+
+    if (!orders) return 0;
+
+    let count = 0;
+
+    for (const [orderId, order] of Object.entries(orders)) {
+      if (
+        order.user_id === userUid &&
+        order.status === "Completed"
+      ) {
+        count++;
+      }
+  }
+  return count;
+}
+
+export async function getTotalSpentAmount(userUid) {
+  const ordersRef = ref(db, "orders");
+  const ordersSnap = await get(ordersRef);
+  const orders = ordersSnap.val();
+
+  if (!orders) return 0;
+
+  let amount = 0;
+
+  for (const [orderId, order] of Object.entries(orders)) {
+    console.log(orderId, order.user_id, order.status, order.amount);
+    if (
+      order.user_id === userUid &&
+      order.status !== "Rejected" &&
+      order.status !== "Cancelled"
+    ) {
+      amount += Number(order?.amount ?? 0);
+    }
+  }
+  return amount;
+}
+
+  export async function getUserRecentOrders(userUid) {
+  const ordersRef = ref(db, "orders");
+  const ordersSnap = await get(ordersRef);
+  const orders = ordersSnap.val();
+
+  const recentOrders = [];
+
+  if (!orders) return recentOrders;
+
+  for (const [orderId, order] of Object.entries(orders)) {
+    if (order.user_id === userUid) {
+      recentOrders.push([orderId, order]);
+    }
+  }
+  return recentOrders;
+}
 
   // BULK
 
