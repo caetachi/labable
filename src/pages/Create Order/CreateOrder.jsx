@@ -10,8 +10,8 @@ import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
 import { getServicePrice, getServices, getWashableItems } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
-import { newOrder } from '../../scripts/create'
 import { toast } from 'react-toastify'
+import BigNumber from 'bignumber.js'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -22,7 +22,6 @@ export default function CreateOrder() {
     const [modeClaim, setModeClaim] = useState();
     const [payment, setPayment] = useState();
     const [notes, setNotes] = useState();
-    const [status, setStatus] = useState();
     const [pricePerKg, setPricePerKg] = useState();
     const [washableItems, setWashableItems] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
@@ -112,6 +111,7 @@ export default function CreateOrder() {
     useEffect(()=>{
         setupServices();
     }, [serviceTypes])
+
     useEffect(()=>{
         async function settingServicePrice() {
             if(service){
@@ -120,23 +120,12 @@ export default function CreateOrder() {
         }
         settingServicePrice();
     }, [service])
-    useEffect(()=>{
-        console.log(pricePerKg);
-    }, [pricePerKg])
-    useEffect(()=>{
-        console.log(notes);
-    }, [notes])
-    useEffect(()=>{
-        console.log(orderItems);
-    }, [orderItems])
-    useEffect(()=>{
-        console.log(amount);
-    }, [amount])
+
     useEffect(()=>{
         if(orderItems && pricePerKg){
-            let total_kilo = 0;
+            let total_kilo = new BigNumber(0);
             for(let i = 0; i < orderItems.length; i++){
-                total_kilo += orderItems[i].total_kilo;
+                total_kilo  = total_kilo.plus(orderItems[i].total_kilo);
             }
             setAmount(Number(total_kilo * pricePerKg).toFixed(2));
         }
@@ -195,10 +184,7 @@ export default function CreateOrder() {
         })
     }
 
-    async function submit(stats){
-        const statusSet = stats;
-        setStatus(statusSet);
-
+    async function submit(){
         const draft = {
             serviceUid: service,
             address: address,
@@ -209,45 +195,29 @@ export default function CreateOrder() {
             claimMode: modeClaim,
             note: notes,
             orders: orderItems,
-            status: statusSet,
+            amount: amount
         };
-        setStatus(statusSet)
-        
-        if(!service){
-            toast.error('No service selected.');
-            return;
+
+        const checks = [
+            [!address, 'No address indicated.'],
+            [!service, 'No service selected.'],
+            [!payment, 'No payment method selected.'],
+            [!transferDate, 'No transfer date indicated.'],
+            [!modeTransfer, 'No mode of transfer selected.'],
+            [!modeClaim, 'No mode of claiming selected.'],
+            [(orderItems?.length ?? 0) === 0, 'Order list is empty.']
+        ];
+
+        for (const [failed, message] of checks) {
+            if (failed) {
+                toast.error(message);
+                return;
+            }
         }
-        if(!address){
-            toast.error('No address indicated.');
-            return;
-        }
-        if(!payment){
-            toast.error('No payment method selected.');
-            return;
-        }
-        if(!transferDate){
-            toast.error('No transfer date indicated.');
-            return;
-        }
-        if(!modeTransfer){
-            toast.error('No mode of transfer selected.');
-            return;
-        }
-        if(!modeClaim){
-            toast.error('No mode of claiming selected.');
-            return;
-        }
-        if(orderItems.length == 0){
-            toast.error('Order list is empty');
-            return;
-        };
-        
-        
-        await newOrder(service, address, payment, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems, amount);
-        toast.success('Order created successfully!');
-    }
 
         navigate('/order-summary', { state: { orderData: draft } });
+    }
+        
     return(
         <div className='create-order-container'>
             <div className="title-container">
@@ -317,20 +287,17 @@ export default function CreateOrder() {
                     {serviceTypes && serviceTypes.map((service)=>{
                         return <ServiceType icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]}/>
                     })}
-                    {/* <ServiceType icon="shirt" name="Dry" />
-                    <ServiceType icon="ironing-2" name="Iron" />
-                    <ServiceType icon="wash" name="Wash" />
-                    <ServiceType icon="jacket" name="Fold" />
-                    <ServiceType icon="package" name="Package" /> */}
                 </div>
             </div>
             <div className="transfer-details-container">
                 <div className="transfer-mode-container gray-border">
                     <p className='section-title'>Mode of Laundry Transfer</p>
                     <div className="radio-container">
-                        <label className='radio-label' htmlFor="pick-up-transfer">
+                        <div>
                             <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" value={'Pick-up'}/>
-                            Pick-up (Collected from your address)
+                        </div>
+                        <label className='radio-label' htmlFor="pick-up-transfer">
+                            Pickup (Collected from your address)
                         </label>
                     </div>
                     <div className="radio-container">
@@ -348,14 +315,15 @@ export default function CreateOrder() {
             <div className="receive-mode-container section gray-border">
                 <p className='section-title'>How would you like to receive your clean laundry?</p>
                 <div className="radio-container">
+                    <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pick-up'}/>
                     <label className='radio-label' htmlFor="pick-up-receive">
-                        <input className='radio' type="radio" name="receive-mode" id="pick-up-receive" value={'Pickup'}/>
                         Pickup
                     </label>
                 </div>
                 <div className="radio-container">
+                    <input className='radio' type="radio" name="receive-mode" id="drop-off-receive" value={'Deliver'}/>
                     <label className='radio-label' htmlFor="drop-off-receive">
-                        Drop-off (Delivered to your front door)
+                        Deliver
                     </label>
                 </div>
             </div>
@@ -380,8 +348,8 @@ export default function CreateOrder() {
             </div>
             <p className='section-title'>Estimated Cost: Php {amount ? amount : Number(0).toFixed(2)}</p>
             <div className="action-buttons">
-                <button className='action-button draft-button' onClick={() => submit('draft')}>Save as Draft</button>
-                <button className='action-button summary-button' onClick={() => submit('pending')}>Review Order Summary <p className='summary-number'>(15)</p></button>
+                <button className='action-button draft-button' onClick={() => submit()}>Save as Draft</button>
+                <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
             </div>
             </div>
         </div>

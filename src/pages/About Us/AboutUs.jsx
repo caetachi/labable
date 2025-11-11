@@ -36,7 +36,7 @@ export default function AboutUs() {
             <br />
             <br />
             Our platform streamlines every aspect of the laundry process from
-            scheduling pickups to tracking orders and managing deliveries.
+            scheduling pick-ups to tracking orders and managing deliveries.
             Labable fulfills the gap between customers and laundry shops with
             care and trust.
           </span>

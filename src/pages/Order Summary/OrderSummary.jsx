@@ -1,12 +1,14 @@
 import './order-summary.css'
-import EditLogo from '../../assets/edit.svg'
 import SmallPantsLogo from '../../assets/pants-small.svg'
 import GCashLogo from '../../assets/gcash.svg'
 import { useLocation, useNavigate } from 'react-router'
 import { getService } from '../../scripts/get'
 import { newOrder } from '../../scripts/create'
 import OrderItem from '../../components/Order Item - Order Summary/OrderItem'
+import { getServicePrice, getItemPerKg } from '../../scripts/get'
+import BigNumber from 'bignumber.js'
 import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 export default function OrderSummary() {
     const {state} = useLocation();
@@ -15,6 +17,7 @@ export default function OrderSummary() {
 
     const [loading, setLoading] = useState(false);
     const [serviceObj, setServiceObj] = useState(null);
+    const [amount, setAmount] = useState(null);
 
     useEffect(() => {
         if (!order?.serviceUid) return;
@@ -32,9 +35,38 @@ export default function OrderSummary() {
         };
     }, [order]);
 
+    useEffect(() => {
+        if (!order) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const servicePrice = await getServicePrice(order.serviceUid);
+                let totalKilo = new BigNumber(0);
+                if (Array.isArray(order.orders)) {
+                    for (let i = 0; i < order.orders.length; i++) {
+                        const oi = order.orders[i];
+
+                        const perKg = await getItemPerKg(oi.washable_item_id);
+                        const kilo = new BigNumber(oi.quantity).dividedBy(perKg || 1);
+                        totalKilo = totalKilo.plus(kilo);
+                    }
+                }
+                const amount = totalKilo.multipliedBy(servicePrice || 0);
+                if (!cancelled) setAmount(`₱${new BigNumber(amount).toFixed(2)}`);
+            } catch (err) {
+                console.error('Failed to compute amount', err);
+                if (!cancelled) setAmount(null);
+            }
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [order]);
+
     async function confirmAndInsert() {
         if (!order) return;
         setLoading(true);
+
         try {
             const [insertedUid, insertedOrder] = await newOrder(
                 order.serviceUid,
@@ -45,10 +77,13 @@ export default function OrderSummary() {
                 order.arrivalDate,
                 order.claimMode,
                 order.note,
-                order.orders
+                order.orders,
+                order.amount
             );
 
-            navigate(`/order/${insertedUid}`, { state: { order: insertedOrder } });
+            toast.success('Order created successfully!');
+
+            navigate(`/order/${insertedUid}`);
         } catch (err) {
             console.error('Failed to create order on confirm', err);
             alert('Failed to submit order. Please try again.');
@@ -89,7 +124,7 @@ export default function OrderSummary() {
                                         <OrderItem
                                             key={oi.itemUid + '-' + idx}
                                             imgUrl={SmallPantsLogo}
-                                            itemName={oi.itemName}
+                                            itemName={oi.washable_item_name}
                                             quantity={String(oi.quantity)}
                                         />
                                     ))
@@ -135,7 +170,7 @@ export default function OrderSummary() {
                                 <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" checked={true} disabled />
                             </div>
                             <label className='radio-label' htmlFor="pick-up-transfer">
-                                {order?.transferMode === 'Pick-up' ? 'Pick-up (Laundry will be collected from your address)' : 'Drop-off'}
+                                {order?.transferMode === 'Pick-up' ? 'Pick-up (Laundry will be collected from your address)' : 'Deliver'}
                             </label>
                         </div>
                     </div>
@@ -146,7 +181,7 @@ export default function OrderSummary() {
                                 <input className='radio' type="radio" name="receive-mode" id="drop-off-receive" checked={true} disabled />
                             </div>
                             <label className='radio-label' htmlFor="drop-off-receive">
-                                {order?.claimMode === 'Drop-off' ? 'Drop-off (Laundry will be delivered to your front door)' : 'Pick-up'}
+                                {order?.claimMode === 'Deliver' ? 'Deliver' : 'Pick-up'}
                             </label>
                         </div>
                     </div>
@@ -155,7 +190,7 @@ export default function OrderSummary() {
                     <p className='section-title'>Notes</p>
                     <textarea className='additional-textarea gray-border' name="" id="" placeholder='Notes' value={order?.note ?? ''} disabled ></textarea>
                 </div>
-                <p className='section-title'>Estimated Cost: Php 295.00</p>
+                <p className='section-title'>Estimated Cost: {amount ?? 'Calculating...'}</p>
                 <div className="action-buttons">
                     <button className='action-button draft-button' onClick={() => navigate(-1)}>Back</button>
                     <button className='action-button summary-button' onClick={confirmAndInsert} disabled={loading}>

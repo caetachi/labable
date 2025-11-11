@@ -1,8 +1,11 @@
-import { Navigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getView } from "../../scripts/get";
 import TrackNode from "../../components/TrackNode/TrackNode";
+import { formatTextualDateTime } from "../../scripts/dateformat";
+import BigNumber from "bignumber.js";
 
 const statusMap = {
 	accepted: {
@@ -38,18 +41,18 @@ const statusMap = {
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
-		["Order Date", (v) => new Date(v.order_date).toDateString()],
+		["Order Date", (v) => formatTextualDateTime(v.created_at)],
 		["Address", (v) => v.address],
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
-		["Payment Method", (v) => v.payment_method],
-		["Transfer Date", (v) => v.transfer_date],
-        ["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(v.amount)],
+		["Payment Method", (v) =>  v.payment ? v.payment.payment_method : "N/A"],
+		["Transfer Date", (v) => formatTextualDateTime(v.transfer_date)],
+        ["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
 		["No. of Items", (v) => Object.keys(v.order_items).length],
-		["Additional Notes", (v) => v.notes.order_notes || "None"],
+		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => titlecase(v.status)],
-		["Claim Date", (v) => v.schedule && Object.values(v.schedule)[0].scheduled_date || "N/A"],
+		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
 ];
 
 const DetailsCard = ({ data }) => (
@@ -116,6 +119,7 @@ const ActionButtons = ({ category, status }) => {
 export default function OrderView() {
 	const { viewId } = useParams();
 	const [viewData, setViewData] = useState(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -152,7 +156,7 @@ export default function OrderView() {
 							Manage your laundry orders and track progress
 						</h3>
 					</div>
-					<button className='return-btn' onClick={(e) => <Navigate to="/customer/dashboard" />}>Back</button>
+					<button className='return-btn' onClick={(e) => navigate('/customer/dashboard')}>Back</button>
 				</div>
 
 				<div className='details-container'>

@@ -87,7 +87,7 @@
     gap: 10px;
 }
 
-.orders-list-container{
+.details-edit-container .orders-list-container{
     flex: 1;
     padding: 20px;
     display: flex;

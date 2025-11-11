@@ -7,11 +7,12 @@ import budget from "../../assets/Budget.png";
 import superbThick from "../../assets/Superb-Thick.png";
 import dryClean from "../../assets/Dry Cleaning.png";
 import studentPack from "../../assets/Student Pack.png";
-import { useState } from "react";
 import PackageServiceCard from "../../components/Package Service Card/PackageServiceCard";
+import { auth } from "../../firebase";
+import { useNavigate } from "react-router";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
   
   return (
     <main className="homepage-container">
@@ -28,12 +29,16 @@ export default function Home() {
             anywhere.
           </p>
           <div className="hero-buttons">
-            <button className="btn create-order-btn">
+            <button className="btn create-order-btn" onClick={() => {auth.currentUser ? navigate('/create-order') : navigate('/login')}} >
               Create Your Order <i className="fa-regular fa-heart"></i>
             </button>
-            <button className="btn signup-btn">
-              Signup now <i className="fa-regular fa-heart"></i>
-            </button>
+            {
+              !auth.currentUser && (
+                <button className="btn signup-btn" onClick={() => navigate('/registration')}>
+                  Signup now <i className="fa-regular fa-heart"></i>
+                </button>
+              )
+            }
           </div>
         </div>
         <div className="hero-image">
@@ -133,7 +138,7 @@ export default function Home() {
                   <p className="order">01</p>
                   <p>Schedule Laundry</p>
                 </span>
-                <p className="desc">Choose your preferred date and time htmlFor laundry pickup</p>
+                <p className="desc">Choose your preferred date and time for laundry pickup</p>
               </div>
             </div>
             <div className="step-card">

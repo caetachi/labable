@@ -31,10 +31,10 @@ import { db } from '../firebase'
   
   export async function getItemPerKg(washableItemId) {
     const washableItemsRef = ref(db, 'washable_items');
+
     const washableItemRef = child(washableItemsRef, washableItemId);
     const washableItem = await (await get(washableItemRef)).val();
-    
-    console.log("price "+washableItem.item_per_kilo);
+
     return washableItem.item_per_kilo;
   }
 
@@ -109,24 +109,6 @@ import { db } from '../firebase'
     const service = await serviceSnap.val();
     
     return service;
-  }
-
-  export async function getWashableItem(washableItemId) {
-    const washableItemsRef = ref(db, 'washable_items');
-    const washableItemRef = child(washableItemsRef, washableItemId);
-    const washableItemSnap = await get(washableItemRef);
-    const washableItem = await washableItemSnap.val();
-    
-    return washableItem;
-  }
-
-  export async function getInventoryItem(inventoryItemId) {
-    const inventoryItemsRef = ref(db, 'inventory_items');
-    const inventoryItemRef = child(inventoryItemsRef, inventoryItemId);
-    const inventoryItemSnap = await get(inventoryItemRef);
-    const inventoryItem = await inventoryItemSnap.val();
-    
-    return inventoryItem;
   }
 
   export async function getView(category, viewId) {

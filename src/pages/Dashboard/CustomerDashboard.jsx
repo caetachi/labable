@@ -89,7 +89,7 @@ function CustomerDashboard() {
                                     iconClass={card.iconClass}
                                     title={card.title}
                                     value={card.key === "totalSpentAmount" ?
-                                        `Php ${userApiData[card.key]}` :
+                                        `${new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(userApiData[card.key])}` :
                                         userApiData[card.key]}
                                     subTitle={card.subTitle}
                                 />
