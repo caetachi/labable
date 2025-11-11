@@ -222,6 +222,7 @@
     border: none;
     background-color: transparent;
     margin-left: 1px;
+    cursor: pointer;
 }
 .ti-trash {
     font-size: 30px;
@@ -266,4 +267,13 @@
     .management-table td {
         padding: 12px 8px;
     }
+}
+
+.filter-dropdown-container{
+    position: relative;
+    flex: 1;
+}
+.filter-dropdown-container .filter-dropdown{
+    width: 100%;
+    padding-left: 30px;
 }
