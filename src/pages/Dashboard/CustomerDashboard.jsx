@@ -4,14 +4,43 @@ import DashboardOrderHistoryCard from '../../components/Dashboard Order History 
 import { useEffect, useState } from 'react';
 import { onValue, ref } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
+import { getActiveOrderCount, getCompleteOrderCount, getTotalSpentAmount, getUserRecentOrders } from '../../scripts/get.js';
+import { NavLink } from 'react-router';
 
 function CustomerDashboard() {
     const [userData, setUserData] = useState({});
+    const [userApiData, setUserApiData] = useState({
+        activeOrdersCount: 0,
+        completedOrdersCount: 0,
+        totalSpentAmount: 0.00
+    });
+    const [recentOrders, setRecentOrders] = useState([]);
 
     useEffect(()=>{
         onValue(ref(db, `users/${auth.currentUser.uid}`), (snapshot)=>{
             if(snapshot.exists()){
                 setUserData(snapshot.val());
+                getActiveOrderCount(auth.currentUser.uid).then(count => {
+                    setUserApiData(prevData => ({
+                        ...prevData,
+                        activeOrdersCount: count
+                    }));
+                });
+                getCompleteOrderCount(auth.currentUser.uid).then(count => {
+                    setUserApiData(prevData => ({
+                        ...prevData,
+                        completedOrdersCount: count
+                    }));
+                });
+                getTotalSpentAmount(auth.currentUser.uid).then(amount => {
+                    setUserApiData(prevData => ({
+                        ...prevData,
+                        totalSpentAmount: amount.toFixed(2)
+                    }));
+                });
+                getUserRecentOrders(auth.currentUser.uid).then(orders => {
+                    setRecentOrders(orders);
+                });
             }
         });
     }, [auth.currentUser.uid]);
@@ -38,12 +67,6 @@ function CustomerDashboard() {
       },
     ];
 
-    const userApiData = {
-        activeOrdersCount: 1,
-        completedOrdersCount: 5,
-        totalSpentAmount: 150.00
-    }
-
     return (<>
         {userData.role === "customer" && (
             <div className={"dashboard-container"}>
@@ -52,10 +75,10 @@ function CustomerDashboard() {
                         <h1>My Dashboard</h1>
                         <p>Manage your laundry orders and track progress</p>
                     </div>
-                    <button className="header-button">
+                    <NavLink to={'/create-order'} className="header-button">
                         <i className="ti ti-plus"></i>
                         New Order
-                    </button>
+                    </NavLink>
                 </div>
                 <div className='dashboard-card-container'>
                     {
@@ -65,7 +88,9 @@ function CustomerDashboard() {
                                     key={card.key}
                                     iconClass={card.iconClass}
                                     title={card.title}
-                                    value={userApiData[card.key]}
+                                    value={card.key === "totalSpentAmount" ?
+                                        `Php ${userApiData[card.key]}` :
+                                        userApiData[card.key]}
                                     subTitle={card.subTitle}
                                 />
                             );
@@ -74,45 +99,25 @@ function CustomerDashboard() {
                 </div>
                 <div className="order-history-container">
                     <div className="order-history-header">
-                        <h2>Recent Orders</h2>
-                        <p>Track and manage your laundry orders</p>
+                        <div className="order-history-title">
+                            <h2>Recent Orders</h2>
+                            <p>Track and manage your laundry orders</p>
+                        </div>
                     </div>
-                        <DashboardOrderHistoryCard
-                            orderId="001"
-                            orderedDate="2024-06-01"
-                            status="Completed"
-                            total="150.00"
-                            serviceType="Superb Service"
-                            items={10}
-                            deliveryDate="2024-06-03"
-                        />
-                        <DashboardOrderHistoryCard
-                            orderId="001"
-                            orderedDate="2024-06-01"
-                            status="Rejected"
-                            total="150.00"
-                            serviceType="Superb Service"
-                            items={10}
-                            deliveryDate="2024-06-03"
-                        />
-                        <DashboardOrderHistoryCard
-                            orderId="001"
-                            orderedDate="2024-06-01"
-                            status="Pending"
-                            total="150.00"
-                            serviceType="Superb Service"
-                            items={10}
-                            deliveryDate="2024-06-03"
-                        />
-                        <DashboardOrderHistoryCard
-                            orderId="001"
-                            orderedDate="2024-06-01"
-                            status="In Progress"
-                            total="150.00"
-                            serviceType="Superb Service"
-                            items={10}
-                            deliveryDate="2024-06-03"
-                        />
+                        {recentOrders.map(([orderId, order]) => {
+                            return (
+                                <DashboardOrderHistoryCard
+                                    key={orderId}
+                                    orderId={order.order_id ?? "N/A"}
+                                    orderedDate={order.created_at ?? "N/A"}
+                                    status={order.status ?? "Pending"}
+                                    total={order.amount ?? 0}
+                                    serviceType={order.service_name ?? "N/A"}
+                                    items={0}
+                                    deliveryDate={0}
+                                />
+                            );
+                        })}
                 </div>
             </div>
         )}
