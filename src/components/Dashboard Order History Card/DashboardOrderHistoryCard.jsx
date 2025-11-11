@@ -13,7 +13,7 @@ function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, 
 
                     {/* ... first row ... */}
                     <div className="first-row">
-                        <h4>ORD-{orderId}</h4>
+                        <h4>{orderId}</h4>
                         <span className={`status ${status?.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
                     </div>
 
