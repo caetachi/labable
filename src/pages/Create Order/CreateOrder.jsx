@@ -65,7 +65,6 @@ export default function CreateOrder() {
         });
     }
     
-
     useEffect(()=>{
         setMinDate(getMinDateTime(2));
         async function getStuff(params) {
@@ -249,8 +248,6 @@ export default function CreateOrder() {
     }
 
         navigate('/order-summary', { state: { orderData: draft } });
-    }
-    
     return(
         <div className='create-order-container'>
             <div className="title-container">
