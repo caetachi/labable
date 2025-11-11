@@ -3,17 +3,59 @@ import './dashboard.css'
 import DashboardCard from '../../components/Dashboard Card/DashboardCard';
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { onValue, ref } from 'firebase/database';
+import { onValue, ref, set } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
+import { getOrders, getUsers } from '../../scripts/get.js';
 
 function AdminDashboard() {
     const [userData, setUserData] = useState({});
+    const [adminApiData, setAdminApiData] = useState({
+        totalOrdersCount: 0,
+        totalRevenueAmount: 0.00,
+        totalCustomersCount: 0,
+        totalDayOrdersCount: 0,
+        totalDayRevenueAmount: 0.00,
+        totalDayOrdersCompletedCount: 0
+    });
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [monthlyChartData, setMonthlyChartData] = useState([]);
+    const [array, setArray] = useState([]);
+    const [year, setYear] = useState(new Date().getFullYear());
 
     useEffect(()=>{
         onValue(ref(db, `users/${auth.currentUser.uid}`), (snapshot)=>{
             if(snapshot.exists()){
                 setUserData(snapshot.val());
-            }
+                getOrders().then(count => {
+                    setAdminApiData(prevData => ({
+                        ...prevData,
+                        totalOrdersCount: count.length-1
+                    }));
+                    let totalRevenue = 0;
+                    count.forEach((order) => {
+                        const orderObject = order[1]; 
+                        const amountValue = parseFloat(orderObject?.amount) || 0; 
+                    
+                        totalRevenue += amountValue;
+                    });
+                
+                    setAdminApiData(prevData => ({
+                        ...prevData,
+                        totalRevenueAmount: totalRevenue.toFixed(2)
+                    }));
+                    setArray(count);
+                    {array && setMonthlyChartData(calculateMonthlyRevenue(array, year));}
+                    const newChartData = calculateMonthlyRevenue(count, year);
+                    setMonthlyChartData(newChartData);
+                })};
+                getUsers().then(users => {
+                    const customerCount = users.filter(user => user[1].role === "customer").length;
+                    setAdminApiData(prevData => ({
+                        ...prevData,
+                        totalCustomersCount: customerCount
+                    }));
+                });
+                setDataForDate(selectedDate);
         });
     }, [auth.currentUser.uid]);
 
@@ -59,37 +101,102 @@ function AdminDashboard() {
         }
     ]
 
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-
-    const adminApiData = {
-        totalOrdersCount: 100,
-        totalRevenueAmount: 5000.00,
-        totalCustomersCount: 50,
-        totalDayOrdersCount: 10,
-        totalDayRevenueAmount: 300.00,
-        totalDayOrdersCompletedCount: 7
-    }
-
-    const chartData = [
-        { name: "January", revenue: 20000 },
-        { name: "February", revenue: 30000 },
-        { name: "March", revenue: 16000 },
-        { name: "April", revenue: 18000 },
-        { name: "May", revenue: 15000 },
-        { name: "June", revenue: 72000 },
-        { name: "July", revenue: 68000 },
-        { name: "August", revenue: 16000 },
-        { name: "September", revenue: 19000 },
-        { name: "October", revenue: 22000 },
-        { name: "November", revenue: 5000 },
-        { name: "December", revenue: 7000 },
+function calculateMonthlyRevenue(ordersArray, year = new Date().getFullYear()) {
+    const monthlyRevenueData = [
+        { name: "January", revenue: 0 },
+        { name: "February", revenue: 0 },
+        { name: "March", revenue: 0 },
+        { name: "April", revenue: 0 },
+        { name: "May", revenue: 0 },
+        { name: "June", revenue: 0 },
+        { name: "July", revenue: 0 },
+        { name: "August", revenue: 0 },
+        { name: "September", revenue: 0 },
+        { name: "October", revenue: 0 },
+        { name: "November", revenue: 0 },
+        { name: "December", revenue: 0 },
     ];
+
+
+
+    ordersArray.forEach(order => {
+        const orderObject = order[1];
+        const rawTimestamp = orderObject?.created_at;
+
+        if (rawTimestamp) {
+            
+            const dateObject = new Date(rawTimestamp);
+            
+            const orderYear = dateObject.getFullYear();
+            const orderMonthIndex = dateObject.getMonth();
+            
+            if (orderYear === year) {
+                const amountValue = parseFloat(orderObject?.amount) || 0;
+                
+                monthlyRevenueData[orderMonthIndex].revenue += amountValue;
+            }
+        }
+    });
+
+    return monthlyRevenueData;
+}
+
+const handleYearChange = (e) => {
+    const newYearStr = e.target.value; 
+    const newYearInt = parseInt(newYearStr); 
+    setYear(newYearInt);
+    const newChartData = calculateMonthlyRevenue(array, newYearInt);
+    setMonthlyChartData(newChartData);
+};
+
+function setDataForDate(date) { 
+    setSelectedDate(date); 
+    getOrders().then(orders => {
+        let dayOrdersCount = 0;
+        let dayRevenueAmount = 0;
+        let dayOrdersCompletedCount = 0;
+        
+        orders.forEach((order) => {
+            const orderObject = order[1];
+
+            const rawOrderDate = orderObject?.created_at; 
+            
+            let orderDateString;
+            if (rawOrderDate) {
+                const dateObject = new Date(rawOrderDate);
+                const year = dateObject.getFullYear();
+                
+                const month = String(dateObject.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObject.getDate()).padStart(2, '0');
+                
+                orderDateString = `${year}-${month}-${day}`;
+            }
+
+            if (orderDateString === date) { 
+                dayOrdersCount++;
+                const amountValue = parseFloat(orderObject?.amount) || 0;
+                dayRevenueAmount += amountValue;
+                if (orderObject?.status === "Completed") {
+                    dayOrdersCompletedCount++;
+                }
+            }
+        });
+        console.log([dayOrdersCount, dayRevenueAmount, dayOrdersCompletedCount]);
+        
+        setAdminApiData(prevData => ({
+            ...prevData,
+            totalDayOrdersCount: dayOrdersCount,
+            totalDayRevenueAmount: dayRevenueAmount.toFixed(2),
+            totalDayOrdersCompletedCount: dayOrdersCompletedCount
+        }));
+    });
+}
 
     
 const MyAreaChart = () => {
   return (
     <ResponsiveContainer width="100%" height={400}>
-        <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+        <AreaChart data={monthlyChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="var(--hl-purple)" stopOpacity={0.4}/>
@@ -147,7 +254,7 @@ const MyAreaChart = () => {
                 </div>
                     <div className="dashboard-day-summary-data">
                         <label htmlFor="dayDate">Date:</label>
-                        <input id='dayDate' type="date" defaultValue={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+                        <input id='dayDate' type="date" value={selectedDate} onChange={(e) => setDataForDate(e.target.value)} />
                     </div>
                     <div className="dashboard-card-container">
                         {
@@ -170,10 +277,15 @@ const MyAreaChart = () => {
                             <h2>Revenue Summary</h2>
                             <p>Track the revenue within the year</p>
                         </div>
-                        <select className="order-history-filter">
+                        <select className="order-history-filter"
+                            value={year} onChange={(e) => {handleYearChange(e)}}>
                             <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
                         </select>
                     </div>
                         <MyAreaChart />
