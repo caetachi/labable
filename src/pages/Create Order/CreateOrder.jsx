@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { getServicePrice, getServices, getWashableItems } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
 import { newOrder } from '../../scripts/create'
+import { toast } from 'react-toastify'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -199,10 +200,38 @@ export default function CreateOrder() {
         const statusSet = stats;
         setStatus(statusSet)
         
-
+        if(!service){
+            toast.error('No service selected.');
+            return;
+        }
+        if(!address){
+            toast.error('No address indicated.');
+            return;
+        }
+        if(!payment){
+            toast.error('No payment method selected.');
+            return;
+        }
+        if(!transferDate){
+            toast.error('No transfer date indicated.');
+            return;
+        }
+        if(!modeTransfer){
+            toast.error('No mode of transfer selected.');
+            return;
+        }
+        if(!modeClaim){
+            toast.error('No mode of claiming selected.');
+            return;
+        }
+        if(orderItems.length == 0){
+            toast.error('Order list is empty');
+            return;
+        };
+        
         
         await newOrder(service, address, payment, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems, amount);
-        
+        toast.success('Order created successfully!');
     }
 
     // const [service, setService] = useState();
@@ -354,4 +383,3 @@ export default function CreateOrder() {
         </div>
     )
 }
-

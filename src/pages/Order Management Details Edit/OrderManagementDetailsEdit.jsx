@@ -10,10 +10,12 @@ import { useState } from 'react'
 import "leaflet/dist/leaflet.css";
 import Leaflet from '../../components/Leaflet/Leaflet'
 import Buttons from '../../components/Buttons - Edit Details/Buttons'
+import { useParams } from 'react-router'
 
 export default function OrderManagementDetailsEdit(){
-    const [editDetail, setEditDetail] = useState('Schedule Details');
-    // Order Details, Schedule Details, Inventory Details
+    const {toEdit} = useParams();
+    const [editDetail, setEditDetail] = useState(toEdit);
+    // order, schedule, inventory
     const [coordinates, setCoordinates] = useState([]);
     const [locationName, setLocationName] = useState("Malolos");
 
@@ -31,7 +33,7 @@ export default function OrderManagementDetailsEdit(){
                 <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
             </div>
             {
-                editDetail == 'Order Details'  &&
+                editDetail == 'order'  &&
                 <div className="details-edit gray-border">
                     <div className="details-title-container">
                         <p className='details-title'>Order Details</p>
@@ -283,7 +285,7 @@ export default function OrderManagementDetailsEdit(){
                 </div>
             }
             {
-                editDetail == 'Schedule Details'  &&
+                editDetail == 'schedule'  &&
                 <div className="details-edit gray-border">
                     <div className="details-title-container">
                         <p className='details-title'>Schedule Details</p>
@@ -358,7 +360,7 @@ export default function OrderManagementDetailsEdit(){
                 </div>
             }
             {
-                editDetail == 'Inventory Details'  &&
+                editDetail == 'inventory'  &&
                 <div className="details-edit gray-border">
                     <div className="small-container">
                         <p className='small-container-title'>Item Name</p>
