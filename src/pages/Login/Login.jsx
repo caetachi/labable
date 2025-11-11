@@ -10,11 +10,9 @@ import { loginViaEmailAndPassword } from '../../scripts/login.js'
 import { registerViaGoogle } from '../../scripts/register.js'
 
 export default function Login() {
-    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
-
     
     function handleEmailChange(e){
         const temp = e.target.value

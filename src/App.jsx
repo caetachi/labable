@@ -24,6 +24,7 @@ import { toast } from "react-toastify"
 import ToastWrapper from "./components/Toast/ToastWrapper"
 import AdminDashboard from "./pages/Dashboard/AdminDashboard"
 import CustomerDashboard from "./pages/Dashboard/CustomerDashboard"
+import OrderView from "./pages/Order View/OrderView"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -89,6 +90,7 @@ function Layout({ user, userData }) {
               <Route path="/my-orders" element={<MyOrder />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+              <Route path="/order/:viewId" element={<OrderView />} />
               
               {userData?.role === "admin" &&(
                 <>

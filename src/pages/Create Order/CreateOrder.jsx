@@ -198,6 +198,20 @@ export default function CreateOrder() {
 
     async function submit(stats){
         const statusSet = stats;
+        setStatus(statusSet);
+
+        const draft = {
+            serviceUid: service,
+            address: address,
+            paymentMethod: payment,
+            transferMode: modeTransfer,
+            transferDate: transferDate,
+            arrivalDate: transferDate,
+            claimMode: modeClaim,
+            note: notes,
+            orders: orderItems,
+            status: statusSet,
+        };
         setStatus(statusSet)
         
         if(!service){
@@ -234,14 +248,8 @@ export default function CreateOrder() {
         toast.success('Order created successfully!');
     }
 
-    // const [service, setService] = useState();
-    // const [modeTransfer, setModeTransfer] = useState();
-    // const [modeClaim, setModeClaim] = useState();
-    // const [payment, setPayment] = useState();
-    // const [notes, setNotes] = useState();
-    // const [status, setStatus] = useState();
-    
-    
+        navigate('/order-summary', { state: { orderData: draft } });
+    }
     
     return(
         <div className='create-order-container'>
@@ -324,8 +332,8 @@ export default function CreateOrder() {
                     <p className='section-title'>Mode of Laundry Transfer</p>
                     <div className="radio-container">
                         <label className='radio-label' htmlFor="pick-up-transfer">
-                            <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" value={'Pickup'}/>
-                            Pickup
+                            <input className='radio' type="radio" name="transfer-mode" id="pick-up-transfer" value={'Pick-up'}/>
+                            Pick-up (Collected from your address)
                         </label>
                     </div>
                     <div className="radio-container">
@@ -350,8 +358,7 @@ export default function CreateOrder() {
                 </div>
                 <div className="radio-container">
                     <label className='radio-label' htmlFor="drop-off-receive">
-                        <input className='radio' type="radio" name="receive-mode" id="drop-off-receive"  value={'Deliver'}/>
-                        Deliver (Deliver to your front door)
+                        Drop-off (Delivered to your front door)
                     </label>
                 </div>
             </div>
