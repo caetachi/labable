@@ -5,7 +5,7 @@ import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 export async function registerViaGoogle(){
     const result = await signInWithPopup(auth, googleAuth).catch((err)=>{
-      localStorage.setItem("toastMessage", err.message);
+      localStorage.setItem("toastMessage", "Google sign-in failed. Please try again.");
       localStorage.setItem("toastType", "error");
     });
     const user = result.user;

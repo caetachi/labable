@@ -7,38 +7,6 @@ import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import BigNumber from "bignumber.js";
 import { getView } from "../../scripts/get";
 
-const statusMap = {
-	accepted: {
-		label: "Order Approved",
-		value: "Your order has been accepted.",
-	},
-	pending: {
-		label: "Order Pending",
-		value: "Your order is currently under approval.",
-	},
-	rejected: {
-		label: "Order Cancelled",
-		value: "Your order has been rejected.",
-	},
-	received: {
-		label: "Received Laundry",
-		value: "We have received your laundry load.",
-	},
-	ongoing: {
-		label: "In Process",
-		value: "Your laundry is now being washed and cleaned.",
-	},
-	done: { label: "Finished Laundry", value: "Laundry has been finished." },
-	completed: {
-		label: "Completed",
-		value: "You have received your laundry and completed your order.",
-	},
-	error: {
-		label: "Process Error",
-		value: "Something went wrong while trying to process your order.",
-	},
-};
-
 const fieldGroups = {
 	order: [
 		["Order ID", (v) => v.order_id],
@@ -50,7 +18,7 @@ const fieldGroups = {
 		["Payment Method", (v) => v.payment ? v.payment.payment_method : "N/A"],
 		["Transfer Date", (v) => formatDate(v.transfer_date)],
 		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
-		["No. of Items", (v) => Object.keys(v.order_items).length],
+		["No. of Items", (v) => new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0))],
 		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
@@ -93,7 +61,6 @@ const fieldGroups = {
 		["Date Created", (v) => new Date(v.created_at).toDateString()],
 		["Item Name", (v) => v.washable_item_name],
 		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
-		// ["Price per Piece", (v) => `₱ ${new BigNumber(v.pricePerPiece).toFormat(2)}`],
 		["Date Modified", (v) => new Date(v.modified_at).toDateString()],
 		["Item per Kg", (v) => v.item_per_kilo],
 		["Modified By", (v) => titlecase(`${v.modified_by}`)]

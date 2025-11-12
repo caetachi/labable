@@ -4,6 +4,8 @@ import { formatTextualDateTime } from '../../scripts/dateformat';
 import BigNumber from 'bignumber.js';
 
 function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, total, serviceType, items, deliveryDate }) {
+    let itemCount = Object.values(items).map(item => item.quantity || 1).reduce((a, b) => a + b, 0);
+
     return (
         <div className="order-history-card">
             <div className="order-history-details">
@@ -14,7 +16,7 @@ function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, 
                         <span className={`status ${status?.toLowerCase().replace(/\s+/g, "")}`}>{status}</span>
                     </div>
 
-                    <p>{serviceType} • {items} items</p>
+                    <p>{serviceType} • {new Intl.NumberFormat('en-PH').format(itemCount)} items</p>
                     <p>Ordered: {formatTextualDateTime(orderedDate)}</p>
                     <p>{deliveryDate ? `• Delivered: ${formatTextualDateTime(deliveryDate)}` : ''}</p>
                 </div>

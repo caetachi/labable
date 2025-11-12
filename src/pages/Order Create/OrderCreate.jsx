@@ -1,4 +1,4 @@
-import './create-order.css'
+import './order-create.css'
 import EditLogo from '../../assets/edit.svg'
 import SearchLogo from '../../assets/search.svg'
 import PantsLogo from '../../assets/pants.svg'

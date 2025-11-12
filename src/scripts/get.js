@@ -94,7 +94,7 @@ import { db } from '../firebase'
         order.user_id === userUid &&
         order.status !== "Completed" &&
         order.status !== "Rejected" &&
-        order.status !== "Cancelled"
+        order.status !== "Canceled"
       ) {
         count++;
       }
@@ -172,7 +172,7 @@ export async function getTotalSpentAmount(userUid) {
     if (
       order.user_id === userUid &&
       order.status !== "Rejected" &&
-      order.status !== "Cancelled"
+      order.status !== "Canceled"
     ) {
       amount += Number(order?.amount ?? 0);
     }

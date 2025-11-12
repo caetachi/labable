@@ -332,3 +332,7 @@
     flex-direction: row;
     gap: 10px;
 }
+
+#swal2-html-container{
+    font-family: 'Poppins', 'Sans serif';
+}

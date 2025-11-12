@@ -77,6 +77,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: end;
 }
 
 .management-view-container .detail-track .connector {
@@ -84,6 +85,30 @@
     height: 100%;
 }
 
+.management-view-container .detail-track:first-child .connector-lead {
+    display: none;
+}
+
+.management-view-container .detail-track:last-child .connector-lead {
+    height: 40%;
+}
+
+.management-view-container .detail-track:last-child .connector-trail {
+    display: none;
+}
+
+.management-view-container .detail-track:last-child .visual {
+    justify-content: start;
+}
+
+.management-view-container .detail-track:only-child .connector-lead {
+    display: none;
+}
+
+.management-view-container .detail-track:only-child .connector-trail {
+    display: block;
+    height: 40%;
+}
 
 .management-view-container .detail-track .content {
     display: flex;
@@ -111,6 +136,10 @@
     cursor: pointer;
     padding: 1rem;
     transition: .2s ease;
+}
+
+.management-view-container .btn-container button:disabled {
+    cursor: default;
 }
 
 .management-view-container .btn-container .edit-btn {
@@ -176,4 +205,10 @@
     font-size: 1rem;
     color: var(--hl-gray);
     text-align: center;
+}
+
+#swal2-textarea {
+    font-family: var(--primary-font);
+    font-size: .8rem;
+    resize: none;
 }

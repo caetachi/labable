@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home"
 import AboutUs from "./pages/About Us/AboutUs"
 import Footer from "./components/Footer/Footer"
 import Login from "./pages/Login/Login"
-import CreateOrder from "./pages/Create Order/CreateOrder"
+import CreateOrder from "./pages/Order Create/OrderCreate"
 import MyOrder from "./pages/My Orders/MyOrder"
 import Profile from "./pages/Profile/Profile"
 import Registration from "./pages/Registration/Registration"
@@ -91,6 +91,7 @@ function Layout({ user, userData }) {
               <Route path="/profile" element={<Profile />} />
               <Route path="/customer/dashboard" element={<CustomerDashboard />} />
               <Route path="/order/:viewId" element={<OrderView />} />
+              <Route path="/:toEdit/edit/:id" element={<OrderManagementDetailsEdit />} />
               
               {userData?.role === "admin" &&(
                 <>
