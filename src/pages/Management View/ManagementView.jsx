@@ -1,4 +1,4 @@
-import { Navigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import mapquery from "../../scripts/mapquery";
 import "./management-view.css";
@@ -8,6 +8,9 @@ import BigNumber from "bignumber.js";
 import { getUser, getView } from "../../scripts/get";
 import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
+import swal from 'sweetalert2';
+import { deleteInventory } from '../../scripts/delete';
+import { updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
 	order: [
@@ -66,6 +69,9 @@ const fieldGroups = {
 		["Date Modified", (v) => v.modified_at ? new Date(v.modified_at).toDateString() : "N/A"],
 		["Item per Kg", (v) => v.item_per_kilo],
 		["Modified By", (v) => v.modified_by ? titlecase(`${v.modified_by}`) : "N/A"]
+	],
+	customer: [
+		
 	]
 };
 
@@ -80,40 +86,30 @@ const DetailsCard = ({ category, data }) => (
 	</div>
 );
 
-const DetailsTrackCard = ({ tracks }) => (
-	<div className='track-card'>
-		{Object.values(tracks).map((t) => (
-			<TrackNode
-				key={t.timestamp}
-				label={titlecase(t.status)}				
-				timestamp={t.timestamp}
-			/>
-		))}
-	</div>
-);
-
-const ActionButtons = ({ category, status }) => {
+const ActionButtons = ({ category, status, ...props }) => {
 	const base = <button className='edit-btn'>Edit</button>;
 	const actions =
 		{
 			order:
 				status === "pending" ? 
 					[
-							["Reject", "reject-btn"],
-							["Accept", "accept-btn"],
+						["Reject", "reject-btn"],
+						["Accept", "accept-btn"],	
 					]
-					: 
+					:
+				status === "canceled" ?
+					[] :
 					[
-							["Cancel", "cancel-btn"],
-							["Update", "update-btn"],
+						["Cancel", "cancel-btn"],
+						["Update", "update-btn"],
 					],
 			schedule: [
 				["Cancel", "cancel-btn"],
 				["Delete", "delete-btn"],
 			],
 			inventory: [
-				["Delete", "delete-btn"],
-				["Restock", "update-btn"],
+				["Delete", "delete-btn", props.inventoryDelete],
+				["Restock", "update-btn", props.inventoryRestock],
 			],
 			service: [
 				["Delete", "delete-btn"]
@@ -126,8 +122,8 @@ const ActionButtons = ({ category, status }) => {
 	return (
 		<div className='btn-container'>
 			{base}
-			{actions.map(([txt, cls]) => (
-				<button key={cls} className={cls}>
+			{actions.map(([txt, cls, onClick]) => (
+				<button key={cls} className={cls} onClick={onClick}>
 					{txt}
 				</button>
 			))}
@@ -168,6 +164,7 @@ const InteractiveMap = ({ address }) => {
 
 export default function ManagementView() {
 	const { viewCategory, viewId } = useParams();
+	const navigate = useNavigate();	
 	const [viewData, setViewData] = useState({});
 
 	useEffect(() =>{
@@ -186,7 +183,39 @@ export default function ManagementView() {
 		if (last) last.style.visibility = "hidden";
 	}, []);
 
-	if (!["order", "schedule", "inventory", "service", "washable"].includes(viewCategory))
+	async function inventoryRestock(){
+		swal.fire({
+			title: 'Are you sure?',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, restock it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + 1);
+				}
+		});
+	}
+
+	async function inventoryDelete(){
+				swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to revert this!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: 'var(--bg-dark)',
+					cancelButtonColor: 'var(--error)',
+					confirmButtonText: 'Yes, delete it!'
+				}).then(async (result) => {
+					if (result.isConfirmed) {
+						await deleteInventory(viewId);
+						navigate('/admin/inventory');
+					}
+				});
+	}
+
+	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
 
 	return (
@@ -208,7 +237,7 @@ export default function ManagementView() {
 								: "washable items, pricing, and number of pieces per kilo"}
 						</h3>
 					</div>
-					<button className='return-btn'>Back</button>
+					<button className='return-btn' onClick={() => navigate('/admin/dashboard')}>Back</button>
 				</div>
 
 				<div className='details-container'>
@@ -222,14 +251,26 @@ export default function ManagementView() {
 					<DetailsCard category={viewCategory} data={viewData} />
 
 					{viewCategory === "order" ? (
-						<DetailsTrackCard tracks={viewData.tracking || {}} />
-					) : viewCategory === "schedule" ? (
+						<div className='track-card'>
+							{Object.values(viewData.tracking || {}).map((t, i) => (
+								<TrackNode
+									key={i + t.timestamp}
+									label={t.label}
+									value={t.message}
+									date={t.timestamp}
+								/>
+							))}
+						</div>
+						)
+						: viewCategory === "schedule" ? (
 						<InteractiveMap address={''} />
-					) : null}
+						) : null}
 
 					<ActionButtons
 						category={viewCategory}
-						status={''}
+						status={viewData.status?.toLowerCase() || ""}
+						inventoryDelete={inventoryDelete}
+						inventoryRestock={inventoryRestock}
 					/>
 				</div>
 			</div>

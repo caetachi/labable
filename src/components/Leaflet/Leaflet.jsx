@@ -40,7 +40,6 @@ export default function Leaflet(props) {
             setPosition(newCoords);
             props.onCoordinateChange && props.onCoordinateChange(newCoords);
           } else {
-            
             setPosition(defaultCoords);
           }
         
@@ -55,7 +54,7 @@ export default function Leaflet(props) {
 
     fetchInitialCoordinates();
     
-  }, [props.coordinates, props.location_name]);
+  }, [props]);
 
   const handleSearch = async () => {
     if (locationName) {

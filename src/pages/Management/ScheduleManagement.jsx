@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
-import { get, onValue, ref } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import { getOrders } from '../../scripts/get';
 import { db } from '../../firebase';
 import {deleteSchedulePickup, deleteScheduleDelivery} from '../../scripts/delete';
 import Swal from 'sweetalert2';
+import { formatLocaleDate } from '../../scripts/dateformat';
 
 const getStatusClass = (status) => {
     return status.toLowerCase().replace(/\s+/g, '');
-}
-
-const getNormalTime = (datetime) =>{
-    return new Date(datetime).toLocaleDateString();
 }
 
 
@@ -27,10 +24,9 @@ export default function ScheduleManagement() {
             let withoutCounter = [];
             for(let i = 0; i < getOrder.length; i++){
                 if(getOrder[i][0] != 'orders_counter'){
-                    if(getOrder[i][1].hasOwnProperty('schedule')){
-                        if(getOrder[i][1].schedule.hasOwnProperty('pickup') || getOrder[i][1].schedule.hasOwnProperty('delivery')){
+                    if(Object.prototype.hasOwnProperty.call(getOrder[i][1], 'schedule')){
+                        if(Object.prototype.hasOwnProperty.call(getOrder[i][1].schedule, 'pickup') || Object.prototype.hasOwnProperty.call(getOrder[i][1].schedule, 'delivery')){
                             getOrder[i].push(getOrder[i][1].schedule);
-                            console.log(getOrder[i]);
                             withoutCounter.push(getOrder[i])
                         }
                     }
@@ -40,19 +36,16 @@ export default function ScheduleManagement() {
         }
         onValue(ordersRef, (snapshot)=>{
             if (snapshot.exists()) {
-                const data = snapshot.val();
                 getOrdersList();
             } else {
                 console.log("No data available");
             }
         });
-    }, [])
+    }, [ordersRef])
 
     async function handleDeleteSchedule(orderID){
-        const hasPickup = schedules.find(schedule => schedule[1].order_id === orderID)[2].hasOwnProperty('pickup');
-        const hasDelivery = schedules.find(schedule => schedule[1].order_id === orderID)[2].hasOwnProperty('delivery');
-        console.log("Pickup: "+hasPickup);
-        console.log("Deliver: "+hasDelivery);
+        const hasPickup = Object.prototype.hasOwnProperty.call(schedules.find(schedule => schedule[1].order_id === orderID)[2], 'pickup');
+        const hasDelivery = Object.prototype.hasOwnProperty.call(schedules.find(schedule => schedule[1].order_id === orderID)[2], 'delivery');
         
         Swal.fire({
             title: 'Are you sure?',
@@ -103,14 +96,14 @@ export default function ScheduleManagement() {
                     <i className="ti ti-search search-icon"></i>
                     <input type="text" placeholder="Search laundry orders by ID..." />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
+                <select defaultValue="Date" className="filter-dropdown">
+                    <option value="Date" hidden>Date</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Status</option>
+                <select defaultValue="Status" className="filter-dropdown">
+                    <option value="Status" hidden>Status</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Type</option>
+                <select defaultValue="Type" className="filter-dropdown">
+                    <option value="Type" hidden>Type</option>
                 </select>
             </div>
 
@@ -127,15 +120,15 @@ export default function ScheduleManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {schedules.map(schedule => (
-                            <tr key={schedule[1].order_id}>
+                        {schedules.map((schedule, index) => (
+                            <tr key={schedule[1].order_id + index}>
                                 <td>{schedule[1].order_id}</td>
                                 <td>{schedule[1].customer_name}</td>
-                                <td>{schedule[2].pickup && schedule[2].delivery ? "pickup & delivery" : schedule[2].pickup ? "pickup" : schedule[2].delivery ? "delivery" : "error"}</td>
+                                <td>{schedule[2].pickup && schedule[2].delivery ? "Pickup & Delivery" : schedule[2].pickup ? "Pickup" : schedule[2].delivery ? "Delivery" : "error"}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery ?
-                                `${getNormalTime(schedule[2].pickup.scheduled_date)} : ${getNormalTime(schedule[2].delivery.scheduled_date)}` : 
-                                schedule[2].pickup ? getNormalTime(schedule[2].pickup.scheduled_date) :
-                                schedule[2].delivery ? getNormalTime(schedule[2].delivery.scheduled_date) :
+                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${formatLocaleDate(schedule[2].delivery.scheduled_date)}` : 
+                                schedule[2].pickup ? formatLocaleDate(schedule[2].pickup.scheduled_date) :
+                                schedule[2].delivery ? formatLocaleDate(schedule[2].delivery.scheduled_date) :
                                 "No date"
                             }</td>
                                 <td>

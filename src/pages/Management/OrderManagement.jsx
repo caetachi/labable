@@ -6,15 +6,7 @@ import { deleteOrder } from '../../scripts/delete.js';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import swal from 'sweetalert2';
-
-// const orders = [
-//     { id: 'ORD-001', customer: 'Jerson Valdez', service: 'Wash & Fold', items: 15, status: 'Washing', amount: 'Php 206.00' },
-//     { id: 'ORD-002', customer: 'Janver Flores', service: 'Wash & Dry', items: 28, status: 'Delivered', amount: 'Php 206.00' },
-//     { id: 'ORD-003', customer: 'Jan Santiago', service: 'All Package', items: 17, status: 'Drying', amount: 'Php 306.00' },
-//     { id: 'ORD-004', customer: 'John Bacang', service: 'Wash & Fold', items: 28, status: 'Folding', amount: 'Php 206.00' },
-//     { id: 'ORD-005', customer: 'Marc Pavia', service: 'Wash', items: 14, status: 'Ironing', amount: 'Php 306.00' }
-// ];
-
+import BigNumber from 'bignumber.js';
 
 export default function OrderManagement() {
     const getStatusClass = (status) => {
@@ -45,7 +37,6 @@ export default function OrderManagement() {
         }
         onValue(ordersRef, (snapshot)=>{
             if (snapshot.exists()) {
-                const data = snapshot.val();
                 getOrdersList();
             } else {
                 console.log("No data available");
@@ -94,20 +85,20 @@ export default function OrderManagement() {
                 </div>
                 <div className="filter-dropdown-container">
                     <i className="far fa-calendar" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select className="filter-dropdown"> 
-                        <option value="" disabled selected hidden><div><i class="far fa-calendar"></i></div>Date</option>
+                    <select defaultValue="Date" className="filter-dropdown"> 
+                        <option value="Date" hidden>Date</option>
                     </select>
                 </div>
                 <div className="filter-dropdown-container">
                     <i className="far fa-check-circle" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select className="filter-dropdown">
-                        <option value="" disabled selected hidden>Status</option>
+                    <select defaultValue="Status" className="filter-dropdown">
+                        <option value="Status" hidden>Status</option>
                     </select>
                 </div>
                 <div className="filter-dropdown-container">
                     <i className="ti ti-wash-machine" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select className="filter-dropdown">
-                        <option value="" disabled selected hidden>Service</option>
+                    <select defaultValue="Service" className="filter-dropdown">
+                        <option value="Service" hidden>Service</option>
                     </select>
                 </div>
                 
@@ -127,8 +118,8 @@ export default function OrderManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.length > 0 && orders.map(order => (
-                            <tr key={order[1].order_id}>
+                        {orders.length > 0 && orders.map((order, index) => (
+                            <tr key={order[1].order_id + index}>
                                 <td>{order[1].order_id}</td>
                                 <td>{order[1].customer_name}</td>
                                 <td>{order[1].service_name}</td>
@@ -138,7 +129,7 @@ export default function OrderManagement() {
                                         {order[1].status}
                                     </span>
                                 </td>
-                                <td>{Number(order[1].amount).toFixed(2)}</td>
+                                <td>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP' }).format(new BigNumber(order[1].amount))}</td>
                                 <td className="action-buttons">
                                     <NavLink to={`/admin/order/${order[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>

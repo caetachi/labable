@@ -28,7 +28,6 @@ export default function WashableManagement() {
         }
         onValue(washableRef, (snapshot)=>{
             if (snapshot.exists()) {
-                const data = snapshot.val();
                 getWashableList();
             } else {
                 console.log("No data available");
@@ -72,10 +71,10 @@ export default function WashableManagement() {
                     <i className="ti ti-search search-icon"></i>
                     <input type="text" placeholder="Search washable items..." />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
+                <select defaultValue="Date" className="filter-dropdown">
+                    <option value="Date" disabled hidden>Date</option>
                 </select>
-                <select className="filter-dropdown">
+                <select defaultValue="asc" className="filter-dropdown">
                     <option value="asc">Sort Asc</option>
                     <option value="desc">Sort Desc</option>
                 </select>

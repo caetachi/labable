@@ -1,7 +1,6 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getView } from "../../scripts/get";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import { formatTextualDateTime } from "../../scripts/dateformat";
@@ -47,8 +46,8 @@ function DetailsCard({ data }) {
 
 export default function OrderView() {
 	const { viewId } = useParams();
-	const [viewData, setViewData] = useState(null);
 	const navigate = useNavigate();
+	const [viewData, setViewData] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -110,6 +109,7 @@ export default function OrderView() {
 						color: 'var(--fg-dark)',
 						showConfirmButton: true
 					})
+					console.error("Failed to cancel order", err);
 				}
 				window.location.reload();
 			}
@@ -117,7 +117,6 @@ export default function OrderView() {
 	}
 
 	const ActionButtons = ({ category, status }) => {
-		const base = <button className='edit-btn'>Edit</button>;
 		const actions =
 			{
 				order:
@@ -157,7 +156,6 @@ export default function OrderView() {
 
 		return (
 			<div className='btn-container'>
-				{status === "Pending" && base}
 				{actions.map(([txt, cls, props]) => (
 					<button key={cls} className={cls} {...props} disabled={["Accepted", "Canceled", "Rejected"].includes(status)}>
 						{txt}
@@ -177,7 +175,7 @@ export default function OrderView() {
 							Manage your laundry orders and track progress
 						</h3>
 					</div>
-					<button className='return-btn' onClick={(e) => window.history.back()}>Back</button>
+					<button className='return-btn' onClick={() => navigate('/customer/dashboard')}>Back</button>
 				</div>
 
 				<div className='details-container'>

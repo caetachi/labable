@@ -1,12 +1,32 @@
 import './footer.css'
 import WhiteLogo from '../../assets/labable-white.svg'
 import { NavLink } from 'react-router'
+import { useEffect, useState } from 'react';
+import { ref, get } from 'firebase/database';
+import { onAuthStateChanged } from 'firebase/auth';
+import { db, auth } from '../../firebase';
 
 export default function Footer(){
+    const [userRole, setUserRole] = useState(null);
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (currentUser)=>{
+        if(currentUser){
+            get(ref(db, `users/${currentUser.uid}`)).then((snapshot)=>{
+            if(snapshot.exists()){
+                setUserRole(snapshot.val().role);
+            }
+            })
+        }else{
+            setUserRole(null);
+        }
+        })
+    },[userRole])
+
     return(
         <>
             <footer className="footer-container">
-                <div className="summary">
+                <div className="summary" style={{paddingLeft: userRole === 'admin' ? '160px' : '0px'}}>
                     <div className="footer-section footer-logo">
                         <div className="white-logo">
                             <img src={WhiteLogo} alt="Labable" className='logo-white'/>

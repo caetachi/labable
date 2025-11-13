@@ -6,8 +6,6 @@ import { db } from '../firebase'
     const servicesRef = ref(db, 'service_types');
     const serviceRef = child(servicesRef, serviceUid);
     const service = await (await get(serviceRef)).val();
-    
-    console.log(service);
     return service.service_name;
   }
 
@@ -15,8 +13,6 @@ import { db } from '../firebase'
     const servicesRef = ref(db, 'service_types');
     const serviceRef = child(servicesRef, serviceUid);
     const service = await (await get(serviceRef)).val();
-
-    console.log(service);
     return service.service_price;
   }
   
@@ -24,17 +20,13 @@ import { db } from '../firebase'
     const washableItemsRef = ref(db, 'washable_items');
     const washableItemRef = child(washableItemsRef, washableItemId);
     const washableItem = await (await get(washableItemRef)).val();
-    
-    console.log(washableItem.washable_item_name);
     return washableItem.washable_item_name;
   }
   
   export async function getItemPerKg(washableItemId) {
     const washableItemsRef = ref(db, 'washable_items');
-
     const washableItemRef = child(washableItemsRef, washableItemId);
     const washableItem = await (await get(washableItemRef)).val();
-
     return washableItem.item_per_kilo;
   }
 
@@ -44,8 +36,6 @@ import { db } from '../firebase'
     const orderSnap = await get(orders);
     const orderId = orderSnap.key;
     const order = await orderSnap.val();
-
-    console.log([orderId, order]);
     return [orderId, order];
   }
   
@@ -55,8 +45,6 @@ import { db } from '../firebase'
     const inventoryItemSnap = await get(inventoryItem);
     const inventoryItemUid = inventoryItemSnap.key;
     const inventory = await inventoryItemSnap.val();
-
-    console.log([inventoryItemUid, inventory]);
     return [inventoryItemUid, inventory];
   }
   export async function getServiceType(serviceUid) {
@@ -65,8 +53,6 @@ import { db } from '../firebase'
     const serviceTypeSnap = await get(serviceTypeRef);
     const serviceTypeUid = serviceTypeSnap.key;
     const serviceType = await serviceTypeSnap.val();
-
-    console.log([serviceTypeUid, serviceType]);
     return [serviceTypeUid, serviceType];
   }
   export async function getWashableItem(washableUid) {
@@ -75,8 +61,6 @@ import { db } from '../firebase'
     const washableItemSnap = await get(washableItemRef);
     const washableItemUid = washableItemSnap.key;
     const washableItem = await washableItemSnap.val();
-
-    console.log([washableItemUid, washableItem]);
     return [washableItemUid, washableItem];
   }
 
@@ -89,7 +73,7 @@ import { db } from '../firebase'
 
     let count = 0;
 
-    for (const [orderId, order] of Object.entries(orders)) {
+    for (const [_, order] of Object.entries(orders)) {
       if (
         order.user_id === userUid &&
         order.status !== "Completed" &&
@@ -141,7 +125,6 @@ import { db } from '../firebase'
     const userRef = child(usersRef, userId);
     const userSnap = await get(userRef);
     const user = await userSnap.val();
-    console.log(user);
     
     return user;
   }
@@ -154,7 +137,7 @@ import { db } from '../firebase'
 
     let count = 0;
 
-    for (const [orderId, order] of Object.entries(orders)) {
+    for (const [_, order] of Object.entries(orders)) {
       if (
         order.user_id === userUid &&
         order.status === "Completed"
@@ -174,8 +157,7 @@ export async function getTotalSpentAmount(userUid) {
 
   let amount = 0;
 
-  for (const [orderId, order] of Object.entries(orders)) {
-    console.log(orderId, order.user_id, order.status, order.amount);
+  for (const [_, order] of Object.entries(orders)) {
     if (
       order.user_id === userUid &&
       order.status !== "Rejected" &&
@@ -196,9 +178,9 @@ export async function getTotalSpentAmount(userUid) {
 
   if (!orders) return recentOrders;
 
-  for (const [orderId, order] of Object.entries(orders)) {
+  for (const [_, order] of Object.entries(orders)) {
     if (order.user_id === userUid) {
-      recentOrders.push([orderId, order]);
+      recentOrders.push([_, order]);
     }
   }
   return recentOrders;
@@ -209,13 +191,13 @@ export async function getTotalSpentAmount(userUid) {
   export async function getWashableItems() {
     const washableItemsRef = ref(db, 'washable_items')
     const washableItems = await (await get(washableItemsRef)).val();
-    // return Object.values(washableItems); // returns only values
     return Object.entries(washableItems); // [key, value] parang property pero array
   }
   
   export async function getServices() {
     const serviceTypesRef = ref(db, 'service_types')
     const serviceTypes = await (await get(serviceTypesRef)).val();
+    
     // return Object.values(serviceTypes);
     return Object.entries(serviceTypes);
   }

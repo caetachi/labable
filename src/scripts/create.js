@@ -20,7 +20,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     created_by: authId
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
-    .then((newReference) => {
+    .then(() => {
       localStorage.setItem("toastMessage", "New user created!");
       localStorage.setItem("toastType", "success");
       window.location.href = '/';
@@ -53,7 +53,7 @@ export async function createViaEmailAndPassword(authId, firstName, lastName, pho
     created_by: authId
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
-    .then((newReference) => {
+    .then(() => {
       localStorage.setItem("toastMessage", "New user created!");
       localStorage.setItem("toastType", "success");
     })
@@ -76,7 +76,6 @@ export async function newServiceType(serviceName, services, description, service
   const serviceTypeData = {
     "service_type_id": serviceTypeId,
     "service_name": serviceName,
-    "services": services,
     "description": description,
     "service_price": servicePrice,
     "image_url": imageUrl,
@@ -85,17 +84,31 @@ export async function newServiceType(serviceName, services, description, service
     // "updated_at": currDate,
     // "updated_by": auth.currentUser.uid
   }
-  set(newServiceTypeRef, serviceTypeData).then((res) => {
-    console.log("success")
-    localStorage.setItem("toastMessage", "New service type created!");
-    localStorage.setItem("toastType", "success");
-    window.location.reload();
+
+  set(newServiceTypeRef, serviceTypeData).then(async () => {
+    if (Array.isArray(services) && services.length > 0) {
+      const servicesObject = {};
+      services.forEach((serviceName, index) => {
+        if (serviceName && typeof serviceName === 'string') {
+          servicesObject[String(index)] = serviceName;
+        }
+      });
+
+      const servicesRef = child(newServiceTypeRef, 'services');
+      await set(servicesRef, servicesObject);
+      
+      console.log("success")
+      localStorage.setItem("toastMessage", "New service type created!");
+      localStorage.setItem("toastType", "success");
+      window.location.reload();
+    }
   })
     .catch((err) => {
       localStorage.setItem("toastMessage", err.message);
       localStorage.setItem("toastType", "error");
       window.location.reload();
     })
+
   await update(serviceTypesRef, {
     'service_counter': serviceCounter + 1,
   })
@@ -119,13 +132,13 @@ export async function newWashableItem(itemName, itemPerKilo, imgUrl) {
     // "updated_by": auth.currentUser.uid 
   }
 
-  set(newWashableItemRef, washableItemData).then((res) => {
+  set(newWashableItemRef, washableItemData).then(() => {
     console.log("success")
     localStorage.setItem("toastMessage", "New washable item created!");
     localStorage.setItem("toastType", "success");
     window.location.reload();
   })
-    .catch((err) => {
+    .catch(() => {
       localStorage.setItem("toastMessage", "Failed to create new washable item.");
       localStorage.setItem("toastType", "error");
       window.location.reload();
@@ -300,7 +313,9 @@ export async function newOrderTrack(orderUid, status) {
 export async function newOrderItem(orderUid, washableItemId, quantity) {
   const washableItemName = await getWashableItemName(washableItemId);
   const orderItemsRef = ref(db, 'order_items');
-  const newOrderItemRef = await push(orderItemsRef);
+  
+  await push(orderItemsRef);
+
   const itemPerKilo = await getItemPerKg(washableItemId);
   const totalKilo = quantity / itemPerKilo;
 
@@ -335,13 +350,13 @@ export async function newInventory(inventoryItemName, stock, unitName, status) {
     // "updated_by": auth.currentUser.uid
   }
 
-  set(newInventoryItemRef, inventoryData).then((res) => {
+  set(newInventoryItemRef, inventoryData).then(() => {
     console.log("success");
     localStorage.setItem("toastMessage", "New inventory item created!");
     localStorage.setItem("toastType", "success");
     window.location.reload();
   })
-    .catch((err) => {
+    .catch(() => {
       localStorage.setItem("toastMessage", "Failed to create new inventory item.");
       localStorage.setItem("toastType", "error");
       window.location.reload();

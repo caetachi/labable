@@ -5,15 +5,11 @@ import { newServiceType } from '../../scripts/create';
 export default function CreateService() {
 
     const [name, setName] = useState();
-    const [services, setServices] = useState();
+    const [services, setServices] = useState([]);
     const [price, setPrice] = useState();
 
     async function submit(){
         await newServiceType(name, services, null, price, null);
-    }
-
-    function getDaService(servicesIncluded){
-        return servicesIncluded.trim().split(', ');
     }
 
     function onNameChange(e) {
@@ -38,7 +34,8 @@ export default function CreateService() {
             error.innerHTML = 'Please enter valid services';
         } else {
             error.innerHTML = '';
-            setServices(temp);
+            const servicesIncluded = temp.trim().split(', ') || [temp];
+            setServices(servicesIncluded);
         }
     }
 
