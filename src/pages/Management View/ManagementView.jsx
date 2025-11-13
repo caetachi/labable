@@ -17,7 +17,7 @@ const fieldGroups = {
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
-		["Payment Method", (v) => v.payment ? v.payment.payment_method : "N/A"],
+		["Payment Method", (v) => v.payment_method ? v.payment_method : "N/A"],
 		["Transfer Date", (v) => formatTextualDate(v.transfer_date)],
 		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],

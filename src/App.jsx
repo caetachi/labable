@@ -104,7 +104,7 @@ function Layout({ user, userData }) {
                   <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route path="/admin/:viewCategory" element={<Management />} />
                   <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
-                  <Route path="/details-edit/:toEdit/:id" element={<OrderManagementDetailsEdit />} />
+                  <Route path="/admin/:toEdit/:id/edit" element={<OrderManagementDetailsEdit />} />
                   <Route path="admin/create-customer" element={<CreateCustomer />} />
                   <Route path="/admin/create-inventory" element={<CreateInventory />} />
                   <Route path="/admin/create-service" element={<CreateService />} />

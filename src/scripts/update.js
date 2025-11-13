@@ -34,7 +34,7 @@ export async function updateWashableItem(washableItemUid, itemName, itemPerKilo)
   .then(()=>console.log("Updated"));
 }
 
-export async function updateServiceType(serviceTypeUid, serviceName, description, price) {
+export async function updateServiceType(serviceTypeUid, serviceName, services, price) {
   const currDate = new Date().toLocaleString();
   const serviceTypesRef = ref(db, 'service_types');
   const serviceTypeRef = child(serviceTypesRef, serviceTypeUid);
@@ -43,7 +43,7 @@ export async function updateServiceType(serviceTypeUid, serviceName, description
     'updated_by': auth.currentUser.uid,
   }
   if(serviceName)serviceTypeData.service_name = serviceName;
-  if(description)serviceTypeData.description = description;
+  if(services)serviceTypeData.services = services;
   if(price)serviceTypeData.service_price = price; 
   await update(serviceTypeRef, serviceTypeData)
   .then(()=>console.log("Updated"));
@@ -147,7 +147,7 @@ export async function updateScheduleDetails(orderUid, customerName, address, sta
   if(customerName)orderData.customer_name = customerName;
   if(address)orderData.address = address;
   if(status)orderData.status = status; 
-  if(modeOfClaiming == "Deliver"){
+  if(modeOfClaiming == "Delivery"){
     orderData.mode_of_claiming = modeOfClaiming; 
     await set(deliveryRef, {
       "scheduled_date": laundryClaimDateTime,
