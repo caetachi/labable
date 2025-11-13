@@ -167,7 +167,9 @@ function Profile() {
         address: false
       });
       
-      alert('Changes saved successfully!');
+      localStorage.setItem('toastMessage', 'Profile updated successfully.');
+      localStorage.setItem('toastType', 'success');
+      window.location.reload();
     } catch (error) {
       console.error('Error saving changes:', error);
       alert('Failed to save changes. Please try again.');
@@ -233,7 +235,11 @@ function Profile() {
                   <div className="card">
                     <div className="profile-header">
                       <div className="profile-info">
-                        <div className="avatar">{getInitials(originalData.fullname)}</div>
+                        <div className="avatar">
+                          {originalData?.image_url ? 
+                          <img src={originalData.image_url} alt="Profile" /> 
+                          : getInitials(originalData.fullname)}
+                          </div>
                         <div className="profile-details">
                           <h2 className="profile-name">{originalData.fullname || 'No name set'}</h2>
                           <p className="profile-email">{originalData.email || 'No email'}</p>
