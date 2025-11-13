@@ -112,9 +112,10 @@ import { db } from '../firebase'
   }
 
   export async function getView(category, viewId) {
+
     const categoryMap = {
       order: 'orders',
-      schedule: 'schedules',
+      schedule: 'orders',
       inventory: 'inventory_items',
       service: 'service_types',
       washable: 'washable_items'
@@ -127,6 +128,11 @@ import { db } from '../firebase'
     const viewSnap = await get(viewRef);
     const view = await viewSnap.val();
 
+    if (view && view.created_by) {
+        const user = await getUser(view.created_by);
+        view.created_by = user.fullname; 
+    }
+
     return view;
   }
 
@@ -135,7 +141,8 @@ import { db } from '../firebase'
     const userRef = child(usersRef, userId);
     const userSnap = await get(userRef);
     const user = await userSnap.val();
-
+    console.log(user);
+    
     return user;
   }
   export async function getCompleteOrderCount(userUid) {

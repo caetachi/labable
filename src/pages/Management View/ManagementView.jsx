@@ -5,65 +5,67 @@ import "./management-view.css";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import BigNumber from "bignumber.js";
-import { getView } from "../../scripts/get";
+import { getUser, getView } from "../../scripts/get";
+import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
+import TrackNode from "../../components/TrackNode/TrackNode";
 
 const fieldGroups = {
 	order: [
 		["Order ID", (v) => v.order_id],
-		["Order Date", (v) => formatDate(v.created_at)],
-		["Address", (v) => v.address],
+		["Order Date", (v) => formatTextualDate(v.created_at)],
+		["Address", (v) => v.address ? v.address : "N/A"],
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
 		["Payment Method", (v) => v.payment ? v.payment.payment_method : "N/A"],
-		["Transfer Date", (v) => formatDate(v.transfer_date)],
+		["Transfer Date", (v) => formatTextualDate(v.transfer_date)],
 		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
-		["No. of Items", (v) => new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0))],
+		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
 		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
-		["Current Status", (v) => titlecase(v.status)],
+		["Current Status", (v) => v.status && titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
-		["Customer", (v) => titlecase(`${v.customer_name}`)],
+		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
 	schedule: [
-		["Schedule ID", (v) => v.id],
-		["Scheduled Date", (v) => v.scheduleDate],
-		["Order ID", (v) => v.orderId],
-		["Order Date", (v) => v.orderDate],
-		["Address", (v) => v.address],
-		["Claim Date", (v) => v.claimDate],
-		["Claim Type", (v) => v.claimType],
-		["Current Status", (v) => titlecase(v.status)],
-		["Customer", (v) => titlecase(`${v.customer?.firstName} ${v.customer?.lastName}`)],
+		["Schedule ID", (v) => v.order_id ? v.order_id : "N/A"],
+		["Scheduled Date", (v) => v.scheduled_date ? formatTextualDateTime(v.scheduled_date) : "N/A"],
+		["Order ID", (v) => v.order_id ? v.order_id : "N/A"],
+		["Order Date", (v) => v.order_date ? formatTextualDate(v.order_date) : "N/A"],
+		["Address", (v) => v.address ? v.address : "N/A"],
+		["Claim Date", (v) => v.mode_of_claiming ? formatTextualDateTime(v.mode_of_claiming) : "N/A"],
+		["Claim Type", (v) => v.mode_of_claiming ? titlecase(v.mode_of_claiming) : "N/A"],
+		["Current Status", (v) => v.status && titlecase(v.status)],
+		["Customer", (v) => v.customer_name],
 	],
 	inventory: [
 		["Item ID", (v) => v.inventory_item_id],
 		["Date Added", (v) => new Date(v.created_at).toDateString()],
 		["Item Name", (v) => v.inventory_item_name],
-		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
+		["Created By", (v) => v.created_by],
 		["Last Restock Date", (v) => v.last_restocked],
 		["Quantity", (v) => v.quantity_in_stock],
-		["Unit", (v) => titlecase(v.unit_name)],
-		["Current Status", (v) => titlecase(v.status)],
-		["Updated By", (v) => titlecase(`${getUser(v.updated_by)?.fullname}` )],
+		["Unit", (v) => v.unit_name && titlecase(v.unit_name)],
+		["Current Status", (v) => v.status && titlecase(v.status)],
+		["Updated By", (v) => v.updated_by ? titlecase(`${getUser(v.updated_by)?.fullname}`) : "N/A"],
 	],
 	service: [
 		["Service ID", (v) => v.service_type_id],
 		["Date Created", (v) => new Date(v.created_at).toDateString()],
 		["Service Name", (v) => v.service_name],
-		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
-		["Included Services", (v) => titlecase(`${Object.values(v.included_services).join(', ')}`)],
-		["Date Modified", (v) => new Date(v.modified_at).toDateString()],
+		["Created By", (v) => v.created_by],
+		["Included Services", (v) => v.services && titlecase(`${Object.values(v.services).join(', ')}`)],
+		["Date Modified", (v) => v.modified_at ? new Date(v.modified_at).toDateString() : "N/A"],
 		["Price", (v) => `₱ ${new BigNumber(v.service_price).toFormat(2)}`],
-		["Modified By", (v) => titlecase(`${v.modified_by}`)]
+		["Modified By", (v) => v.modified_by ? titlecase(`${v.modified_by}`) : "N/A"]
 	],
 	washable: [
 		["Item ID", (v) => v.washable_item_id],
 		["Date Created", (v) => new Date(v.created_at).toDateString()],
 		["Item Name", (v) => v.washable_item_name],
-		["Created By", (v) => titlecase(`${getUser(v.created_by)?.fullname}`)],
-		["Date Modified", (v) => new Date(v.modified_at).toDateString()],
+		["Created By", (v) => v.created_by],
+		["Date Modified", (v) => v.modified_at ? new Date(v.modified_at).toDateString() : "N/A"],
 		["Item per Kg", (v) => v.item_per_kilo],
-		["Modified By", (v) => titlecase(`${v.modified_by}`)]
+		["Modified By", (v) => v.modified_by ? titlecase(`${v.modified_by}`) : "N/A"]
 	]
 };
 
@@ -72,7 +74,7 @@ const DetailsCard = ({ category, data }) => (
 		{fieldGroups[category].map(([label, getter], i) => (
 			<div key={i} className='detail-cell'>
 				<p className='label'>{label}</p>
-				<p className='value'>{getter(data)}</p>
+				<p className='value'>{getter(data)}</p>	
 			</div>
 		))}
 	</div>
@@ -166,92 +168,13 @@ const InteractiveMap = ({ address }) => {
 
 export default function ManagementView() {
 	const { viewCategory, viewId } = useParams();
-	const { viewData, setViewData } = useState({});
+	const [viewData, setViewData] = useState({});
 
 	useEffect(() =>{
 		getView(viewCategory, viewId).then((data) => {
 			setViewData(data);
 		});
 	}, [viewCategory, viewId]);
-
-	// const mockData = {
-	// 	order: {
-	// 		id: viewId,
-	// 		orderDate: "10/26/2025",
-	// 		address: "Sitio Uli-Uli, Pinalagdan, Paombong, Bulacan",
-	// 		transferType: "Pick-up",
-	// 		service: "Wash & Fold",
-	// 		claimType: "Delivery",
-	// 		paymentMethod: "Cash",
-	// 		transferDate: "10/26/2025 - 8:00 AM",
-	// 		items: Array(13).fill({}),
-	// 		notes: "palinis nang maayos",
-	// 		status: "Washing",
-	// 		claimDate: "10/26/2025 - 9:00 AM",
-	// 		customer: { firstName: "FirstName", lastName: "LastName" },
-	// 		statusHistory: [
-	// 			{ status: "pending", date: "10/20/2025 - 11:00 AM" },
-	// 			{ status: "accepted", date: "10/20/2025 - 11:05 AM" },
-	// 			{ status: "received", date: "10/20/2025 - 11:34 AM" },
-	// 			{ status: "ongoing", date: "10/20/2025 - 11:37 AM" },
-	// 			{ status: "done", date: "10/20/2025 - 12:24 PM" },
-	// 			{ status: "completed", date: "10/20/2025 - 1:22 PM" },
-	// 		],
-	// 	},
-	// 	schedule: {
-	// 		id: viewId,
-	// 		scheduleDate: "10/27/2025",
-	// 		orderId: "ORDER-123",
-	// 		orderDate: "10/26/2025",
-	// 		address: "ADFUHFAUJDHFSd",
-	// 		claimDate: "10/26/2025 - 9:00 AM",
-	// 		claimType: "Delivery",
-	// 		status: "pending",
-	// 		customer: { firstName: "FirstName", lastName: "LastName" },
-	// 	},
-	// 	inventory: {
-	// 		id: viewId,
-	// 		addDate: "10/16/2025",
-	// 		name: "Baskets",
-	// 		restockDate: "10/29/2025",
-	// 		quantity: 12,
-	// 		unit: "Pieces",
-	// 		status: "Good",
-	// 		staff: { firstName: "FirstName", lastName: "LastName" },
-	// 	},
-	// 	service: {
-	// 		id: viewId,
-	// 		addDate: "10/24/2025",
-	// 		name: "Superb Service",
-	// 		creator: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		},
-	// 		inclusions: ["Wash", "Dry", "Fold", "Iron"],
-	// 		modifyDate: "10/24/2025",
-	// 		price: 120.00,
-	// 		modifier: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		}
-	// 	},
-	// 	washable: {
-	// 		id: viewId,
-	// 		addDate: "10/24/2025",
-	// 		name: "Pants (Regular)",
-	// 		creator: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		},
-	// 		pricePerPiece: 8.00,
-	// 		modifyDate: "10/24/2025",
-	// 		itemPerKg: 4,
-	// 		modifier: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		}
-	// 	},
-	// };
 
 	useEffect(() => {
 		const card = document.querySelector(".track-card");
@@ -301,12 +224,12 @@ export default function ManagementView() {
 					{viewCategory === "order" ? (
 						<DetailsTrackCard tracks={viewData.tracking || {}} />
 					) : viewCategory === "schedule" ? (
-						<InteractiveMap address={viewData.address} />
+						<InteractiveMap address={''} />
 					) : null}
 
 					<ActionButtons
 						category={viewCategory}
-						status={viewData.status}
+						status={''}
 					/>
 				</div>
 			</div>

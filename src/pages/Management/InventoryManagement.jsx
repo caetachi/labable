@@ -111,10 +111,10 @@ export default function InventoryManagement() {
                                     </span>
                                 </td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/inventory/${item[1].inventory_item_id}`} className="action-icon">
+                                    <NavLink to={`/admin/inventory/${item[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/inventory/${item[1].inventory_item_id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/inventory/${item[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete" onClick={()=>handleDelete(item[0])}>
