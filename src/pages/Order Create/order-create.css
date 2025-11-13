@@ -318,6 +318,7 @@
 .draft-button{
     background-color: var(--fg-light);
     color: var(--fg-dark);
+    border: 2px solid var(--bg-dark);
     transition: ease 0.3s;
 }
 .draft-button:hover{
@@ -328,12 +329,27 @@
 .summary-button{
     background-color: var(--fg-dark);
     color: var(--fg-light);
+    border: 2px solid var(--bg-dark);
     transition: ease 0.3s;
 }
 .summary-button:hover{
     background-color: var(--fg-light);
     color: var(--fg-dark);
 }
+
+.summary-button.disabled{
+    background-color: var(--sf-dark);
+    color: var(--bg-light);
+    border: 2px solid var(--sf-dark);
+    cursor: not-allowed;
+}
+
+.summary-button.disabled:hover{
+    background-color: var(--sf-dark);
+    color: var(--bg-light);
+    border: 2px solid var(--sf-dark);
+}
+
 .summary-number{
     display: inline;
     color: var(--sf-dark);

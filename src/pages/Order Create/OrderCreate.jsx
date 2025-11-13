@@ -350,7 +350,11 @@ export default function CreateOrder() {
             <p className='section-title'>Estimated Cost: Php {amount ? amount : Number(0).toFixed(2)}</p>
             <div className="action-buttons">
                 <button className='action-button draft-button' onClick={() => submit()}>Save as Draft</button>
-                <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
+                {address && service && orderItems.length > 0 && modeTransfer && transferDate && modeClaim && payment ?
+                    <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
+                :
+                    <button className='action-button summary-button disabled' disabled>Proceed to Summary</button>
+                }
             </div>
             </div>
         </div>
