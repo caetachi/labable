@@ -144,10 +144,8 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
   const orderData = {
     "order_id": orderId,
     "user_id": auth.currentUser.uid,
-
     "customer_name": auth.currentUser.displayName,
     "service_name": serviceName,
-
     "service_type_id": serviceUid,
     "order_items": orderItems,
     "address": address,
@@ -157,26 +155,9 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     "arrival_date": arrivalDate,
     "mode_of_claiming": claimMode,
     "status": "Pending",
-    "status_note": "Waiting for approval",
     "payment": payment,
-
     "created_at": currDate,
     "created_by": auth.currentUser.uid,
-    // "updated_at": currDate,
-    // "updated_by": "uid_of_admin_2", // la pa
-
-    // "tracking":{ // sa update lang to lalabas
-    //   "-M1kL3q5R": { // push id to, di hard coded
-    //     "timestamp": "2025-11-06T11:30:00Z",
-    //     "status": "arrived",
-    //     "message": "Order confirmed in-shop."
-    //   },
-    //   "-M1kL4a6S": { 
-    //     "timestamp": "2025-11-06T14:30:00Z",
-    //     "status": "washing",
-    //     "message": "Items are now in the wash cycle."
-    //   }
-    // },
 
     // "schedule":{ // sa update
     //   "pickup": {
@@ -350,4 +331,63 @@ export async function newPayment(orderUid, method, status, counter) { // to din 
   }
 
   return paymentData;
+}
+
+export async function newOrderDraft(draftTitle, userId, serviceUid, address, paymentMethod, transferMode, transferDate, arrivalDate, claimMode, note, orders, amount) {
+  const serviceName = await getServiceName(serviceUid);
+  const currDate = new Date().toLocaleString();
+  const orderItems = [];
+
+  for (let i = 0; i < orders.length; i++) {
+    const washableItemName = await getWashableItemName(orders[i].washable_item_id);
+    const itemPerKilo = await getItemPerKg(orders[i].washable_item_id);
+    const totalKilo = orders[i].quantity / itemPerKilo;
+
+    orderItems.push({
+      "washable_item_id": orders[i].washable_item_id,
+      "washable_item_name": washableItemName,
+      "quantity": orders[i].quantity,
+      "total_kilo": totalKilo
+    });
+  }
+  
+  const orderDraftData = {
+    "draft_title": draftTitle,
+    "service_type_id": serviceUid,
+    "service_name": serviceName,
+    "order_items": orderItems,
+    "address": address,
+    "payment_method": paymentMethod,
+    "amount": amount,
+    "transfer_mode": transferMode,
+    "transfer_date": transferDate,
+    "arrival_date": arrivalDate,
+    "claim_mode": claimMode,
+    "note": note,
+    "status": "Pending",
+    "created_at": currDate,
+    "created_by": auth.currentUser.uid,
+    "user_id": auth.currentUser.uid,  
+    "customer_name": auth.currentUser.displayName
+  };
+
+  const orderDraftsRef = ref(db, `users/${userId}/order_drafts`);
+
+  try {
+    const newOrderDraftRef = await push(orderDraftsRef, orderDraftData);
+
+    if (note) {
+      const newOrderDraftNotesRef = child(newOrderRef, 'notes');
+      set(newOrderDraftNotesRef, {
+        "order_notes": note,
+      })
+    }
+    const insertedOrderDraftUid = newOrderDraftRef.key;
+    const snapshot = await get(newOrderDraftRef);
+    const insertedOrderDraft = snapshot.val();
+    console.log("Inserted order draft:", insertedOrderDraft);
+    return [insertedOrderDraftUid, insertedOrderDraft];
+  } catch (err) {
+    alert(err.message);
+  }
 }

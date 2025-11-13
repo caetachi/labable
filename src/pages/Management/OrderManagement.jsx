@@ -86,7 +86,7 @@ export default function OrderManagement() {
                 <div className="filter-dropdown-container">
                     <i className="far fa-calendar" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
                     <select className="filter-dropdown"> 
-                        <option value="" disabled selected hidden><div><i class="far fa-calendar"></i></div>Date</option>
+                        <option value="" disabled selected hidden><i class="far fa-calendar"></i>Date</option>
                     </select>
                 </div>
                 <div className="filter-dropdown-container">

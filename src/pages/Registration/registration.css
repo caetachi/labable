@@ -107,7 +107,7 @@
 }
 
 .registration-container .input-field input::placeholder {
-    color: var(--hl-gray);
+  color: color-mix(in srgb, var(--hl-gray) 50%, transparent);
 }
 
 .registration-container .input-field:focus-within {
@@ -116,14 +116,13 @@
 
 .registration-container .form-row {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     gap: 10px;
 }
 
 .registration-container .form-row .field{
     flex: 1;
-    min-width: 170px;
+    min-width: 50px;
 }
 
 .registration-container a {

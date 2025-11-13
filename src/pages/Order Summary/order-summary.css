@@ -300,6 +300,7 @@
     font-size: 1.125em;
     font-weight: bold;
     border-radius: 50px;
+    cursor: pointer;
 }
 
 .draft-button{

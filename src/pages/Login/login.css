@@ -72,7 +72,7 @@
 }
 
 .login-container .input-field input::placeholder {
-  color: var(--hl-gray);
+  color: color-mix(in srgb, var(--hl-gray) 50%, transparent);
 }
 
 .login-container .utils {

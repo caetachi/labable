@@ -39,7 +39,7 @@ export default function App() {
             setUserData(snapshot.val());
           }
         })
-      }else{
+      }else{        
         setUserData({});
       }
     })

@@ -101,6 +101,7 @@ export default function OrderSummary() {
             toast.error('Failed to create order. Please try again.');
         } finally {
             setLoading(false);
+            
         }
     }
 

@@ -231,3 +231,8 @@ export async function getTotalSpentAmount(userUid) {
     return Object.entries(users);
   }
   
+  export async function getOrderDrafts(userUid) {
+    const orderDraftsRef = ref(db, `user/${userUid}order_drafts`);
+    const orderDrafts = await (await get(orderDraftsRef)).val();
+    return Object.entries(orderDrafts || {});
+  }

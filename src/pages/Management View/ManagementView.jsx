@@ -10,19 +10,19 @@ import { getView } from "../../scripts/get";
 const fieldGroups = {
 	order: [
 		["Order ID", (v) => v.order_id],
-		["Order Date", (v) => formatDate(v.created_at)],
+		["Order Date", (v) => formatTextualDateTime(v.created_at)],
 		["Address", (v) => v.address],
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
-		["Payment Method", (v) => v.payment ? v.payment.payment_method : "N/A"],
-		["Transfer Date", (v) => formatDate(v.transfer_date)],
-		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
+		["Payment Method", (v) =>  v.payment?.payment_method || "N/A"],
+		["Transfer Date", (v) => formatTextualDateTime(v.transfer_date)],
+        ["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
 		["No. of Items", (v) => new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0))],
-		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
+		["Additional Notes", (v) => v.notes?.order_notes || "No additional notes."],
 		["Current Status", (v) => titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
-		["Customer", (v) => titlecase(`${v.customer_name}`)],
+		["Cancel Reason", (v) => v.notes?.cancel_reason || ""],
 	],
 	schedule: [
 		["Schedule ID", (v) => v.id],
@@ -74,18 +74,6 @@ const DetailsCard = ({ category, data }) => (
 				<p className='label'>{label}</p>
 				<p className='value'>{getter(data)}</p>
 			</div>
-		))}
-	</div>
-);
-
-const DetailsTrackCard = ({ tracks }) => (
-	<div className='track-card'>
-		{Object.values(tracks).map((t) => (
-			<TrackNode
-				key={t.timestamp}
-				label={titlecase(t.status)}				
-				timestamp={t.timestamp}
-			/>
 		))}
 	</div>
 );
@@ -174,85 +162,6 @@ export default function ManagementView() {
 		});
 	}, [viewCategory, viewId]);
 
-	// const mockData = {
-	// 	order: {
-	// 		id: viewId,
-	// 		orderDate: "10/26/2025",
-	// 		address: "Sitio Uli-Uli, Pinalagdan, Paombong, Bulacan",
-	// 		transferType: "Pick-up",
-	// 		service: "Wash & Fold",
-	// 		claimType: "Delivery",
-	// 		paymentMethod: "Cash",
-	// 		transferDate: "10/26/2025 - 8:00 AM",
-	// 		items: Array(13).fill({}),
-	// 		notes: "palinis nang maayos",
-	// 		status: "Washing",
-	// 		claimDate: "10/26/2025 - 9:00 AM",
-	// 		customer: { firstName: "FirstName", lastName: "LastName" },
-	// 		statusHistory: [
-	// 			{ status: "pending", date: "10/20/2025 - 11:00 AM" },
-	// 			{ status: "accepted", date: "10/20/2025 - 11:05 AM" },
-	// 			{ status: "received", date: "10/20/2025 - 11:34 AM" },
-	// 			{ status: "ongoing", date: "10/20/2025 - 11:37 AM" },
-	// 			{ status: "done", date: "10/20/2025 - 12:24 PM" },
-	// 			{ status: "completed", date: "10/20/2025 - 1:22 PM" },
-	// 		],
-	// 	},
-	// 	schedule: {
-	// 		id: viewId,
-	// 		scheduleDate: "10/27/2025",
-	// 		orderId: "ORDER-123",
-	// 		orderDate: "10/26/2025",
-	// 		address: "ADFUHFAUJDHFSd",
-	// 		claimDate: "10/26/2025 - 9:00 AM",
-	// 		claimType: "Delivery",
-	// 		status: "pending",
-	// 		customer: { firstName: "FirstName", lastName: "LastName" },
-	// 	},
-	// 	inventory: {
-	// 		id: viewId,
-	// 		addDate: "10/16/2025",
-	// 		name: "Baskets",
-	// 		restockDate: "10/29/2025",
-	// 		quantity: 12,
-	// 		unit: "Pieces",
-	// 		status: "Good",
-	// 		staff: { firstName: "FirstName", lastName: "LastName" },
-	// 	},
-	// 	service: {
-	// 		id: viewId,
-	// 		addDate: "10/24/2025",
-	// 		name: "Superb Service",
-	// 		creator: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		},
-	// 		inclusions: ["Wash", "Dry", "Fold", "Iron"],
-	// 		modifyDate: "10/24/2025",
-	// 		price: 120.00,
-	// 		modifier: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		}
-	// 	},
-	// 	washable: {
-	// 		id: viewId,
-	// 		addDate: "10/24/2025",
-	// 		name: "Pants (Regular)",
-	// 		creator: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		},
-	// 		pricePerPiece: 8.00,
-	// 		modifyDate: "10/24/2025",
-	// 		itemPerKg: 4,
-	// 		modifier: {
-	// 			firstName: "Jerson",
-	// 			lastName: "Valdez"
-	// 		}
-	// 	},
-	// };
-
 	useEffect(() => {
 		const card = document.querySelector(".track-card");
 		if (!card) return;
@@ -299,7 +208,16 @@ export default function ManagementView() {
 					<DetailsCard category={viewCategory} data={viewData} />
 
 					{viewCategory === "order" ? (
-						<DetailsTrackCard tracks={viewData.tracking || {}} />
+						<div className='track-card'>
+							{Object.values(viewData.tracking || {}).map((t, i) => (
+								<TrackNode
+									key={i + t.timestamp}
+									label={t.label}
+									value={t.message}
+									date={t.timestamp}
+								/>
+							))}
+						</div>
 					) : viewCategory === "schedule" ? (
 						<InteractiveMap address={viewData.address} />
 					) : null}

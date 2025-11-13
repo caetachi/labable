@@ -32,16 +32,21 @@ function AdminDashboard() {
                         totalOrdersCount: count.length-1
                     }));
                     let totalRevenue = 0;
+
                     count.forEach((order) => {
                         const orderObject = order[1]; 
-                        const amountValue = parseFloat(orderObject?.amount) || 0; 
+                        const amountValue = orderObject?.amount || 0;
+
+                        console.log(orderObject);
                     
-                        totalRevenue += amountValue;
+                        totalRevenue += Number(amountValue);
                     });
+
+                    console.log(totalRevenue);
                 
                     setAdminApiData(prevData => ({
                         ...prevData,
-                        totalRevenueAmount: totalRevenue.toFixed(2)
+                        totalRevenueAmount: new Intl.NumberFormat('en-PH', {style:'currency', currency: 'PHP'}).format(totalRevenue.toFixed(2))
                     }));
                     setArray(count);
                     {array && setMonthlyChartData(calculateMonthlyRevenue(array, year));}

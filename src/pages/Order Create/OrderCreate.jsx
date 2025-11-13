@@ -8,12 +8,16 @@ import { useNavigate } from 'react-router'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
-import { getServicePrice, getServices, getWashableItems } from '../../scripts/get'
+import { getOrderDrafts, getServicePrice, getServices, getWashableItems } from '../../scripts/get'
+import { newOrderDraft } from '../../scripts/create'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
 import { toast } from 'react-toastify'
 import BigNumber from 'bignumber.js'
+import { auth } from '../../firebase'
+import Swal from 'sweetalert2'
 
 export default function CreateOrder() {
+    const [orderDrafts, setOrderDrafts] = useState([]);
     const [address, setAddress] = useState();
     const [service, setService] = useState();
     const [orderItems, setOrderItems] = useState([]);
@@ -28,22 +32,6 @@ export default function CreateOrder() {
     const [amount, setAmount] = useState();
     const [minDate, setMinDate] = useState();
     const navigate = useNavigate();
-
-    function setupServices(){
-        const services = document.querySelectorAll('.create-service-type-card');
-        services.forEach(function(serviceCard){ // parang radio-group galing ko talaga
-            const icons = document.querySelectorAll('.create-service-type-icon');
-            serviceCard.addEventListener('click', () =>{
-                icons.forEach(icon => {
-                    icon.classList.remove('service-selected');
-                });
-                const icon = serviceCard.querySelector('.create-service-type-icon');
-                const serviceId = serviceCard.getAttribute('id');
-                setService(serviceId);
-                icon.classList.add('service-selected');
-            });
-        });
-    }
 
     function getMinDateTime(hoursAhead) {
         let now = new Date();
@@ -63,6 +51,14 @@ export default function CreateOrder() {
             setTransferDate(input.value);
         });
     }
+
+    useEffect(() => {
+        const drafts = async () => {
+            const orderDrafts = await getOrderDrafts(auth.currentUser.uid);
+            setOrderDrafts(Object.values(orderDrafts));
+        }
+        drafts();
+    }, [orderDrafts]);
     
     useEffect(()=>{
         setMinDate(getMinDateTime(2));
@@ -109,7 +105,19 @@ export default function CreateOrder() {
     }, [])
 
     useEffect(()=>{
-        setupServices();
+        const services = document.querySelectorAll('.create-service-type-card');
+        services.forEach(function(serviceCard){ // parang radio-group galing ko talaga
+            const icons = document.querySelectorAll('.create-service-type-icon');
+            serviceCard.addEventListener('click', () =>{
+                icons.forEach(icon => {
+                    icon.classList.remove('service-selected');
+                });
+                const icon = serviceCard.querySelector('.create-service-type-icon');
+                const serviceId = serviceCard.getAttribute('id');
+                setService(serviceId);
+                icon.classList.add('service-selected');
+            });
+        });
     }, [serviceTypes])
 
     useEffect(()=>{
@@ -217,6 +225,36 @@ export default function CreateOrder() {
 
         navigate('/order-summary', { state: { orderData: draft } });
     }
+
+    async function draft(){
+        try  {
+            Swal.fire({
+                title: 'Enter Draft Title',
+                input: 'text',
+                text: 'Enter a title for your draft',
+                showCancelButton: true,
+                confirmButtonText: 'Create Draft',
+                cancelButtonText: 'Cancel',
+                showLoaderOnConfirm: true,
+                background: 'var(--bg-light)',
+                color: 'var(--fg-dark)',
+                preConfirm: async (draftTitle) => {
+                    if(!draftTitle){
+                        Swal.showValidationMessage(
+                            `Please enter a draft title`
+                        )
+                    }
+                }
+            }).then(async (result) => {
+                await newOrderDraft(result.value, auth.currentUser.uid, service, address, payment.payment_method, modeTransfer, transferDate, transferDate, modeClaim, notes, orderItems, amount);
+
+                toast.success("Draft order created successfully!");
+            })
+        } catch(err) {
+            toast.error("Unable to create draft order. Please try again.");
+            console.error(err);
+        }
+    }
         
     return(
         <div className='create-order-container'>
@@ -227,18 +265,14 @@ export default function CreateOrder() {
             <div className="draft-container gray-border">
                 <p className='drafts-title'>Drafts</p>
                 <div className="drafts-container">
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
+                    {
+                    orderDrafts.length > 0 ? orderDrafts.map((draft, index)=>{
+                        return <div className="draft-card gray-border" key={index + draft.draft_title} onClick={() => navigate('/order-summary', { state: { orderData: draft[1] } })}>
+                            <p className='draft-card-subtext'>{draft.draft_title}</p>
+                            <p className='draft-card-text'>{draft[1].orders.length} items - {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP' }).format(draft[1].amount)}</p>
+                        </div>
+                    }) : <p className='drafts-subtext'>You have no saved drafts</p>
+                    }
                 </div>
             </div>
             <div className="order-details-container gray-border">
@@ -348,7 +382,7 @@ export default function CreateOrder() {
             </div>
             <p className='section-title'>Estimated Cost: Php {amount ? amount : Number(0).toFixed(2)}</p>
             <div className="action-buttons">
-                <button className='action-button draft-button' onClick={() => submit()}>Save as Draft</button>
+                <button className='action-button draft-button' onClick={() => draft()}>Save as Draft</button>
                 <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
             </div>
             </div>

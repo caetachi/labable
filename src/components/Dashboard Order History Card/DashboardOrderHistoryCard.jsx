@@ -29,7 +29,7 @@ function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, 
                     <i className="ti ti-eye"></i>
                     View Details
                 </NavLink>
-            </div>
+            </div>  
         </div>
     )
 }
