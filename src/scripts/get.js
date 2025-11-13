@@ -238,3 +238,31 @@ export async function getTotalSpentAmount(userUid) {
     return Object.entries(users);
   }
   
+  export async function getServiceUid(serviceName) {
+    const servicesRef = ref(db, 'service_types');
+    const services = await (await get(servicesRef)).val();
+    const servicesArray = Object.entries(services);
+    console.log(serviceName);
+    for(let i = 0; i < servicesArray.length; i++){
+      console.log(servicesArray[i][1]);
+      if(servicesArray[i][1].service_name == serviceName){
+        return servicesArray[i][0];
+      }
+    }
+
+    return -1;
+  }
+  export async function getWashableUid(washableName) {
+    const washableRef = ref(db, 'washable_items');
+    const washables = await (await get(washableRef)).val();
+    const washablesArray = Object.entries(washables);
+    console.log(washable_item_name);
+    for(let i = 0; i < washablesArray.length; i++){
+      console.log(washablesArray[i][1]);
+      if(washablesArray[i][1].washable_item_name == washableName){
+        return washablesArray[i][0];
+      }
+    }
+
+    return -1;
+  }
