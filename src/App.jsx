@@ -30,6 +30,7 @@ import CreateInventory from "./pages/Management Create/CreateInventory"
 import CreateService from "./pages/Management Create/CreateService"
 import CreateWashable from "./pages/Management Create/CreateWashable"
 import CreateSchedule from "./pages/Management Create/CreateSchedule"
+import ForgotPassword from "./pages/Login/ForgotPassword"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -75,7 +76,7 @@ export default function App() {
 
 function Layout({ user, userData }) {
   const location = useLocation();
-  const noNavPaths = ['/login', '/registration'];
+  const noNavPaths = ['/login', '/registration', '/forgot-password'];
   const hideLayout = noNavPaths.includes(location.pathname);
 
   return (
@@ -121,6 +122,7 @@ function Layout({ user, userData }) {
           }
         <Route path="/" element={<Home />} />
         <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/example" element={<Example />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

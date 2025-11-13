@@ -107,10 +107,6 @@ export default  function NavBar({image_url, name}){
                                 <i className="ti ti-layout-dashboard"></i>
                                 <p>Dashboard</p>
                             </NavLink>
-                            <NavLink to='/setting' className='floating-nav-link'>
-                                <i className="ti ti-settings"></i>
-                                <p>Settings</p>
-                            </NavLink>
                             <button className='floating-nav-link' onClick={logout}>
                                 <i className="ti ti-logout"></i>
                                 <p>Logout</p>
