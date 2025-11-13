@@ -166,6 +166,7 @@ export default function CreateOrder() {
                 return prevOrderItems.map((current, index) => {
                     if (index === decrementIndex) {
                         if(item.quantity > 1){
+                            orderItems[decrementIndex].total_kilo = Number((item.quantity - 1) / item.item_per_kilo);
                             return { ...current, quantity: current.quantity - 1 }; // update quantity
                         }
                         return prevOrderItems;
