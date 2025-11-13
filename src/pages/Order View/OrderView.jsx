@@ -177,7 +177,7 @@ export default function OrderView() {
 							Manage your laundry orders and track progress
 						</h3>
 					</div>
-					<button className='return-btn' onClick={(e) => navigate('/customer/dashboard')}>Back</button>
+					<button className='return-btn' onClick={(e) => window.history.back()}>Back</button>
 				</div>
 
 				<div className='details-container'>
