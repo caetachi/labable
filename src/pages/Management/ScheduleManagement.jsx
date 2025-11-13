@@ -4,6 +4,8 @@ import './management.css';
 import { get, onValue, ref } from 'firebase/database';
 import { getOrders } from '../../scripts/get';
 import { db } from '../../firebase';
+import {deleteSchedulePickup, deleteScheduleDelivery} from '../../scripts/delete';
+import Swal from 'sweetalert2';
 
 const getStatusClass = (status) => {
     return status.toLowerCase().replace(/\s+/g, '');
@@ -25,9 +27,13 @@ export default function ScheduleManagement() {
             let withoutCounter = [];
             for(let i = 0; i < getOrder.length; i++){
                 if(getOrder[i][0] != 'orders_counter'){
-                    getOrder[i].push(getOrder[i][1].schedule);
-                    withoutCounter.push(getOrder[i])
-                    console.log(getOrder[i]);
+                    if(getOrder[i][1].hasOwnProperty('schedule')){
+                        if(getOrder[i][1].schedule.hasOwnProperty('pickup') || getOrder[i][1].schedule.hasOwnProperty('delivery')){
+                            getOrder[i].push(getOrder[i][1].schedule);
+                            console.log(getOrder[i]);
+                            withoutCounter.push(getOrder[i])
+                        }
+                    }
                 }
             }
             setSchedules(withoutCounter)
@@ -41,6 +47,42 @@ export default function ScheduleManagement() {
             }
         });
     }, [])
+
+    async function handleDeleteSchedule(orderID){
+        const hasPickup = schedules.find(schedule => schedule[1].order_id === orderID)[2].hasOwnProperty('pickup');
+        const hasDelivery = schedules.find(schedule => schedule[1].order_id === orderID)[2].hasOwnProperty('delivery');
+        console.log("Pickup: "+hasPickup);
+        console.log("Deliver: "+hasDelivery);
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true, 
+            showDenyButton: (hasPickup && hasDelivery), 
+            confirmButtonText: (hasPickup && hasDelivery) || hasPickup ? "Delete Pickup" : "Delete Delivery",
+            denyButtonText: "Delete Delivery", 
+            confirmButtonColor: 'var(--bg-dark)',
+            denyButtonColor: 'var(--error)', 
+        }).then(async (result) => {
+            if(((hasPickup && hasDelivery) || hasPickup) && result.isConfirmed) {
+                deleteSchedulePickup(orderID);
+                return;
+            }
+            if((hasPickup && hasDelivery) && result.isDenied) {
+                console.log("deny");
+                
+                deleteScheduleDelivery(orderID)
+                return;
+            }
+            if(((!hasPickup && hasDelivery)) && result.isConfirmed) {
+                deleteScheduleDelivery(orderID)
+                return;
+            }
+
+        });
+            
+    }
 
     return (
         <>
@@ -108,7 +150,7 @@ export default function ScheduleManagement() {
                                     <NavLink to={`/admin/schedule/${schedule[1].order_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete" >
+                                    <button className="action-icon delete" onClick={() => handleDeleteSchedule(schedule[1].order_id)}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

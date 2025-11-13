@@ -37,20 +37,20 @@ export default function WashableManagement() {
     }, [])
 
     async function handleDelete(washableUid){
-                swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: 'var(--bg-dark)',
-                    cancelButtonColor: 'var(--error)',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then(async (result) => {
-                    if (result.isConfirmed) {
-                        await deleteWashable(washableUid);
-                        }
-                });
-            }
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--bg-dark)',
+            cancelButtonColor: 'var(--error)',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteWashable(washableUid);
+                }
+        });
+    }
 
     return (
         <>
