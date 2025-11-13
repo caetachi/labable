@@ -46,9 +46,11 @@ export default function ServiceManagement() {
                     <p>Manage services types and pricing</p>
                 </div>
                 <div className="header-actions">
-                    <button className="create-order">
-                        <i className="ti ti-plus"></i> Add Service
-                    </button>
+                    <NavLink to={'/admin/create-service'}>
+                        <button className="create-order">
+                            <i className="ti ti-plus"></i> Add Service
+                        </button>
+                    </NavLink>
                 </div>
             </div>
 

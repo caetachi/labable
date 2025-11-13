@@ -45,9 +45,11 @@ export default function CustomerManagement() {
                     <p>Manage customers Informations</p>
                 </div>
                 <div className="header-actions">
-                    <button className="create-order">
-                        <i className="ti ti-plus"></i> Create Customer
-                    </button>
+                    <NavLink to={'/admin/create-customer'}>
+                        <button className="create-order">
+                            <i className="ti ti-plus"></i> Create Customer
+                        </button>
+                    </NavLink>
                 </div>
             </div>
 
