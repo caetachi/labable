@@ -5,6 +5,7 @@ import { getOrders } from '../../scripts/get';
 import deleteOrder from '../../scripts/delete';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
+import swal from 'sweetalert2';
 
 // const orders = [
 //     { id: 'ORD-001', customer: 'Jerson Valdez', service: 'Wash & Fold', items: 15, status: 'Washing', amount: 'Php 206.00' },
@@ -15,14 +16,12 @@ import { db } from '../../firebase';
 // ];
 
 
-
-
 export default function OrderManagement() {
     const getStatusClass = (status) => {
         return status.toLowerCase().replace(/\s+/g, '');
     }
     const getNumberOfItems = (orderItems) => {
-        
+             
         let numberOfItems = 0;
         for(let i = 0; i < orderItems.length; i++){
             numberOfItems += orderItems[i].quantity;
@@ -59,11 +58,21 @@ export default function OrderManagement() {
     }, [orders])
 
     async function handleDelete(orderUid){
-        console.log('click');
-        
-        await deleteOrder(orderUid);
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--bg-dark)',
+            cancelButtonColor: 'var(--error)',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteOrder(orderUid);
+                }
+        });
     }
-   
+
     return (
         <>
             <div className="management-header">
