@@ -101,10 +101,10 @@ export default function ServiceManagement() {
                                 <td>{getServicesIncluded(service[1].services)}</td>
                                 <td>{service[1].service_price}</td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/service/${service.id}`} className="action-icon">
+                                    <NavLink to={`/admin/service/${service[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/service/${service.id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/service/${service[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete" onClick={()=>handleDelete(service[0])}>

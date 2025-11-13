@@ -98,10 +98,10 @@ export default function WashableManagement() {
                                 <td>{item[1].washable_item_name}</td>
                                 <td>{item[1].item_per_kilo}</td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/washable/${item[1].washable_item_id}`} className="action-icon">
+                                    <NavLink to={`/admin/washable/${item[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/washable/${item[1].washable_item_id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/washable/${item[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete" onClick={()=>handleDelete(item[0])}  >

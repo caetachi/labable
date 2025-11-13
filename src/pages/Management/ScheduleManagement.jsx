@@ -144,13 +144,13 @@ export default function ScheduleManagement() {
                                     </span>
                                 </td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/schedule/${schedule[1].order_id}`} className="action-icon">
+                                    <NavLink to={`/admin/schedule/${schedule[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/schedule/${schedule[1].order_id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/schedule/${schedule[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete" onClick={() => handleDeleteSchedule(schedule[1].order_id)}>
+                                    <button className="action-icon delete" onClick={() => handleDeleteSchedule(schedule[0].order_id)}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>
