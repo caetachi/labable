@@ -12,6 +12,7 @@ import { getServicePrice, getServices, getWashableItems } from '../../scripts/ge
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
 import { toast } from 'react-toastify'
 import BigNumber from 'bignumber.js'
+import searchWashableItems from '../../scripts/search'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -24,6 +25,7 @@ export default function CreateOrder() {
     const [notes, setNotes] = useState();
     const [pricePerKg, setPricePerKg] = useState();
     const [washableItems, setWashableItems] = useState([]);
+    const [searchedWashableItems, setSearchedWashableItems] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
     const [amount, setAmount] = useState();
     const [minDate, setMinDate] = useState();
@@ -32,16 +34,14 @@ export default function CreateOrder() {
 
     function setupServices(){
         const services = document.querySelectorAll('.create-service-type-card');
-        services.forEach(function(serviceCard){ // parang radio-group galing ko talaga
-            const icons = document.querySelectorAll('.create-service-type-icon');
-            serviceCard.addEventListener('click', () =>{
-                icons.forEach(icon => {
-                    icon.classList.remove('service-selected');
+        services.forEach(function(serviceCard){
+            serviceCard.addEventListener('click', () => {
+                services.forEach(service => {
+                    service.classList.remove('service-selected');
                 });
-                const icon = serviceCard.querySelector('.create-service-type-icon');
                 const serviceId = serviceCard.getAttribute('id');
                 setService(serviceId);
-                icon.classList.add('service-selected');
+                serviceCard.classList.add('service-selected');
             });
         });
     }
@@ -55,52 +55,87 @@ export default function CreateOrder() {
         return localTime.toISOString().slice(0, 16);
     }
 
+    function isWithinBusinessHours(dateTime) {
+        const day = dateTime.getDay();
+        let startHour = 0;
+        let endHour = 0;
+        if (day >= 1 && day <= 5) { // Weekdays
+            startHour = 8;
+            endHour = 19; //7PM
+        } else if (day === 6) { // Saturday
+            startHour = 9;
+            endHour = 17; //5PM
+        } else { // Sunday
+            startHour = 10;
+            endHour = 16; //4PM
+        }
+        const hour = dateTime.getHours();
+        return hour >= startHour && hour <= endHour;
+    }
+
     function addOnChange(){
         const input = document.getElementById('input-transfer');
-        input.addEventListener('change', () => { //para yung order pwede i-set kahapon
-            if (input.value < input.min) {
-                input.value = input.min;
+        input.addEventListener('change', () => {
+            const selected = new Date(input.value);
+            if (!isNaN(selected.getTime()) && !isWithinBusinessHours(selected)) {
+                toast.error('Selected time is outside operating hours.');
+                input.value = '';
+                setTransferDate(undefined);
+                return;
             }
             setTransferDate(input.value);
         });
     }
     
+    async function getStuff() {
+        const washablesList = await getWashableItems();
+        const serviceList = await getServices();
+        
+        let washables = [];
+        let services = [];
+        
+        for(let i = 0; i < washablesList.length; i++){
+            if(washablesList[i][0] != 'washables_counter'){
+                washables.push(washablesList[i]);
+            }
+        }
+        for(let i = 0; i < serviceList.length; i++){
+            if(serviceList[i][0] != 'service_counter'){
+                services.push(serviceList[i]);
+            }
+        }
+        setWashableItems(washables);
+        setServiceTypes(services);
+    }
+
+    async function searchWashables(e) {
+        const results = await searchWashableItems(e.target.value);
+        setSearchedWashableItems(results);
+    }
+
+    useEffect(()=>{
+        addOnChange();
+    }, [])
+
     useEffect(()=>{
         setMinDate(getMinDateTime(2));
-        async function getStuff(params) {
-            const washablesList = await getWashableItems();
-            const serviceList = await getServices();
-            
-            let washables = [];
-            let services = [];
-            
-            for(let i = 0; i < washablesList.length; i++){
-                if(washablesList[i][0] != 'washables_counter'){
-                    washables.push(washablesList[i]);
-                }
-            }
-            for(let i = 0; i < serviceList.length; i++){
-                if(serviceList[i][0] != 'service_counter'){
-                    services.push(serviceList[i]);
-                }
-            }
-            setWashableItems(washables);
-            setServiceTypes(services);
-        }
+
         getStuff();
-        addOnChange();
+
         const transfers = document.getElementsByName('transfer-mode');
         transfers.forEach(element => {
             element.addEventListener('click', ()=>{
                 setModeTransfer(element.value)
             })
         });
+
         const receives = document.getElementsByName('receive-mode');
         receives.forEach(element => {
             element.addEventListener('click', ()=>{
                 setModeClaim(element.value)
             })
         });
+
         const payments = document.getElementsByName('payment-method');
         payments.forEach(element => {
             element.addEventListener('click', ()=>{
@@ -109,6 +144,10 @@ export default function CreateOrder() {
         });
     }, [])
 
+    useEffect(()=>{
+        setSearchedWashableItems(washableItems);
+    }, [washableItems])
+  
     useEffect(()=>{
         setupServices();
     }, [serviceTypes])
@@ -128,10 +167,10 @@ export default function CreateOrder() {
             for(let i = 0; i < orderItems.length; i++){
                 total_kilo  = total_kilo.plus(orderItems[i].total_kilo);
             }
-            setTotalKilo(Number(total_kilo));
-            setAmount(Number(totalKilo * pricePerKg).toFixed(2));
+            setTotalKilo(total_kilo.toNumber());
+            setAmount(BigNumber(total_kilo).times(pricePerKg).toNumber());
         }
-    },[orderItems, pricePerKg])
+    },[orderItems, pricePerKg, totalKilo])
 
     function addToOrderItems(washableItemUid, washableItemName, itemPerKg){
         setOrderItems(prevOrderItems => {
@@ -182,15 +221,11 @@ export default function CreateOrder() {
     
     function remove(removeIndex) {
         setOrderItems(prevOrderItems =>{
-            return prevOrderItems.filter((current, index) => index != removeIndex);
+            return prevOrderItems.filter((_, index) => index != removeIndex);
         })
     }
 
     async function submit(){
-        if(totalKilo < 1){
-            toast.error('Total weight must be at least 1 kilo.');
-            return;
-        }
         const draft = {
             serviceUid: service,
             address: address,
@@ -221,7 +256,7 @@ export default function CreateOrder() {
             }
         }
 
-        navigate('/order-summary', { state: { orderData: draft } });
+        navigate('/order-summary', {state: {orderData: draft}});
     }
         
     return(
@@ -247,25 +282,24 @@ export default function CreateOrder() {
                         <p className='section-title washable-items-title'>Select Washable Item</p>
                         <div className="select-items">
                             <div className="search-container">
-                                <input className='select-search gray-border' type="text" placeholder='Search Washable Items.......'/>
+                                <input className='select-search gray-border' type="text" placeholder='Search Items' onChange={(e) => searchWashables(e)}/>
                                 <img className='select-search-logo' src={SearchLogo} alt=""  />
                             </div>
                             <div className="items-container">
-                                {washableItems.map((washable)=>{
-                                    return <WashableItem id={washable[0]} imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name, washable[1].item_per_kilo)}/>
+                                {searchedWashableItems.map((washable, index)=>{
+                                    return <WashableItem key={index} id={washable[0]} imgUrl={PantsLogo} itemName={washable[1].washable_item_name} onClick={() => addToOrderItems(washable[0], washable[1].washable_item_name, washable[1].item_per_kilo)}/>
                                 })}
                             </div>
                         </div>
                     </div>
                     <div className="orders-list-container gray-border">
-                        <p className='section-title'>Your Order</p>
+                        <p className='section-title'>Your Order <span className='subtext'>({orderItems?.length ?? 0})</span></p>
                         <div className="orders-list-headers-container">
                             <p className='subtext'>Item</p>
                             <p className='subtext'>Quantity</p>
-                            <p className='subtext'>Action</p>
                         </div>
                         {orderItems && orderItems.map((orderItem, index)=>{
-                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} decrement={()=>decrementQuantity(index)} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} remove={() => remove(index)}/>
+                            return <OrderItem key={index} imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} decrement={()=>decrementQuantity(index)} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} remove={() => remove(index)}/>
                         })}
                     </div>
                 </div>
@@ -273,8 +307,8 @@ export default function CreateOrder() {
             <div className="service-types-containter gray-border">
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
-                    {serviceTypes && serviceTypes.map((service)=>{
-                        return <ServiceType icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]}/>
+                    {serviceTypes && serviceTypes.map((service, index)=>{
+                        return <ServiceType key={index} icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]}/>
                     })}
                 </div>
             </div>
@@ -335,9 +369,19 @@ export default function CreateOrder() {
                 <p className='section-title'>Additional Notes (Optional)</p>
                 <textarea className='additional-textarea gray-border' name="notes" id="" placeholder='Any special instructions...' onChange={(e) => setNotes(e.target.value)}></textarea>
             </div>
-            <p className='section-title'>Estimated Cost: Php {amount ? amount : Number(0).toFixed(2)}</p>
+                
+            <span className="estimate-title">
+                <p className='weight-title'>Weight: {totalKilo ? new Intl.NumberFormat('en-US').format(totalKilo.toFixed(2)) : '0'}kg</p>
+                {
+                    totalKilo && (totalKilo < 1 ?
+                        <p className='weight-title-error'>Please add more items to your order.</p>
+                    :
+                        <p className='price-title'>Price: {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP' }).format(amount.toFixed(2))}</p>
+                    )
+                }
+            </span>
+
             <div className="action-buttons">
-                <button className='action-button draft-button' onClick={() => submit()}>Save as Draft</button>
                 {address && service && orderItems.length > 0 && modeTransfer && transferDate && modeClaim && payment ?
                     <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
                 :

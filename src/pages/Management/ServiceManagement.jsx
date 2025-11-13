@@ -6,32 +6,34 @@ import { onValue, ref } from 'firebase/database';
 import { getServices } from '../../scripts/get';
 import swal from 'sweetalert2';
 import { deleteService } from '../../scripts/delete';
+import BigNumber from 'bignumber.js';
 
 export default function ServiceManagement() {
 
     const [services, setServices] = useState([]);
 
     const getServicesIncluded = (serviceIncluded) => {
-        return serviceIncluded.join(', ');
+        let servicesIncluded = [];
+        for(let i = 0; i < serviceIncluded.length; i++){
+            servicesIncluded.push(serviceIncluded[i]);
+        }
+        return servicesIncluded.join(', ');
     };
 
     useEffect(()=>{
         const servicesRef = ref(db, 'service_types');
         async function getServiceList() {
-            const getDaServices = await getServices();
+            const get_services = await getServices();
             let withoutCounter = [];
-            for(let i = 0; i < getDaServices.length; i++){
-                if(getDaServices[i][0] != 'service_counter'){
-                    withoutCounter.push(getDaServices[i])
+            for(let i = 0; i < get_services.length; i++){
+                if(get_services[i][0] != 'service_counter'){
+                    withoutCounter.push(get_services[i])
                 }
             }
-            console.log(withoutCounter);
-            
             setServices(withoutCounter)
         }
         onValue(servicesRef, (snapshot)=>{
             if (snapshot.exists()) {
-                const data = snapshot.val();
                 getServiceList();
             } else {
                 console.log("No data available");
@@ -51,7 +53,7 @@ export default function ServiceManagement() {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     await deleteService(serviceUid);
-                    }
+                }
             });
         }
 
@@ -74,11 +76,11 @@ export default function ServiceManagement() {
                     <i className="ti ti-search search-icon"></i>
                     <input type="text" placeholder="Search services..." />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
+                <select defaultValue="Date" className="filter-dropdown">
+                    <option value="Date" disabled hidden>Date</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Services</option>
+                <select defaultValue="Services" className="filter-dropdown">
+                    <option value="Services" disabled hidden>Services</option>
                 </select>
             </div>
 
@@ -99,7 +101,7 @@ export default function ServiceManagement() {
                                 <td>{service[1].service_type_id}</td>
                                 <td>{service[1].service_name}</td>
                                 <td>{getServicesIncluded(service[1].services)}</td>
-                                <td>{service[1].service_price}</td>
+                                <td>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(service[1].service_price).toFixed(2))}</td>
                                 <td className="action-buttons">
                                     <NavLink to={`/admin/service/${service[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>

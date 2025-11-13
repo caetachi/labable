@@ -1,4 +1,3 @@
-
 .create-service-type-card{
     display: flex;
     flex-direction: column;
@@ -7,11 +6,15 @@
     padding: 20px 10px;
     width: 200px;
     cursor: pointer;
+    transition: .2s ease;
 }
 
-.create-service-type-card:hover .create-service-type-icon{
-    background-color: var(--fg-dark);
-    color: var(--fg-light);
+.create-service-type-card:not(.service-selected):hover {
+    background-color: var(--sf-light);
+}
+
+.create-service-type-card:not(.service-selected):hover .create-service-type-icon {
+    background-color: var(--ov-light);
 }
 
 .create-service-type-icon{
@@ -22,11 +25,14 @@
     transition: ease 0.3s;
 }
 
-.service-selected{
-    background-color: var(--fg-dark);
-    color: var(--fg-light);
+.service-selected {
+    background-color: var(--sf-light);
 }
 
+.service-selected .create-service-type-icon {
+    background-color: var(--ov-dark);
+    color: var(--fg-light);
+}
 
 .create-service-type-name{
     font-size: 1.25em;

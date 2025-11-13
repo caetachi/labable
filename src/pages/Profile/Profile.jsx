@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { User, Shield, Mail, Phone, MapPin, Edit2, Calendar, Package } from 'lucide-react'
 import { onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth"
-import { get, ref, set, update } from "firebase/database"
+import { get, ref, update } from "firebase/database"
 import { auth, db } from "../../firebase"
 import './profile.css'
 import { toast } from 'react-toastify'
+import { formatTextualDateTime } from '../../scripts/dateformat'
 function Profile() {
 
   const [user, setUser] = useState(null);
@@ -23,8 +24,6 @@ function Profile() {
     address: ''
   });
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -131,7 +130,7 @@ function Profile() {
   const formatDate = (timestamp) => {
     if (!timestamp) return 'N/A';
     const date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return formatTextualDateTime(date);
   }
 
   const handleSaveChanges = async () => {
@@ -147,7 +146,7 @@ function Profile() {
     setErrors(newErrors);
     
     if (Object.values(newErrors).some(error => error)) {
-      alert('Please fix all errors before saving');
+      toast.error('Please fix all errors before saving');
       return;
     }
     
@@ -172,30 +171,25 @@ function Profile() {
         address: false
       });
       
-      localStorage.setItem('toastMessage', 'Profile updated successfully.');
-      localStorage.setItem('toastType', 'success');
+      toast.success('Profile updated successfully.');
       window.location.reload();
     } catch (error) {
       console.error('Error saving changes:', error);
-      alert('Failed to save changes. Please try again.');
+      toast.error('Failed to save changes. Please try again.');
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
     
     try {
       await sendPasswordResetEmail(auth, email);
       
-      setMessage('If your email is in our system, a password reset link has been sent.');
-      toast.success('If your email is in our system, a password reset link has been sent.');
+      toast.success('A password reset link has been sent.');
       
     } catch (err) {
       console.error(err);
-      setMessage('If your email is in our system, a password reset link has been sent.');
-      toast.success('If your email is in our system, a password reset link has been sent.');
+      toast.error('A password reset link could not be sent.');
     }
   }
 

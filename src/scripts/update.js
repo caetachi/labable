@@ -66,6 +66,23 @@ export async function updateInventoryItem(inventoryItemUid, inventoryItemName, q
   .then(()=>console.log("Updated"));
 }
 
+export async function updateInventoryItemStock(inventoryItemUid, quantity){
+    const currDate = new Date().toLocaleString();
+    const inventoryRef = ref(db, 'inventory_items');
+    const inventoryItemRef = child(inventoryRef, inventoryItemUid);
+    let inventoryItemData = { 
+      'last_restocked': currDate,
+      'restocked_by': auth.currentUser.uid,
+    }
+    if(quantity)inventoryItemData.quantity_in_stock = quantity;
+    await update(inventoryItemRef, inventoryItemData)
+    .then(()=>console.log("Updated"));
+
+    localStorage.setItem("toastMessage", "Stock updated!");
+    localStorage.setItem("toastType", "success");
+    window.location.reload();
+}
+
 export async function updateOrderDetails(orderUid, customerName, address, serviceUid, serviceType, paymentMethod, amount, orderItems, status, modeOfTransfer, modeOfClaiming, orderDate, laundryTransferDateTime, arrivalDate, notes) {
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');

@@ -1,11 +1,12 @@
-import { NavLink, useParams } from 'react-router';
+import { NavLink } from 'react-router';
 import './dashboard.css'
 import DashboardCard from '../../components/Dashboard Card/DashboardCard';
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
-import { onValue, ref, set } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
 import { getOrders, getUsers } from '../../scripts/get.js';
+import BigNumber from 'bignumber.js';
 
 function AdminDashboard() {
     const [userData, setUserData] = useState({});
@@ -29,7 +30,7 @@ function AdminDashboard() {
                 getOrders().then(count => {
                     setAdminApiData(prevData => ({
                         ...prevData,
-                        totalOrdersCount: count.length-1
+                        totalOrdersCount: new Intl.NumberFormat("en-PH").format(count.length-1)
                     }));
                     let totalRevenue = 0;
                     count.forEach((order) => {
@@ -41,7 +42,7 @@ function AdminDashboard() {
                 
                     setAdminApiData(prevData => ({
                         ...prevData,
-                        totalRevenueAmount: totalRevenue.toFixed(2)
+                        totalRevenueAmount: new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(new BigNumber(totalRevenue).toFixed(2))
                     }));
                     setArray(count);
                     {array && setMonthlyChartData(calculateMonthlyRevenue(array, year));}
@@ -49,7 +50,7 @@ function AdminDashboard() {
                     setMonthlyChartData(newChartData);
                 })};
                 getUsers().then(users => {
-                    const customerCount = users.filter(user => user[1].role === "customer").length;
+                    const customerCount = new Intl.NumberFormat("en-PH").format(users.filter(user => user[1].role === "customer").length);
                     setAdminApiData(prevData => ({
                         ...prevData,
                         totalCustomersCount: customerCount
@@ -57,7 +58,7 @@ function AdminDashboard() {
                 });
                 setDataForDate(selectedDate);
         });
-    }, [auth.currentUser.uid]);
+    }, [auth.currentUser.uid]); 
 
     const adminCardData = [
         {
@@ -116,7 +117,6 @@ function calculateMonthlyRevenue(ordersArray, year = new Date().getFullYear()) {
         { name: "November", revenue: 0 },
         { name: "December", revenue: 0 },
     ];
-
 
 
     ordersArray.forEach(order => {
@@ -181,13 +181,12 @@ function setDataForDate(date) {
                 }
             }
         });
-        console.log([dayOrdersCount, dayRevenueAmount, dayOrdersCompletedCount]);
         
         setAdminApiData(prevData => ({
             ...prevData,
-            totalDayOrdersCount: dayOrdersCount,
-            totalDayRevenueAmount: dayRevenueAmount.toFixed(2),
-            totalDayOrdersCompletedCount: dayOrdersCompletedCount
+            totalDayOrdersCount: new Intl.NumberFormat("en-PH").format(dayOrdersCount),
+            totalDayRevenueAmount: new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" }).format(dayRevenueAmount.toFixed(2)),
+            totalDayOrdersCompletedCount: new Intl.NumberFormat("en-PH").format(dayOrdersCompletedCount)
         }));
     });
 }
@@ -207,7 +206,13 @@ const MyAreaChart = () => {
           <CartesianGrid strokeDasharray="4 4" />
           <XAxis dataKey="name" tick={{ fill: 'var(--sf-dark)', fontSize: 12, fontFamily: "var(--primary-font)" }}/>
           <YAxis tick={{ fill: 'var(--sf-dark)', fontSize: 12, fontFamily: "var(--primary-font)" }}/>
-          <Tooltip />
+          <Tooltip
+            formatter={(value) => {
+              const num = Number(value) || 0;
+              const formatted = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(num);
+              return [formatted, 'Revenue'];
+            }}
+          />
 
           <Area
             type="monotone" 

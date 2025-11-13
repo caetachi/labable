@@ -3,16 +3,15 @@
 }
 
 .create-order-item-name{
-    font-size: 1.25em;
+    font-size: 1em;
     font-weight: 600;
 }
 
 .create-order-card{
     padding: 15px 25px;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 2fr 3fr 2fr;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
 }
 
@@ -27,15 +26,17 @@
     padding: 15px;
     background-color: var(--sf-light);
     border-radius: 10px;
+    width: 60px;
+    height: 60px;
 }
 
 .order-quantity-container{
     display: flex;
     flex-direction: row;
-    
+    justify-content: center;
 }
 
-.order-quantity-container *{
+.order-quantity-container * {
     padding: 5px 15px;
     border-radius: 15px;
     font-size: 1.25em;
@@ -47,7 +48,13 @@
     cursor: pointer;
 }
 
-.delete-button{
+.delete-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.delete-button {
     color: var(--fg-light);
     background-color: var(--error);
     padding: 10px 30px;

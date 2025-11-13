@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import { getInventory } from '../../scripts/get';
 import swal from 'sweetalert2';
-import { deleteInventory } from '../../scripts/delete';
+import { deleteInventory } from '../../scripts/delete';;
 
 
 const getStatusClass = (status) => {
@@ -13,7 +13,6 @@ const getStatusClass = (status) => {
 }
 
 export default function InventoryManagement() {
-
     const [inventory, setInventory] = useState([]);
     
     useEffect(()=>{
@@ -32,7 +31,6 @@ export default function InventoryManagement() {
         }
         onValue(inventoryRef, (snapshot)=>{
             if (snapshot.exists()) {
-                const data = snapshot.val();
                 getInventoryList();
             } else {
                 console.log("No data available");
@@ -54,7 +52,7 @@ export default function InventoryManagement() {
                         await deleteInventory(inventoryUid);
                         }
                 });
-            }
+    }
 
     return (
         <>
