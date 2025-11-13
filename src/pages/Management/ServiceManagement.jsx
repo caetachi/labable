@@ -1,17 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
+import { db } from '../../firebase';
+import { onValue, ref } from 'firebase/database';
+import { getServices } from '../../scripts/get';
 
-const services = [
-    { id: 'SRV-001', name: 'Superb Service', included: 'Wash, Dry, Fold, Iron', price: 'Php120.00' },
-    { id: 'SRV-002', name: 'Good Service', included: 'Wash, Dry, Fold', price: 'Php100.00' },
-    { id: 'SRV-003', name: 'Budget Service', included: 'Wash, Dry', price: 'Php80.00' },
-    { id: 'SRV-004', name: 'Dry Cleaning Service', included: 'Chemical Solvent', price: 'Php150.00' },
-    { id: 'SRV-005', name: 'Superb Thick Service', included: 'Wash, Dry, Fold, Iron', price: 'Php170.00' },
-    { id: 'SRV-006', name: 'Student Pack Service', included: 'Wash, Dry, Fold, Iron', price: 'Php110.00' },
-];
 
 export default function ServiceManagement() {
+
+    const [services, setServices] = useState([]);
+
+    const getServicesIncluded = (serviceIncluded) => {
+        return serviceIncluded.join(', ');
+    };
+
+    useEffect(()=>{
+        const servicesRef = ref(db, 'service_types');
+        async function getServiceList() {
+            const getDaServices = await getServices();
+            let withoutCounter = [];
+            for(let i = 0; i < getDaServices.length; i++){
+                if(getDaServices[i][0] != 'service_counter'){
+                    withoutCounter.push(getDaServices[i])
+                }
+            }
+            console.log(withoutCounter);
+            
+            setServices(withoutCounter)
+        }
+        onValue(servicesRef, (snapshot)=>{
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                getServiceList();
+            } else {
+                console.log("No data available");
+            }
+        });
+    }, [])
+
     return (
         <>
             <div className="management-header">
@@ -52,11 +78,11 @@ export default function ServiceManagement() {
                     </thead>
                     <tbody>
                         {services.map(service => (
-                            <tr key={service.id}>
-                                <td>{service.id}</td>
-                                <td>{service.name}</td>
-                                <td>{service.included}</td>
-                                <td>{service.price}</td>
+                            <tr key={service[1].service_type_id}>
+                                <td>{service[1].service_type_id}</td>
+                                <td>{service[1].service_name}</td>
+                                <td>{getServicesIncluded(service[1].services)}</td>
+                                <td>{service[1].service_price}</td>
                                 <td className="action-buttons">
                                     <NavLink to={`/admin/service/${service.id}`} className="action-icon">
                                         <i className="ti ti-eye"></i>

@@ -1,40 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
-
-const customers = [
-    { id: 'CUS-001', name: 'Jerson Valdez', email: 'valdezjerson@gmai...', phone: '09091805447', address: 'Sitio Uli-Uli, Pinalagd...', status: 'Active' },
-    { id: 'CUS-002', name: 'Janver Flores', email: 'valdezjerson@gmai...', phone: '09091805447', address: 'Sitio Uli-Uli, Pinalagd...', status: 'Inactive' },
-    { id: 'CUS-003', name: 'Jan Saints', email: 'valdezjerson@gmai...', phone: '09091805447', address: 'Sitio Uli-Uli, Pinalagd...', status: 'Deleted' },
-];
-
+import { getUsers } from '../../scripts/get';
+import { onValue, ref } from 'firebase/database';
+import { db } from '../../firebase';
 
 export default function CustomerManagement() {
+
+    const [users, setUsers] = useState([]);
+
     const getStatusClass = (status) => {
         return status.toLowerCase().replace(/\s+/g, '');
     }
 
     useEffect(()=>{
-            const ordersRef = ref(db, 'orders');
-            async function getOrdersList() {
-                const getOrder = await getOrders();
-                let withoutCounter = [];
-                for(let i = 0; i < getOrder.length; i++){
-                    if(getOrder[i][0] != 'orders_counter'){
-                        withoutCounter.push(getOrder[i])
-                    }
+        const usersRef = ref(db, 'users');
+        async function getUsersList() {
+            const getDaUsers = await getUsers();
+            let withoutCounter = [];
+            for(let i = 0; i < getDaUsers.length; i++){
+                if(getDaUsers[i][0] != 'user_counter' && getDaUsers[i][1].role == 'customer'){
+                    withoutCounter.push(getDaUsers[i])
                 }
-                setOrders(withoutCounter)
             }
-            onValue(ordersRef, (snapshot)=>{
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    getOrdersList();
-                } else {
-                    console.log("No data available");
-                }
-            });
-        }, [])
+            console.log(withoutCounter);
+            
+            setUsers(withoutCounter)
+        }
+        onValue(usersRef, (snapshot)=>{
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                getUsersList();
+            } else {
+                console.log("No data available");
+            }
+        });
+    }, [])
 
     return (
         <>
@@ -81,23 +82,23 @@ export default function CustomerManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {customers.map(customer => (
-                            <tr key={customer.id}>
-                                <td>{customer.id}</td>
-                                <td>{customer.name}</td>
-                                <td>{customer.email}</td>
-                                <td>{customer.phone}</td>
-                                <td>{customer.address}</td>
+                        {users.map(customer => (
+                            <tr key={customer[1].user_id}>
+                                <td>{customer[1].user_id}</td>
+                                <td>{customer[1].fullname ? customer[1].fullname : "No name"}</td>
+                                <td>{customer[1].email ? customer[1].email : "No email"}</td>
+                                <td>{customer[1].phone ? customer[1].phone : "No phone number"}</td>
+                                <td>{customer[1].address ? customer[1].user_id : "No address"}</td>
                                 <td>
-                                    <span className={`status ${getStatusClass(customer.status)}`}>
-                                        {customer.status}
+                                    <span className={`status ${getStatusClass(customer[1].status)}`}>
+                                        {customer[1].status}
                                     </span>
                                 </td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/customer/${customer.id}`} className="action-icon">
+                                    <NavLink to={`/admin/customer/${customer[1].user_id}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/customer/${customer.id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/customer/${customer[1].user_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete">
@@ -110,5 +111,5 @@ export default function CustomerManagement() {
                 </table>
             </div>
         </>
-    );
+    )
 }
