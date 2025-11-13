@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
-
-const schedules = [
-    { id: 'ORD-001', customer: 'Jerson Valdez', type: 'Pick up', date: '10/29/2025', time: '7:00 AM', status: 'Out for pickup' },
-    { id: 'ORD-002', customer: 'Janver Flores', type: 'Pick up', date: '10/29/2025', time: '7:00 AM', status: 'Picked' },
-    { id: 'ORD-003', customer: 'Jan Santiago', type: 'Deliver', date: '10/29/2025', time: '7:00 AM', status: 'Out for delivery' },
-    { id: 'ORD-004', customer: 'John Bacang', type: 'Deliver', date: '10/29/2025', time: '7:00 AM', status: 'Delivered' },
-    { id: 'ORD-005', customer: 'Marc Pavia', type: 'Pick up', date: '10/29/2025', time: '7:00 AM', status: 'Canceled' },
-    { id: 'ORD-006', customer: 'Marc Pavia', type: 'Pick up', date: '10/29/2025', time: '7:00 AM', status: 'Preparing' },
-];
+import { get, onValue, ref } from 'firebase/database';
+import { getOrders } from '../../scripts/get';
+import { db } from '../../firebase';
 
 const getStatusClass = (status) => {
     return status.toLowerCase().replace(/\s+/g, '');
 }
 
+const getNormalTime = (datetime) =>{
+    return new Date(datetime).toLocaleDateString();
+}
+
+
 export default function ScheduleManagement() {
+
+    const [schedules, setSchedules] = useState([]);
+
+    const ordersRef = ref(db, 'orders');
+    useEffect(()=>{
+        async function getOrdersList() {
+            const getOrder = await getOrders();
+            let withoutCounter = [];
+            for(let i = 0; i < getOrder.length; i++){
+                if(getOrder[i][0] != 'orders_counter'){
+                    getOrder[i].push(getOrder[i][1].schedule);
+                    withoutCounter.push(getOrder[i])
+                    console.log(getOrder[i]);
+                }
+            }
+            setSchedules(withoutCounter)
+        }
+        onValue(ordersRef, (snapshot)=>{
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                getOrdersList();
+            } else {
+                console.log("No data available");
+            }
+        });
+    }, [])
+
     return (
         <>
             <div className="management-header">
@@ -54,29 +80,32 @@ export default function ScheduleManagement() {
                             <th>Customer</th>
                             <th>Type</th>
                             <th>Date</th>
-                            <th>Time</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {schedules.map(schedule => (
-                            <tr key={schedule.id}>
-                                <td>{schedule.id}</td>
-                                <td>{schedule.customer}</td>
-                                <td>{schedule.type}</td>
-                                <td>{schedule.date}</td>
-                                <td>{schedule.time}</td>
+                            <tr key={schedule[1].order_id}>
+                                <td>{schedule[1].order_id}</td>
+                                <td>{schedule[1].customer_name}</td>
+                                <td>{schedule[2].pickup && schedule[2].delivery ? "pickup & delivery" : schedule[2].pickup ? "pickup" : schedule[2].delivery ? "delivery" : "error"}</td>
+                                <td>{schedule[2].pickup && schedule[2].delivery ?
+                                `${getNormalTime(schedule[2].pickup.scheduled_date)} : ${getNormalTime(schedule[2].delivery.scheduled_date)}` : 
+                                schedule[2].pickup ? getNormalTime(schedule[2].pickup.scheduled_date) :
+                                schedule[2].delivery ? getNormalTime(schedule[2].delivery.scheduled_date) :
+                                "No date"
+                            }</td>
                                 <td>
-                                    <span className={`status ${getStatusClass(schedule.status)}`}>
-                                        {schedule.status}
+                                    <span className={`status ${getStatusClass(schedule[1].status)}`}>
+                                        {schedule[1].status}
                                     </span>
                                 </td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/schedule/${schedule.id}`} className="action-icon">
+                                    <NavLink to={`/admin/schedule/${schedule[1].order_id}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/schedule/${schedule.id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/schedule/${schedule[1].order_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete">

@@ -214,15 +214,14 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     const snapshot = await get(newOrderRef);
     const insertedOrder = snapshot.val();
     console.log("Inserted order:", insertedOrder);
+    await update(ordersRef, {
+      'orders_counter': ordersCounter + 1,
+    })
+      .then(() => console.log("Increment"));
     return [insertedOrderUid, insertedOrder];
   } catch (err) {
     alert(err.message);
   }
-  
-  await update(ordersRef, {
-    'orders_counter': ordersCounter + 1,
-  })
-    .then(() => console.log("Increment"));
 }
 
 export async function newOrderTrack(orderUid, status) {
