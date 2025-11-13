@@ -5,7 +5,7 @@
     align-items: center;
     width: 100%;
     margin-top: 100px;
-    margin-bottom: 50px;
+    margin-bottom: 200px;
 }
 
 .management-container *{
@@ -53,6 +53,12 @@
 .management-container .form .input-field label{
     font-size: 1rem;
     font-weight: 500;
+}
+
+.management-container .form .input-field .error-message{
+    font-size: 0.9rem;
+    color: var(--error);
+    margin-left: 20px;
 }
 
 .management-container .form .input-field input{
@@ -111,6 +117,19 @@
     font-weight: 600;
     padding: 20px;
     cursor: pointer;
+}
+
+.management-container .form .button-group .create-button.disabled{
+    background-color: var(--sf-dark);
+    border: 2px solid var(--sf-dark);
+    cursor: not-allowed;
+}
+
+.management-container .form .button-group .create-button.disabled:hover{
+    background-color: var(--sf-dark);
+    border: 2px solid var(--sf-dark);
+    color: var(--fg-light);
+    cursor: not-allowed;
 }
 
 .management-container .form .button-group .cancel-button:hover{

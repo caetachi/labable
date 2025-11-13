@@ -4,7 +4,8 @@ import './management.css';
 import { db } from '../../firebase';
 import { onValue, ref } from 'firebase/database';
 import { getServices } from '../../scripts/get';
-
+import swal from 'sweetalert2';
+import { deleteService } from '../../scripts/delete';
 
 export default function ServiceManagement() {
 
@@ -38,6 +39,22 @@ export default function ServiceManagement() {
         });
     }, [])
 
+     async function handleDelete(serviceUid){
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--bg-dark)',
+                cancelButtonColor: 'var(--error)',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await deleteService(serviceUid);
+                    }
+            });
+        }
+
     return (
         <>
             <div className="management-header">
@@ -46,10 +63,8 @@ export default function ServiceManagement() {
                     <p>Manage services types and pricing</p>
                 </div>
                 <div className="header-actions">
-                    <NavLink to={'/admin/create-service'}>
-                        <button className="create-order">
-                            <i className="ti ti-plus"></i> Add Service
-                        </button>
+                    <NavLink to="/admin/create-service" className="create-order">
+                        <i className="ti ti-plus"></i> Add Service
                     </NavLink>
                 </div>
             </div>
@@ -92,7 +107,7 @@ export default function ServiceManagement() {
                                     <NavLink to={`/admin/service/${service.id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete">
+                                    <button className="action-icon delete" onClick={()=>handleDelete(service[0])}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

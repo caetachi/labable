@@ -50,10 +50,8 @@ export default function ScheduleManagement() {
                     <p>Manage schedules of delivery and pickups</p>
                 </div>
                 <div className="header-actions">
-                    <NavLink to={'/admin/create-schedule'}>
-                        <button className="create-order">
-                            <i className="ti ti-plus"></i> Create Schedule
-                        </button>
+                    <NavLink to="/admin/create-schedule" className="create-order">
+                        <i className="ti ti-plus"></i> Create Schedule
                     </NavLink>
                 </div>
             </div>
@@ -110,7 +108,7 @@ export default function ScheduleManagement() {
                                     <NavLink to={`/admin/schedule/${schedule[1].order_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete">
+                                    <button className="action-icon delete" >
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
 import { getOrders } from '../../scripts/get';
-import deleteOrder from '../../scripts/delete';
+import { deleteOrder } from '../../scripts/delete.js';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import swal from 'sweetalert2';
@@ -81,9 +81,9 @@ export default function OrderManagement() {
                     <p>Manage customers laundry orders</p>
                 </div>
                 <div className="header-actions">
-                    <button className="create-order">
+                    <NavLink to="/create-order" className="create-order">
                         <i className="ti ti-plus"></i> Create Order
-                    </button>
+                    </NavLink>
                 </div>
             </div>
 

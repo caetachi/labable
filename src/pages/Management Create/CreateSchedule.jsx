@@ -13,6 +13,34 @@ export default function CreateSchedule() {
         newSchedule(orderID, scheduleType, date, time);
     }
 
+    function onOrderIDChange(e){
+        const temp = e.target.value;
+        const error = document.getElementById('orderIdErrorMessage');
+        setOrderID(null)
+
+        if (!temp.trim()) {
+            error.innerHTML = 'Order ID is required';
+        }else if(!temp.match(/^ORD-\d{1,6}$/)){
+            error.innerHTML = 'Invalid Order ID format. Expected format: ORD-XXXX';
+        } else {
+            error.innerHTML = '';
+            setOrderID(temp);
+        }
+    }
+
+    function onDateChange(e){
+        const temp = e.target.value;
+        const error = document.getElementById('dateErrorMessage');
+        setDate(null)
+
+        if (!temp.trim()) {
+            error.innerHTML = 'Date is required';
+        } else {
+            error.innerHTML = '';
+            setDate(temp);
+        }
+    }
+
     return(
         <div className="management-container">
             <div className="form">
@@ -22,7 +50,8 @@ export default function CreateSchedule() {
                 </div>
                 <div className="input-field">
                     <label>Order ID</label>
-                    <input type="text" placeholder="Enter order ID" onChange={(e)=>setOrderID(e.target.value)} />
+                    <input type="text" placeholder="Enter order ID" onChange={(e)=>onOrderIDChange(e)} />
+                    <p className='error-message' id='orderIdErrorMessage'></p>
                 </div>
                 <div className="input-field">
                     <label>Type</label>
@@ -31,11 +60,12 @@ export default function CreateSchedule() {
                         <option value="delivery">Delivery</option>
                         <option value="pickup">Pickup</option>
                     </select>
+                    <p className='error-message' id='dateErrorMessage'></p>
                 </div>
                 <div className="input-group">
                     <div className="input-field">
                         <label>Delivery/Pickup Date</label>
-                        <input type="date" onChange={(e)=>setDate(e.target.value)} />
+                        <input type="date" onChange={(e)=>onDateChange(e)} />
                     </div>
                     <div className="input-field">
                         <label>Delivery/Pickup Time</label>

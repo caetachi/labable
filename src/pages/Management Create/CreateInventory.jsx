@@ -13,6 +13,44 @@ export default function CreateInventory() {
         await newInventory(name, quantity, unit, status);
     }
 
+    function onNameChange(e) {
+        const temp = e.target.value;
+        const error = document.getElementById('nameError');
+        setName(null)
+
+        if (!temp.trim()) {
+            error.innerHTML = 'Name is required';
+        } else {
+            error.innerHTML = '';
+            setName(temp);
+        }
+    }
+
+    function onQuantityChange(e) {
+        const temp = e.target.value;
+        const error = document.getElementById('quantityError');
+        setQuantity(null)
+
+        if (!temp.trim()) {
+            error.innerHTML = 'Quantity is required';
+        } else {
+            error.innerHTML = '';
+            setQuantity(temp);
+        }
+    }
+
+    function onUnitChange(e) {
+        const temp = e.target.value;
+        const error = document.getElementById('unitError');
+        setUnit(null)
+        if (!temp.trim()) {
+            error.innerHTML = 'Unit is required';
+        } else {
+            error.innerHTML = '';
+            setUnit(temp);
+        }
+    }
+
     return(
         <div className="management-container">
             <div className="form">
@@ -22,11 +60,13 @@ export default function CreateInventory() {
                 </div>
                 <div className="input-field">
                     <label>Item Name</label>
-                    <input type="text" placeholder="Enter item name" onChange={(e)=>setName(e.target.value)}/>
+                    <input type="text" placeholder="Enter item name" onChange={(e)=>onNameChange(e)}/>
+                    <p className='error-message' id="nameError"></p>
                 </div>
                 <div className="input-field">
                     <label>Quantity</label>
-                    <input type="number" placeholder="Enter quantity" onChange={(e)=>setQuantity(e.target.value)}/>
+                    <input type="number" placeholder="Enter quantity" onChange={(e)=>onQuantityChange(e)}/>
+                    <p className='error-message' id="quantityError"></p>
                 </div>
                 <div className="input-field">
                     <label>Status</label>
@@ -39,14 +79,15 @@ export default function CreateInventory() {
                 </div>
                 <div className="input-field">
                     <label>Unit</label>
-                    <input type="text" placeholder="Enter unit" onChange={(e)=>setUnit(e.target.value)}/>
+                    <input type="text" placeholder="Enter unit" onChange={(e)=>onUnitChange(e)}/>
+                    <p className='error-message' id="unitError"></p>
                 </div>
                 <div className="button-group">
                     <button className="cancel-button" onClick={()=>window.history.back()}>Cancel</button>
                     {name && quantity && status && unit ?
                     <button className="create-button" onClick={submit}>Create Inventory</button>
                     :
-                    <button className="create-button" disabled>Create Inventory</button>
+                    <button className="create-button disabled" disabled>Create Inventory</button>
                     }
                 </div>
             </div>
