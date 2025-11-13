@@ -25,6 +25,11 @@ import ToastWrapper from "./components/Toast/ToastWrapper"
 import AdminDashboard from "./pages/Dashboard/AdminDashboard"
 import CustomerDashboard from "./pages/Dashboard/CustomerDashboard"
 import OrderView from "./pages/Order View/OrderView"
+import CreateCustomer from "./pages/Management Create/CreateCustomer"
+import CreateInventory from "./pages/Management Create/CreateInventory"
+import CreateService from "./pages/Management Create/CreateService"
+import CreateWashable from "./pages/Management Create/CreateWashable"
+import CreateSchedule from "./pages/Management Create/CreateSchedule"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -99,6 +104,11 @@ function Layout({ user, userData }) {
                   <Route path="/admin/:viewCategory" element={<Management />} />
                   <Route path="/admin/:viewCategory/:viewId" element={<ManagementView />} />
                   <Route path="/details-edit/:toEdit/:id" element={<OrderManagementDetailsEdit />} />
+                  <Route path="/admin/create-customer" element={<CreateCustomer />} />
+                  <Route path="/admin/create-inventory" element={<CreateInventory />} />
+                  <Route path="/admin/create-service" element={<CreateService />} />
+                  <Route path="/admin/create-washable" element={<CreateWashable />} />
+                  <Route path="/admin/create-schedule" element={<CreateSchedule />} />
                 </>
               )}
             </>
