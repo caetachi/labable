@@ -1,6 +1,6 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
-import { getItemPerKg, getServiceName, getWashableItemName } from './get';
+import { getItemPerKg, getOrders, getServiceName, getWashableItemName } from './get';
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate) {
   const usersRef = ref(db, 'users');
@@ -349,4 +349,34 @@ export async function newPayment(orderUid, method, status, counter) { // to din 
   }
 
   return paymentData;
+}
+
+export async function newSchedule(orderID, scheduleType, date, time) {
+  const orders = await getOrders();
+  let ordersRef = ref(db, 'orders')
+  let withoutCounter = [];
+  for(let i = 0; i < orders.length; i++){
+      if(orders[i][0] != 'orders_counter'){
+          withoutCounter.push(orders[i])
+      }
+  }
+  for(let i = 0; i < withoutCounter.length; i++){
+    console.log(withoutCounter[i][1].order_id);
+    
+    if(withoutCounter[i][1].order_id == orderID){
+      const orderRef = child(ordersRef, withoutCounter[i][0]);
+      const scheduleRef = child(orderRef, 'schedule'); 
+      const scheduleTypeData = scheduleType;
+      const scheduleData = {
+        [`${scheduleTypeData}`]:{
+          "scheduled_date": date + time,
+          "status": "Not yet received"
+        }
+      }
+      update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
+      })
+    }
+  }
+  console.log("ID not found");
+  return;
 }

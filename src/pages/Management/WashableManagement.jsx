@@ -42,9 +42,11 @@ export default function WashableManagement() {
                     <p>Manage washable items, pricing and number of pieces per kg</p>
                 </div>
                 <div className="header-actions">
-                    <button className="create-order">
-                        <i className="ti ti-plus"></i> Add Items
-                    </button>
+                    <NavLink to={'/admin/create-washable'}>
+                        <button className="create-order">
+                            <i className="ti ti-plus"></i> Add Items
+                        </button>
+                    </NavLink>
                 </div>
             </div>
 

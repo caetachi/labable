@@ -46,9 +46,11 @@ export default function InventoryManagement() {
                     <p>Manage inventory of the shop</p>
                 </div>
                 <div className="header-actions">
-                    <button className="create-order">
-                        <i className="ti ti-plus"></i> Add Items
-                    </button>
+                    <NavLink to={'/admin/create-inventory'}>
+                        <button className="create-order">
+                            <i className="ti ti-plus"></i> Add Items
+                        </button>
+                    </NavLink>
                 </div>
             </div>
 
