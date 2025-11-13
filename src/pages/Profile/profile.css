@@ -316,8 +316,11 @@
 
 .reset-link {
   font-size: 0.875rem;
-  color: #3b82f6;
+  color: var(--hl-blue);
   text-decoration: underline;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
 }
 
 .reset-link:hover {

@@ -104,7 +104,7 @@ export default function Login() {
                                 <p>Remember me</p>
                             </div>
 
-                            <NavLink to={'/'}>Forgot password?</NavLink>
+                            <NavLink to={'/forgot-password'}>Forgot password?</NavLink>
                         </div>
 
                         {email && password ?

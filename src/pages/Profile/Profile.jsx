@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { User, Shield, Mail, Phone, MapPin, Edit2, Calendar, Package } from 'lucide-react'
-import { onAuthStateChanged } from "firebase/auth"
-import { get, ref, update } from "firebase/database"
+import { onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth"
+import { get, ref, set, update } from "firebase/database"
 import { auth, db } from "../../firebase"
 import './profile.css'
+import { toast } from 'react-toastify'
 function Profile() {
 
   const [user, setUser] = useState(null);
@@ -21,6 +22,9 @@ function Profile() {
     phone: '',
     address: ''
   });
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -33,6 +37,7 @@ function Profile() {
             const data = snapshot.val();
             setUserData(data);
             setOriginalData(data);
+            setEmail(data.email || '');
           }
         }).catch((error) => {
           console.error('Error fetching user data:', error);
@@ -175,6 +180,25 @@ function Profile() {
       alert('Failed to save changes. Please try again.');
     }
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setError('');
+    
+    try {
+      await sendPasswordResetEmail(auth, email);
+      
+      setMessage('If your email is in our system, a password reset link has been sent.');
+      toast.success('If your email is in our system, a password reset link has been sent.');
+      
+    } catch (err) {
+      console.error(err);
+      setMessage('If your email is in our system, a password reset link has been sent.');
+      toast.success('If your email is in our system, a password reset link has been sent.');
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -366,7 +390,9 @@ function Profile() {
                 <div className="security-info">
                   <h4 className="security-title">Password Reset</h4>
                   <p className="security-description">This section will provide you a link for your to reset your own password using your existing email address on your profile</p>
-                  <a href="#" className="reset-link">Reset Link</a>
+                  <form action="" onSubmit={handleSubmit}>
+                    <button type='submit' className='reset-link'>Send Reset Link</button>
+                  </form>
                 </div>
               </div>
             </div>
