@@ -8,11 +8,34 @@ const customers = [
     { id: 'CUS-003', name: 'Jan Saints', email: 'valdezjerson@gmai...', phone: '09091805447', address: 'Sitio Uli-Uli, Pinalagd...', status: 'Deleted' },
 ];
 
-const getStatusClass = (status) => {
-    return status.toLowerCase().replace(/\s+/g, '');
-}
 
 export default function CustomerManagement() {
+    const getStatusClass = (status) => {
+        return status.toLowerCase().replace(/\s+/g, '');
+    }
+
+    useEffect(()=>{
+            const ordersRef = ref(db, 'orders');
+            async function getOrdersList() {
+                const getOrder = await getOrders();
+                let withoutCounter = [];
+                for(let i = 0; i < getOrder.length; i++){
+                    if(getOrder[i][0] != 'orders_counter'){
+                        withoutCounter.push(getOrder[i])
+                    }
+                }
+                setOrders(withoutCounter)
+            }
+            onValue(ordersRef, (snapshot)=>{
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    getOrdersList();
+                } else {
+                    console.log("No data available");
+                }
+            });
+        }, [])
+
     return (
         <>
             <div className="management-header">
