@@ -1,11 +1,14 @@
-import { ref, remove } from 'firebase/database';
+import { child, ref, remove } from 'firebase/database';
 import { db } from '../firebase';
+import { getOrders } from './get';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export async function deleteOrder(orderUid) {
   const orderRef = ref(db, `orders/${orderUid}`);
   try {
     await remove(orderRef);
-    localStorage.setItem("toastMessage", "Order deletion successful.");
+    toast.success("Order deletion successful");
     localStorage.setItem("toastType", "success");
   } catch (error) {
     localStorage.setItem(
@@ -13,8 +16,6 @@ export async function deleteOrder(orderUid) {
       error?.message || "Failed to delete order."
     );
     localStorage.setItem("toastType", "error");
-  } finally {
-    window.location.reload();
   }
 }
 
@@ -23,16 +24,13 @@ export async function deleteUser(userUid) {
 
   try {
     await remove(userRef);
-    localStorage.setItem("toastMessage", "User deletion successful.");
-    localStorage.setItem("toastType", "success");
+    toast.success("User deletion successful");
   } catch (error) {
     localStorage.setItem(
       "toastMessage",
       error?.message || "Failed to delete user."
     );
     localStorage.setItem("toastType", "error");
-  } finally {
-    window.location.reload();
   }
 }
 
@@ -41,17 +39,14 @@ export async function deleteInventory(inventoryUid) {
 
   try {
     await remove(inventoryRef);
-    localStorage.setItem("toastMessage", "Inventory deletion successful.");
-    localStorage.setItem("toastType", "success");
+    toast.success("Service deletion successful");
   } catch (error) {
     localStorage.setItem(
       "toastMessage",
       error?.message || "Failed to delete inventory."
     );
     localStorage.setItem("toastType", "error");
-  } finally {
-    window.location.reload();
-  }
+  } 
 }
 
 export async function deleteService(serviceUid) {
@@ -59,16 +54,13 @@ export async function deleteService(serviceUid) {
 
   try {
     await remove(serviceRef);
-    localStorage.setItem("toastMessage", "Service deletion successful.");
-    localStorage.setItem("toastType", "success");
+    toast.success("Service deletion successful");
   } catch (error) {
     localStorage.setItem(
       "toastMessage",
       error?.message || "Failed to delete service."
     );
     localStorage.setItem("toastType", "error");
-  } finally {
-    window.location.reload();
   }
 }
 
@@ -77,15 +69,78 @@ export async function deleteWashable(washableUid) {
 
   try {
     await remove(washableRef);
-    localStorage.setItem("toastMessage", "Washable item deletion successful.");
-    localStorage.setItem("toastType", "success");
+    toast.success("Washable item deletion successful");
   } catch (error) {
     localStorage.setItem(
       "toastMessage",
       error?.message || "Failed to delete washable item."
     );
     localStorage.setItem("toastType", "error");
-  } finally {
     window.location.reload();
+  } 
+}
+
+export async function deleteSchedulePickup(orderID) {
+  const orders = await getOrders();
+  let ordersRef = ref(db, 'orders')
+  let withoutCounter = [];
+  for(let i = 0; i < orders.length; i++){
+      if(orders[i][0] != 'orders_counter'){
+          withoutCounter.push(orders[i])
+      }
+  }
+  for(let i = 0; i < withoutCounter.length; i++){
+    
+    if(withoutCounter[i][1].order_id == orderID){
+      const orderRef = child(ordersRef, withoutCounter[i][0]);
+      const scheduleRef = child(orderRef, 'schedule'); 
+      const pickupRef = child(scheduleRef, 'pickup');
+      if(pickupRef){
+        try {
+          await remove(pickupRef);
+          toast.success("Schedule deletion successful");
+        } catch (error) {
+          localStorage.setItem(
+            "toastMessage",
+            error?.message || "Failed to delete schedule."
+          );
+          localStorage.setItem("toastType", "error");
+        }
+      }
+    }
+  }
+}
+
+
+
+
+export async function deleteScheduleDelivery(orderID) {
+  const orders = await getOrders();
+  let ordersRef = ref(db, 'orders')
+  let withoutCounter = [];
+  for(let i = 0; i < orders.length; i++){
+      if(orders[i][0] != 'orders_counter'){
+          withoutCounter.push(orders[i])
+      }
+  }
+  for(let i = 0; i < withoutCounter.length; i++){
+    
+    if(withoutCounter[i][1].order_id == orderID){
+      const orderRef = child(ordersRef, withoutCounter[i][0]);
+      const scheduleRef = child(orderRef, 'schedule'); 
+      const deliverypRef = child(scheduleRef, 'delivery');
+      if(deliverypRef){
+        try {
+          await remove(deliverypRef);
+          toast.success("Schedule deletion successful");
+        } catch (error) {
+          localStorage.setItem(
+            "toastMessage",
+            error?.message || "Failed to delete schedule."
+          );
+          localStorage.setItem("toastType", "error");
+        } 
+      }
+    }
   }
 }

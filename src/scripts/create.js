@@ -207,7 +207,11 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
       pickup: {
         "scheduled_date": transferDate,
         "status": "Not yet received",
-      }
+      },
+      // delivery: { //ginamit ko for testing
+      //   "scheduled_date": transferDate,
+      //   "status": "Not yet received",
+      // },
     }
   }
 

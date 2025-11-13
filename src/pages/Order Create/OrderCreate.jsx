@@ -27,6 +27,7 @@ export default function CreateOrder() {
     const [serviceTypes, setServiceTypes] = useState([]);
     const [amount, setAmount] = useState();
     const [minDate, setMinDate] = useState();
+    const [totalKilo, setTotalKilo] = useState();
     const navigate = useNavigate();
 
     function setupServices(){
@@ -127,10 +128,10 @@ export default function CreateOrder() {
             for(let i = 0; i < orderItems.length; i++){
                 total_kilo  = total_kilo.plus(orderItems[i].total_kilo);
             }
-            setAmount(Number(total_kilo * pricePerKg).toFixed(2));
+            setTotalKilo(Number(total_kilo));
+            setAmount(Number(totalKilo * pricePerKg).toFixed(2));
         }
     },[orderItems, pricePerKg])
-
 
     function addToOrderItems(washableItemUid, washableItemName, itemPerKg){
         setOrderItems(prevOrderItems => {
@@ -186,6 +187,10 @@ export default function CreateOrder() {
     }
 
     async function submit(){
+        if(totalKilo < 1){
+            toast.error('Total weight must be at least 1 kilo.');
+            return;
+        }
         const draft = {
             serviceUid: service,
             address: address,
