@@ -230,23 +230,6 @@ export default function CreateOrder() {
                 <p className='create-order-title'>Create Your Order</p>
                 <p className='create-order-subtitle'>Fill in the details below to schedule your laundry service</p>
             </div>
-            <div className="draft-container gray-border">
-                <p className='drafts-title'>Drafts</p>
-                <div className="drafts-container">
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
-                    <div className="draft gray-border">
-                        <p className="draft-title">Title</p>
-                        <p className="subtext">Description</p>
-                    </div>
-                </div>
-            </div>
             <div className="order-details-container gray-border">
                 <p className="order-details-title">Order Details</p>
                 <div className="address-container">
@@ -282,7 +265,7 @@ export default function CreateOrder() {
                             <p className='subtext'>Action</p>
                         </div>
                         {orderItems && orderItems.map((orderItem, index)=>{
-                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} decrement={()=>decrementQuantity(index)} remove={() => remove(index)}/>
+                            return <OrderItem imgUrl={BigPantsLogo} itemName={orderItem.washable_item_name} quantity={orderItem.quantity} decrement={()=>decrementQuantity(index)} increment={()=>addToOrderItems(orderItem.washable_item_id, orderItem.washable_item_name, orderItem.item_per_kilo)} remove={() => remove(index)}/>
                         })}
                     </div>
                 </div>
