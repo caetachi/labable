@@ -4,6 +4,8 @@ import './management.css';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import { getInventory } from '../../scripts/get';
+import swal from 'sweetalert2';
+import { deleteInventory } from '../../scripts/delete';
 
 
 const getStatusClass = (status) => {
@@ -38,6 +40,22 @@ export default function InventoryManagement() {
         });
     }, [])
 
+    async function handleDelete(inventoryUid){
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--bg-dark)',
+                    cancelButtonColor: 'var(--error)',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await deleteInventory(inventoryUid);
+                        }
+                });
+            }
+
     return (
         <>
             <div className="management-header">
@@ -46,10 +64,9 @@ export default function InventoryManagement() {
                     <p>Manage inventory of the shop</p>
                 </div>
                 <div className="header-actions">
-                    <NavLink to={'/admin/create-inventory'}>
-                        <button className="create-order">
-                            <i className="ti ti-plus"></i> Add Items
-                        </button>
+                    <NavLink to={'/admin/create-inventory'} 
+                    className="create-order">
+                        <i className="ti ti-plus"></i> Add Items
                     </NavLink>
                 </div>
             </div>
@@ -100,7 +117,7 @@ export default function InventoryManagement() {
                                     <NavLink to={`/admin/inventory/${item[1].inventory_item_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete">
+                                    <button className="action-icon delete" onClick={()=>handleDelete(item[0])}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

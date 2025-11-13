@@ -11,6 +11,31 @@ export default function CreateWashable() {
         await newWashableItem(name, itemPerKg, null);
     }
 
+    function onNameChange(e) {
+        const temp = e.target.value;
+        const error = document.getElementById('nameError');
+        setName(null)
+        if (!temp.trim()) {
+            error.innerHTML = 'Name is required';
+        } else {
+            error.innerHTML = '';
+            setName(temp);
+        }
+    }
+
+    function onItemPerKgChange(e) {
+        const temp = e.target.value;
+        const error = document.getElementById('itemPerKgError');
+        setItemPerKg(null)
+
+        if (!temp.trim()) {
+            error.innerHTML = 'Item/Kg is required';
+        } else {
+            error.innerHTML = '';
+            setItemPerKg(temp);
+        }
+    }
+
     return(
         <div className="management-container">
             <div className="form">
@@ -20,17 +45,19 @@ export default function CreateWashable() {
                 </div>
                 <div className="input-field">
                     <label>Washable Name</label>
-                    <input type="text" placeholder="Enter washable name" onChange={(e)=>setName(e.target.value)}/>
+                    <input type="text" placeholder="Enter washable name" onChange={(e)=>onNameChange(e)}/>
+                    <p className='error-message' id="nameError"></p>
                 </div>
                 <div className="input-field">
                     <label>Item/Kg</label>
-                    <input type="number" placeholder="Enter how many items per kg" onChange={(e)=>setItemPerKg(e.target.value)}/>
+                    <input type="number" step="0.01" placeholder="Enter how many items per kg" onChange={(e)=>onItemPerKgChange(e)}/>
+                    <p className='error-message' id="itemPerKgError"></p>
                 </div>
                 <div className="button-group">
                     <button className="cancel-button" onClick={()=>window.history.back()}>Cancel</button>
                     {name && itemPerKg ? 
                     <button className="create-button" onClick={submit}>Create Washable</button> : 
-                    <button className="create-button">Create Washable</button>} 
+                    <button className="create-button disabled" disabled>Create Washable</button>} 
                 </div>
             </div>
         </div>

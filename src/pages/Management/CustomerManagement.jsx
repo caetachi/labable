@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
 import { getUsers } from '../../scripts/get';
+import {deleteUser} from '../../scripts/delete';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
+import swal from 'sweetalert2';
 
 export default function CustomerManagement() {
 
@@ -12,6 +14,22 @@ export default function CustomerManagement() {
     const getStatusClass = (status) => {
         return status.toLowerCase().replace(/\s+/g, '');
     }
+
+    async function handleDelete(userUid){
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--bg-dark)',
+                cancelButtonColor: 'var(--error)',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await deleteUser(userUid);
+                    }
+            });
+        }
 
     useEffect(()=>{
         const usersRef = ref(db, 'users');
@@ -45,10 +63,9 @@ export default function CustomerManagement() {
                     <p>Manage customers Informations</p>
                 </div>
                 <div className="header-actions">
-                    <NavLink to={'/admin/create-customer'}>
-                        <button className="create-order">
-                            <i className="ti ti-plus"></i> Create Customer
-                        </button>
+                    <NavLink to={'/admin/create-customer'} 
+                    className="create-order">
+                        <i className="ti ti-plus"></i> Create Customer
                     </NavLink>
                 </div>
             </div>
@@ -103,7 +120,7 @@ export default function CustomerManagement() {
                                     <NavLink to={`/admin/customer/${customer[1].user_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete">
+                                    <button className="action-icon delete" onClick={()=>handleDelete(customer[0])}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

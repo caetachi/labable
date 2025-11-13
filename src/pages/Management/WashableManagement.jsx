@@ -4,6 +4,8 @@ import './management.css';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import { getWashableItems } from '../../scripts/get';
+import swal from 'sweetalert2';
+import { deleteWashable } from '../../scripts/delete';
 
 
 export default function WashableManagement() {
@@ -34,6 +36,22 @@ export default function WashableManagement() {
         });
     }, [])
 
+    async function handleDelete(washableUid){
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--bg-dark)',
+                    cancelButtonColor: 'var(--error)',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await deleteWashable(washableUid);
+                        }
+                });
+            }
+
     return (
         <>
             <div className="management-header">
@@ -42,10 +60,9 @@ export default function WashableManagement() {
                     <p>Manage washable items, pricing and number of pieces per kg</p>
                 </div>
                 <div className="header-actions">
-                    <NavLink to={'/admin/create-washable'}>
-                        <button className="create-order">
-                            <i className="ti ti-plus"></i> Add Items
-                        </button>
+                    <NavLink to={'/admin/create-washable'} 
+                    className="create-order">
+                        <i className="ti ti-plus"></i> Add Items
                     </NavLink>
                 </div>
             </div>
@@ -87,7 +104,7 @@ export default function WashableManagement() {
                                     <NavLink to={`/admin/washable/${item[1].washable_item_id}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete">
+                                    <button className="action-icon delete" onClick={()=>handleDelete(item[0])}  >
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>
