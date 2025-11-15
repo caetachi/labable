@@ -34,4 +34,25 @@ function formatDMYTime(dateString) {
     return `${day}/${month}/${year}, ${hh}:${mm}:${ss} ${meridian}`;
 }
 
+export function formatMe(dateString){
+    const dateObject = new Date(dateString);
+    const toLocalDatetimeInput = (date) => {
+        const parts = new Intl.DateTimeFormat('fr-CA', { 
+        year: 'numeric', month: '2-digit', day: '2-digit', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit', 
+        hour12: false 
+        }).formatToParts(date);
+
+        const Y = parts[0].value;
+        const M = parts[2].value;
+        const D = parts[4].value;
+        const H = parts[6].value;
+        const m = parts[8].value;
+        const s = parts[10].value;
+
+        return `${Y}-${M}-${D}T${H}:${m}:${s}`;
+    }
+    return toLocalDatetimeInput(dateObject);
+};
+
 export { formatTextualDateTime, formatTextualDate, formatLocaleDate, formatDMYTime };

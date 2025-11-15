@@ -10,6 +10,7 @@ import { auth, db } from '../firebase'
   }
 
   export async function getServicePrice(serviceUid) {
+    console.log(serviceUid);
     const servicesRef = ref(db, 'service_types');
     const serviceRef = child(servicesRef, serviceUid);
     const service = await (await get(serviceRef)).val();
