@@ -1,6 +1,8 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
 import { getItemPerKg, getOrders, getServiceName, getWashableItemName } from './get';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate) {
   const usersRef = ref(db, 'users');
@@ -21,14 +23,11 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      localStorage.setItem("toastMessage", "New user created!");
-      localStorage.setItem("toastType", "success");
+      toast.success("New user created!");
       window.location.href = '/';
     })
     .catch((err) => {
-      localStorage.setItem("toastMessage", err.message);
-      localStorage.setItem("toastType", "error");
-      window.location.reload();
+      toast.error("Error: "+err);
     })
   await update(usersRef, {
     'user_counter': userCounter + 1,
@@ -54,12 +53,10 @@ export async function createViaEmailAndPassword(authId, firstName, lastName, pho
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      localStorage.setItem("toastMessage", "New user created!");
-      localStorage.setItem("toastType", "success");
+      toast.success("New user created!");
     })
     .catch((err) => {
-      localStorage.setItem("toastMessage", err.message);
-      localStorage.setItem("toastType", "error");
+      toast.error("Error: "+err);
     })
   await update(usersRef, {
     'user_counter': userCounter + 1,
@@ -98,15 +95,11 @@ export async function newServiceType(serviceName, services, description, service
       await set(servicesRef, servicesObject);
       
       console.log("success")
-      localStorage.setItem("toastMessage", "New service type created!");
-      localStorage.setItem("toastType", "success");
-      window.location.reload();
+      toast.success("New service type created!");
     }
   })
     .catch((err) => {
-      localStorage.setItem("toastMessage", err.message);
-      localStorage.setItem("toastType", "error");
-      window.location.reload();
+      toast.error("Error: "+err);
     })
 
   await update(serviceTypesRef, {
@@ -133,15 +126,10 @@ export async function newWashableItem(itemName, itemPerKilo, imgUrl) {
   }
 
   set(newWashableItemRef, washableItemData).then(() => {
-    console.log("success")
-    localStorage.setItem("toastMessage", "New washable item created!");
-    localStorage.setItem("toastType", "success");
-    window.location.reload();
+    toast.success("New washable item created!");
   })
     .catch(() => {
-      localStorage.setItem("toastMessage", "Failed to create new washable item.");
-      localStorage.setItem("toastType", "error");
-      window.location.reload();
+      toast.error("Failed to create new washable item.");
     })
   await update(washableItemsRef, {
     'washables_counter': washablesCounter + 1,
@@ -369,14 +357,10 @@ export async function newInventory(inventoryItemName, stock, unitName, status) {
 
   set(newInventoryItemRef, inventoryData).then(() => {
     console.log("success");
-    localStorage.setItem("toastMessage", "New inventory item created!");
-    localStorage.setItem("toastType", "success");
-    window.location.reload();
+    toast.success("New inventory item created!");
   })
     .catch(() => {
-      localStorage.setItem("toastMessage", "Failed to create new inventory item.");
-      localStorage.setItem("toastType", "error");
-      window.location.reload();
+      toast.error("Failed to create new inventory item.");
     })
   await update(inventoryRef, {
     'inventory_counter': inventoryCounter + 1,
@@ -425,15 +409,11 @@ export async function newSchedule(orderID, scheduleType, date, time) {
         }
       }
       update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
-        localStorage.setItem("toastMessage", "New schedule created!");
-        localStorage.setItem("toastType", "success");
-        window.location.reload();
+        toast.success("New schedule created!");
       })
     }
   }
   console.log("ID not found");
-  localStorage.setItem("toastMessage", "Order ID not found.");
-  localStorage.setItem("toastType", "error");
-  window.location.reload();
+  toast.error("Order ID not found.");
   return;
 }

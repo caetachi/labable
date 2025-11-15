@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import './management-create.css'
 import { newWashableItem } from '../../scripts/create';
+import { useNavigate } from 'react-router';
 
 export default function CreateWashable() {
 
     const [name, setName] = useState();
     const [itemPerKg, setItemPerKg] = useState();
-
+    const navigate = useNavigate();
     async function submit(){
         await newWashableItem(name, itemPerKg, null);
+        navigate('/admin/washable');
     }
 
     function onNameChange(e) {

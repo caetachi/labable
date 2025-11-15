@@ -206,3 +206,25 @@ export async function updateScheduleDetails(orderUid, customerName, address, sta
   await update(orderRef, orderData)
   .then(()=>console.log("Updated"));
 }
+
+export async function acceptOrder(orderUid) {
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  await update(orderRef, {status: "In Progress"});
+  localStorage.setItem("toastMessage", "Order accepted!");
+  localStorage.setItem("toastType", "success");
+  window.location.reload();
+}
+
+export async function rejectOrder(orderUid, cancelReason) {
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  const notesRef = child(orderRef, 'notes');
+  await update(orderRef, {status: "Rejected"});
+  await update(notesRef, {"cancel_reason": cancelReason});
+  localStorage.setItem("toastMessage", "Order rejected!");
+  localStorage.setItem("toastType", "success");
+  window.location.reload(); 
+    
+
+}
