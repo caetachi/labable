@@ -9,7 +9,7 @@ import { getUser, getView } from "../../scripts/get";
 import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
-import { deleteInventory, deleteUser, deleteWashable, deleteService } from '../../scripts/delete';
+import { deleteInventory, deleteUser } from '../../scripts/delete';
 import { updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
@@ -120,10 +120,10 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 				["Restock", "update-btn", props.inventoryRestock],
 			],
 			service: [
-				["Delete", "delete-btn", props.deleteService]
+				["Delete", "delete-btn"]
 			],
 			washable: [
-				["Delete", "delete-btn", props.deleteWashable]
+				["Delete", "delete-btn"]
 			],
 			customer: [
 				["Delete", "delete-btn", props.userDelete]
@@ -252,40 +252,6 @@ export default function ManagementView() {
 		});
 	}
 
-	async function serviceDelete(){
-		swal.fire({
-			title: 'Are you sure?',
-			text: "You won't be able to revert this!",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: 'var(--bg-dark)',
-			cancelButtonColor: 'var(--error)',
-			confirmButtonText: 'Yes, delete it!'
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				await deleteService(viewId);
-				navigate('/admin/service');
-			}
-		});
-	}
-
-	async function washableDelete(){
-		swal.fire({
-			title: 'Are you sure?',
-			text: "You won't be able to revert this!",
-			icon: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: 'var(--bg-dark)',
-			cancelButtonColor: 'var(--error)',
-			confirmButtonText: 'Yes, delete it!'
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				await deleteWashable(viewId);
-				navigate('/admin/washable');
-			}
-		});
-	}
-
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
 
@@ -348,8 +314,6 @@ export default function ManagementView() {
 						inventoryDelete={inventoryDelete}
 						inventoryRestock={inventoryRestock}
 						userDelete={userDelete}
-						deleteService={deleteService}
-						deleteWashable={deleteWashable}
 					/>
 				</div>
 			</div>
