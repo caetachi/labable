@@ -358,7 +358,6 @@ export default function ManagementView() {
 						</h3>
 					</div>
 					<button className='return-btn' onClick={() => navigate(-1)}>Back</button>
-					<button className='return-btn' onClick={() => navigate(-1)}>Back</button>
 				</div>
 
 				<div className='details-container'>

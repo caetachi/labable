@@ -63,7 +63,7 @@ export default function WashableManagement() {
                 await deleteWashable(washableUid);
                 navigate('/admin/washable')
             }
-        });
+        );
     }
 
     const displayWashables = [...washables]
