@@ -237,5 +237,15 @@ export async function quickUpdate(orderUid, serviceUid) {
   const services = await getServicesIncluded(serviceUid);
   const trackingSnap = await get(trackingRef);
   const tracking = await trackingSnap.val();
-  console.log(tracking);
+  const trackingList = Object.entries(tracking);
+  let stateFound = false;
+  for(let i = 0; i < trackingList.length; i++){
+    for(let j = 0; j < services.length; i++){
+      if(trackingList[i][1].status == services[j]){
+        stateFound = true;
+        
+        break;
+      }
+    }
+  }
 }
