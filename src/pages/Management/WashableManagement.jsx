@@ -68,9 +68,7 @@ export default function WashableManagement() {
 
     const displayWashables = [...washables]
         .filter(item => {
-          
             if (!searchTerm) return true; 
-            
             return item[1].washable_item_name.toLowerCase().includes(searchTerm.toLowerCase());
         })
         .sort((a, b) => {

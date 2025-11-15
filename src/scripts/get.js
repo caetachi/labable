@@ -291,3 +291,14 @@ export async function getTotalSpentAmount(userUid) {
     const user = await userSnap.val();
     return user.address;
   }
+
+  export async function getServicesIncluded(serviceUid) {
+    const servicesRef = ref(db, 'service_types');
+    const serviceRef = child(servicesRef, serviceUid);
+    const services = await (await get(serviceRef)).val();
+    const service = Object.entries(services);
+    
+    console.log(service[7][1]);
+    
+    return service[7][1];
+  }
