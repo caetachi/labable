@@ -42,8 +42,12 @@ export default function InventoryEdit({inventoryItem}){
                 <p className='small-container-title'>Status</p>
                 <div className="small-container-input-container">
                     <i className='ti ti-circle-check input-icon left-icon'></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={status} onChange={(e)=>setStatus(e.target.value)}/>
-                    <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                    <select className='small-container-input gray-border' type="text" defaultValue={status} onChange={(e)=>setStatus(e.target.value)}>
+                        <option value="Low Stock">Low Stock</option>
+                        <option value="Good">Good</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                    </select>
+                    {/* <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i> */}
                 </div>
             </div>
             <div className="small-container">

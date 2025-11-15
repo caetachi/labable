@@ -8,11 +8,13 @@ import { useNavigate } from 'react-router'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
-import { getServicePrice, getServices, getWashableItems } from '../../scripts/get'
+import { getServicePrice, getServices, getWashableItems, hasAddress } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
 import { toast } from 'react-toastify'
 import BigNumber from 'bignumber.js'
 import searchWashableItems from '../../scripts/search'
+import { auth } from '../../firebase'
+import Swal from 'sweetalert2'
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -115,6 +117,25 @@ export default function CreateOrder() {
 
     useEffect(()=>{
         addOnChange();
+        async function handleAddressCheckAndNavigation() {
+            if (!auth.currentUser) return; 
+            const hasAddressBool = await hasAddress(auth.currentUser.uid);
+            if (!hasAddressBool) {
+                Swal.fire({
+                    title: 'No address found',
+                    text: "Please add an address first before creating an order.",
+                    icon: 'warning',
+                    confirmButtonText: "Go to Profile",
+                    confirmButtonColor: 'var(--bg-dark)',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/profile');
+                    }
+                });
+            }
+        }
+        handleAddressCheckAndNavigation();
     }, [])
 
     useEffect(()=>{

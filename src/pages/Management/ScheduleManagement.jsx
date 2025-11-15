@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './management.css';
 import { onValue, ref } from 'firebase/database';
-import { getOrders } from '../../scripts/get';
+import { getOrders, hasDelivery, hasPickup } from '../../scripts/get';
 import { db } from '../../firebase';
 import {deleteSchedulePickup, deleteScheduleDelivery} from '../../scripts/delete';
 import Swal from 'sweetalert2';
 import { formatLocaleDate } from '../../scripts/dateformat';
+import { fixCancelled } from '../../scripts/fix';
 
 const getStatusClass = (status) => {
     return status.toLowerCase().replace(/\s+/g, '');
+}
+
+const checkDateNan = (date) => {
+    const parsedDate = Date.parse(date);
+    return isNaN(parsedDate);
 }
 
 
@@ -34,41 +40,51 @@ export default function ScheduleManagement() {
             }
             setSchedules(withoutCounter)
         }
-        onValue(ordersRef, (snapshot)=>{
+        const unsubscribe = onValue(ordersRef, (snapshot)=>{
             if (snapshot.exists()) {
                 getOrdersList();
             } else {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe()
     }, [ordersRef])
 
+    useEffect(()=>{
+    }, [])
+
+
     async function handleDeleteSchedule(orderID){
-        const hasPickup = Object.prototype.hasOwnProperty.call(schedules.find(schedule => schedule[1].order_id === orderID)[2], 'pickup');
-        const hasDelivery = Object.prototype.hasOwnProperty.call(schedules.find(schedule => schedule[1].order_id === orderID)[2], 'delivery');
+        const hasPickupBool = await hasPickup(orderID);
+        const hasDeliveryBool = await hasDelivery(orderID);
+        console.log(hasPickupBool);
+        console.log(hasDeliveryBool);
+        
         
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true, 
-            showDenyButton: (hasPickup && hasDelivery), 
-            confirmButtonText: (hasPickup && hasDelivery) || hasPickup ? "Delete Pickup" : "Delete Delivery",
+            showDenyButton: (hasPickupBool && hasDeliveryBool), 
+            confirmButtonText: (hasPickupBool && hasDeliveryBool) || hasPickupBool ? "Delete Pickup" : "Delete Delivery",
             denyButtonText: "Delete Delivery", 
             confirmButtonColor: 'var(--bg-dark)',
             denyButtonColor: 'var(--error)', 
         }).then(async (result) => {
-            if(((hasPickup && hasDelivery) || hasPickup) && result.isConfirmed) {
+            if(((hasPickupBool && hasDeliveryBool) || hasPickupBool) && result.isConfirmed) {
+                console.log("pick");
                 deleteSchedulePickup(orderID);
                 return;
             }
-            if((hasPickup && hasDelivery) && result.isDenied) {
-                console.log("deny");
+            if((hasPickupBool && hasDeliveryBool) && result.isDenied) {
+                console.log("del");
                 
                 deleteScheduleDelivery(orderID)
                 return;
             }
-            if(((!hasPickup && hasDelivery)) && result.isConfirmed) {
+            if(((!hasPickupBool && hasDeliveryBool)) && result.isConfirmed) {
+                console.log("del");
                 deleteScheduleDelivery(orderID)
                 return;
             }
@@ -125,11 +141,13 @@ export default function ScheduleManagement() {
                                 <td>{schedule[1].order_id}</td>
                                 <td>{schedule[1].customer_name}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery ? "Pickup & Delivery" : schedule[2].pickup ? "Pickup" : schedule[2].delivery ? "Delivery" : "error"}</td>
-                                <td>{schedule[2].pickup && schedule[2].delivery ?
-                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${formatLocaleDate(schedule[2].delivery.scheduled_date)}` : 
+                                <td>{schedule[2].pickup && schedule[2].delivery && checkDateNan(schedule[2].delivery.scheduled_date) ?
+                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${schedule[2].delivery.scheduled_date}` : 
+                                schedule[2].pickup && schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ?
+                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${formatLocaleDate(schedule[2].delivery.scheduled_date)}` :
                                 schedule[2].pickup ? formatLocaleDate(schedule[2].pickup.scheduled_date) :
-                                schedule[2].delivery ? formatLocaleDate(schedule[2].delivery.scheduled_date) :
-                                "No date"
+                                schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ? formatLocaleDate(schedule[2].delivery.scheduled_date) :
+                                schedule[2].delivery ? schedule[2].delivery.scheduled_date : "No date"
                             }</td>
                                 <td>
                                     <span className={`status ${getStatusClass(schedule[1].status)}`}>
@@ -143,7 +161,7 @@ export default function ScheduleManagement() {
                                     <NavLink to={`/admin/schedule/${schedule[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className="action-icon delete" onClick={() => handleDeleteSchedule(schedule[0].order_id)}>
+                                    <button className="action-icon delete" onClick={() => handleDeleteSchedule(schedule[0])}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

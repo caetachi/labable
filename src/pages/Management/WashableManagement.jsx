@@ -26,13 +26,14 @@ export default function WashableManagement() {
             
             setWashables(withoutCounter)
         }
-        onValue(washableRef, (snapshot)=>{
+        const unsubscribe = onValue(washableRef, (snapshot)=>{
             if (snapshot.exists()) {
                 getWashableList();
             } else {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe();
     }, [])
 
     async function handleDelete(washableUid){

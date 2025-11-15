@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import mapquery from "../../scripts/mapquery";
 import "./management-view.css";
@@ -9,7 +9,7 @@ import { getUser, getView } from "../../scripts/get";
 import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
-import { deleteInventory } from '../../scripts/delete';
+import { deleteInventory, deleteUser } from '../../scripts/delete';
 import { updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
@@ -20,11 +20,11 @@ const fieldGroups = {
 		["Mode of Transfer", (v) => v.mode_of_transfer],
 		["Service Type", (v) => v.service_name],
 		["Mode of Claim", (v) => v.mode_of_claiming],
-		["Payment Method", (v) => v.payment_method ? v.payment_method : "N/A"],
+		["Payment Method", (v) => v.payment ? v.payment.payment_method : "N/A"],
 		["Transfer Date", (v) => formatTextualDate(v.transfer_date)],
 		["Total Amount", (v) => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(v.amount).toFixed(2))],
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
-		["Additional Notes", (v) => v.notes ? v.notes.order_notes : "No additional notes."],
+		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
@@ -49,7 +49,7 @@ const fieldGroups = {
 		["Quantity", (v) => v.quantity_in_stock],
 		["Unit", (v) => v.unit_name && titlecase(v.unit_name)],
 		["Current Status", (v) => v.status && titlecase(v.status)],
-		["Updated By", (v) => v.updated_by ? titlecase(`${getUser(v.updated_by)?.fullname}`) : "N/A"],
+		["Updated By", (v) => v.updated_by ? titlecase(`${v.updated_by}`) : "N/A"],
 	],
 	service: [
 		["Service ID", (v) => v.service_type_id],
@@ -57,21 +57,27 @@ const fieldGroups = {
 		["Service Name", (v) => v.service_name],
 		["Created By", (v) => v.created_by],
 		["Included Services", (v) => v.services && titlecase(`${Object.values(v.services).join(', ')}`)],
-		["Date Modified", (v) => v.modified_at ? new Date(v.modified_at).toDateString() : "N/A"],
+		["Date Modified", (v) => v.updated_at ? v.updated_at : "N/A"],
 		["Price", (v) => `₱ ${new BigNumber(v.service_price).toFormat(2)}`],
-		["Modified By", (v) => v.modified_by ? titlecase(`${v.modified_by}`) : "N/A"]
+		["Modified By", (v) => v.updated_by ? titlecase(`${v.updated_by}`) : "N/A"]
 	],
 	washable: [
 		["Item ID", (v) => v.washable_item_id],
 		["Date Created", (v) => new Date(v.created_at).toDateString()],
 		["Item Name", (v) => v.washable_item_name],
 		["Created By", (v) => v.created_by],
-		["Date Modified", (v) => v.modified_at ? new Date(v.modified_at).toDateString() : "N/A"],
+		["Date Modified", (v) => v.updated_at ? v.updated_at : "N/A"],
 		["Item per Kg", (v) => v.item_per_kilo],
-		["Modified By", (v) => v.modified_by ? titlecase(`${v.modified_by}`) : "N/A"]
+		["Modified By", (v) => v.updated_by ? titlecase(`${v.updated_by}`) : "N/A"]
 	],
 	customer: [
-		
+		["Fullname", (v) => v.fullname],
+		["Email", (v) => v.email],
+		["Phone no.", (v) => v.phone],
+		["Status", (v) => v.status ? v.status : ""],
+		["Role", (v) => v.role],
+		["Address", (v) => v.address ? v.address : "No address"],
+
 	]
 };
 
@@ -86,8 +92,9 @@ const DetailsCard = ({ category, data }) => (
 	</div>
 );
 
-const ActionButtons = ({ category, status, ...props }) => {
-	const base = <button className='edit-btn'>Edit</button>;
+const ActionButtons = ({ id, category, status, ...props }) => {
+	const navigate = useNavigate();	
+	const base = <button className='edit-btn' onClick={() => navigate(`/admin/${category}/${id}/edit`)}>Edit</button>;
 	const actions =
 		{
 			order:
@@ -116,6 +123,9 @@ const ActionButtons = ({ category, status, ...props }) => {
 			],
 			washable: [
 				["Delete", "delete-btn"]
+			],
+			customer: [
+				["Delete", "delete-btn", props.userDelete]
 			]
 		}[category] || [];
 
@@ -199,24 +209,45 @@ export default function ManagementView() {
 	}
 
 	async function inventoryDelete(){
-				swal.fire({
-					title: 'Are you sure?',
-					text: "You won't be able to revert this!",
-					icon: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: 'var(--bg-dark)',
-					cancelButtonColor: 'var(--error)',
-					confirmButtonText: 'Yes, delete it!'
-				}).then(async (result) => {
-					if (result.isConfirmed) {
-						await deleteInventory(viewId);
-						navigate('/admin/inventory');
-					}
-				});
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteInventory(viewId);
+				navigate('/admin/inventory');
+			}
+		});
+	}
+
+	async function userDelete(){
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteUser(viewId);
+				navigate('/admin/customer');
+			}
+		});
 	}
 
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
+
+	if(!viewData){
+		return <p>Loading...</p>
+	}
 
 	return (
 		<div className='management-view-container'>
@@ -267,10 +298,12 @@ export default function ManagementView() {
 						) : null}
 
 					<ActionButtons
+						id={viewId}
 						category={viewCategory}
-						status={viewData.status?.toLowerCase() || ""}
+						status={viewData.status?.toString()?.toLowerCase() ?? ""}
 						inventoryDelete={inventoryDelete}
 						inventoryRestock={inventoryRestock}
+						userDelete={userDelete}
 					/>
 				</div>
 			</div>

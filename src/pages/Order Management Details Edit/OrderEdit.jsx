@@ -185,10 +185,11 @@ export default function OrderEdit({id}){
             <div className="small-container">
                 <p className='small-container-title'>Payment Method</p>
                 <div className="small-container-input-container">
-                    
                     <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].payment_method} onChange={(e)=>setPaymentMethod(e.target.value)}/>
-                    <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
+                    <select className='small-container-input gray-border' defaultValue={order[1].payment ? order[1].payment.payment_method : "N/A"} onChange={(e)=>setPaymentMethod(e.target.value)}>
+                        <option value="Cash">Cash</option>
+                        <option value="GCash">GCash</option>
+                    </select>
                 </div>
             </div>
             <div className="small-container">
@@ -274,7 +275,7 @@ export default function OrderEdit({id}){
             <div className="small-container">
                 <p className='small-container-title'>Notes</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].notes.order_notes} onChange={(e)=>setOrderNotes(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].notes ? order[1].notes.order_notes : ""} onChange={(e)=>setOrderNotes(e.target.value)}/>
                 </div>
             </div>
             <Buttons onClick={update}/>

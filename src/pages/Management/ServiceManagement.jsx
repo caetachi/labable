@@ -32,13 +32,14 @@ export default function ServiceManagement() {
             }
             setServices(withoutCounter)
         }
-        onValue(servicesRef, (snapshot)=>{
+        const unsubscribe = onValue(servicesRef, (snapshot)=>{
             if (snapshot.exists()) {
                 getServiceList();
             } else {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe();
     }, [])
 
      async function handleDelete(serviceUid){

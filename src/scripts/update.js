@@ -20,6 +20,24 @@ export async function updateUser(email, name, phoneNum, address, imgUrl) {
     );
   }
 
+export async function updateUserWithUid(userUid, email, name, phoneNum, address, imgUrl) {
+    const currDate = new Date().toLocaleString();
+    const usersRef = ref(db, 'users');
+    const userRef = child(usersRef, userUid);
+    let userData = { 
+      'updated_at': currDate,
+      'updated_by': auth.currentUser.uid,
+    }
+    if(email)userData.email = email;
+    if(name)userData.fullname = name;
+    if(phoneNum)userData.phone = phoneNum;
+    if(address)userData.address = address;
+    if(imgUrl)userData.image_url = imgUrl;
+    await update(userRef, userData)
+    .then(()=>console.log("Updated")
+    );
+  }
+
 export async function updateWashableItem(washableItemUid, itemName, itemPerKilo) {
   const currDate = new Date().toLocaleString();
   const washableItemsRef = ref(db, 'washable_items');

@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
 import { auth } from '../../firebase.js';
 
 
-export default  function NavBar({image_url, name}){
+export default  function NavBar({image_url, name, hasAddress}) {
     const [imageUrl, setImageUrl] = useState();
-
+    
     useEffect(() => {
       if (image_url) {
         setImageUrl(image_url);
@@ -74,7 +74,7 @@ export default  function NavBar({image_url, name}){
                       <i className="ti ti-address-book"></i>
                       <p>Contact</p>
                     </HashLink>
-                    {name? 
+                    {name && hasAddress ? 
                         <NavLink to='/create-order' className='nav-link'>
                             <i className="ti ti-circle-plus"></i>
                             <p>Order</p>

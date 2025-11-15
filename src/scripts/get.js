@@ -102,7 +102,8 @@ import { db } from '../firebase'
       schedule: 'orders',
       inventory: 'inventory_items',
       service: 'service_types',
-      washable: 'washable_items'
+      washable: 'washable_items',
+      customer: 'users'
     };
 
     category = categoryMap[category] || category;
@@ -115,6 +116,10 @@ import { db } from '../firebase'
     if (view && view.created_by) {
         const user = await getUser(view.created_by);
         view.created_by = user.fullname; 
+    }
+    if (view && view.updated_by) {
+        const user = await getUser(view.updated_by);
+        view.updated_by = user.fullname; 
     }
 
     return view;
@@ -247,4 +252,33 @@ export async function getTotalSpentAmount(userUid) {
     }
 
     return -1;
+  }
+  export async function hasPickup(orderUid) {
+    const ordersRef = ref(db, 'orders');
+    const orderRef = child(ordersRef, orderUid);
+    const orderSnap = await get(orderRef);
+    const orderId = orderSnap.key;
+    const order = await orderSnap.val();
+    console.log(order.schedule);
+    console.log(order.schedule.pickup);
+    return order.schedule.pickup ? true : false;
+  }
+
+  export async function hasDelivery(orderUid) {
+    const ordersRef = ref(db, 'orders');
+    const orderRef = child(ordersRef, orderUid);
+    const orderSnap = await get(orderRef);
+    const orderId = orderSnap.key;
+    const order = await orderSnap.val();
+    console.log(order.schedule);
+    console.log(order.schedule.delivery);
+    return order.schedule.delivery ? true : false;
+  }
+
+  export async function hasAddress(userUid) {
+    const usersRef = ref(db, 'users');
+    const userRef = child(usersRef, userUid);
+    const userSnap = await get(userRef);
+    const user = await userSnap.val();
+    return user.address;
   }

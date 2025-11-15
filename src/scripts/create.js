@@ -163,6 +163,7 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     const orderItem = await newOrderItem(newOrderUid, orders[i].washable_item_id, orders[i].quantity);
     orderItems.push(orderItem);
   }
+  
 
   const orderData = {
     "order_id": orderId,
@@ -215,18 +216,33 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     // }
   };
 
-  if (transferMode == 'Pick-up') {
+  if (transferMode == 'Pick-up' && claimMode == 'Deliver') {
     orderData.schedule = {
       pickup: {
         "scheduled_date": transferDate,
         "status": "Not yet received",
       },
-      // delivery: { //ginamit ko for testing
-      //   "scheduled_date": transferDate,
-      //   "status": "Not yet received",
-      // },
+      delivery: {
+        "scheduled_date": "Not yet specified",
+        "status": "Not yet received",
+      },
+    }
+  }else if (claimMode == 'Deliver') {
+    orderData.schedule = {
+      delivery: {
+        "scheduled_date": "Not yet specified",
+        "status": "Not yet received",
+      },
+    }
+  }else if(transferMode == 'Pick-up'){
+    orderData.schedule = {
+      pickup: {
+        "scheduled_date": transferDate,
+        "status": "Not yet received",
+      },
     }
   }
+  
 
   try {
     const newOrderRef = await push(ordersRef, orderData);
