@@ -35,3 +35,10 @@
     background-color: var(--fg-light);
     color: var(--fg-dark);
 }
+
+.update-action-button:disabled{
+    background-color: var(--sf-light);
+    color: var(--hl-gray);
+    border: 2px solid var(--sf-light);
+    cursor: not-allowed;
+}

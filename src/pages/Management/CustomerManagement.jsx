@@ -11,6 +11,11 @@ export default function CustomerManagement() {
 
     const [users, setUsers] = useState([]);
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all'); 
+    const [sortKey, setSortKey] = useState('name'); 
+    const [sortDirection, setSortDirection] = useState('asc'); 
+
     const getStatusClass = (status) => {
         return status.toLowerCase().replace(/\s+/g, '');
     }
@@ -37,7 +42,7 @@ export default function CustomerManagement() {
             const getDaUsers = await getUsers();
             let withoutCounter = [];
             for(let i = 0; i < getDaUsers.length; i++){
-                if(getDaUsers[i][0] != 'user_counter' && getDaUsers[i][1].role == 'customer'){
+                if(getDaUsers[i][0] !== 'user_counter' && getDaUsers[i][1].role === 'customer'){
                     withoutCounter.push(getDaUsers[i])
                 }
             }
@@ -56,6 +61,42 @@ export default function CustomerManagement() {
         return () => unsubscribe();
     }, [])
 
+    const displayCustomers = [...users]
+        .filter(customer => {
+            
+            const search = searchTerm.toLowerCase();
+            const name = (customer[1].fullname || "").toLowerCase();
+            const email = (customer[1].email || "").toLowerCase();
+            const phone = (customer[1].phone || "").toLowerCase();
+
+            const passesSearch = name.includes(search) || 
+                                 email.includes(search) || 
+                                 phone.includes(search);
+
+          
+            const passesStatus = (statusFilter === 'all') || (customer[1].status.toLowerCase() === statusFilter.toLowerCase());
+
+            return passesSearch && passesStatus;
+        })
+        .sort((a, b) => {
+          
+            let valA, valB;
+
+            if (sortKey === 'name') {
+                valA = (a[1].fullname || "no name").toLowerCase();
+                valB = (b[1].fullname || "no name").toLowerCase();
+            } else { 
+                valA = (a[1].user_id || "").toLowerCase();
+                valB = (b[1].user_id || "").toLowerCase();
+            }
+
+            if (sortDirection === 'asc') {
+                return valA.localeCompare(valB);
+            } else {
+                return valB.localeCompare(valA);
+            }
+        });
+
     return (
         <>
             <div className="management-header">
@@ -72,19 +113,43 @@ export default function CustomerManagement() {
             </div>
 
             <div className="filter-controls">
+                
                 <div className="search-bar">
                     <i className="ti ti-search search-icon"></i>
-                    <input type="text" placeholder="Search customer..." />
+                    <input 
+                        type="text" 
+                        placeholder="Search by name, email, or phone..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
+
+                <select 
+                    className="filter-dropdown"
+                    value={sortKey}
+                    onChange={(e) => setSortKey(e.target.value)}
+                >
+                    <option value="name">Sort by Name</option>
+                    <option value="id">Sort by ID</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Status</option>
+
+                <select 
+                    className="filter-dropdown"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                    <option value="all">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="asc">Sort Name Asc</option>
-                    <option value="desc">Sort Name Desc</option>
+
+                <select 
+                    className="filter-dropdown"
+                    value={sortDirection}
+                    onChange={(e) => setSortDirection(e.target.value)}
+                >
+                    <option value="asc">Sort Asc</option>
+                    <option value="desc">Sort Desc</option>
                 </select>
             </div>
 
@@ -102,7 +167,7 @@ export default function CustomerManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map(customer => (
+                        {displayCustomers.map(customer => (
                             <tr key={customer[1].user_id}>
                                 <td>{customer[1].user_id}</td>
                                 <td>{customer[1].fullname ? customer[1].fullname : "No name"}</td>

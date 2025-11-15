@@ -5,7 +5,7 @@ export default function Buttons(prop) {
     return(
         <div className="action-buttons-containers">
             <button className="back-action-button" onClick={()=>navigate(-1)}>Back</button>
-            <button className="update-action-button" onClick={prop.onClick}>Update</button>
+            <button className="update-action-button" onClick={prop.onClick} disabled={prop.disabled}>Update</button>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react'; 
 import { NavLink } from 'react-router-dom';
 import './management.css';
 import { getOrders } from '../../scripts/get';
@@ -13,7 +13,6 @@ export default function OrderManagement() {
         return status.toLowerCase().replace(/\s+/g, '');
     }
     const getNumberOfItems = (orderItems) => {
-             
         let numberOfItems = 0;
         for(let i = 0; i < orderItems.length; i++){
             numberOfItems += orderItems[i].quantity;
@@ -23,13 +22,20 @@ export default function OrderManagement() {
     
     const [orders, setOrders] = useState([]);
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [serviceFilter, setServiceFilter] = useState('all');
+    const [sortKey, setSortKey] = useState('id'); 
+    const [sortDirection, setSortDirection] = useState('desc');
+
+
     useEffect(()=>{
         const ordersRef = ref(db, 'orders');
         async function getOrdersList() {
             const getOrder = await getOrders();
             let withoutCounter = [];
             for(let i = 0; i < getOrder.length; i++){
-                if(getOrder[i][0] != 'orders_counter'){
+                if(getOrder[i][0] !== 'orders_counter'){
                     withoutCounter.push(getOrder[i])
                 }
             }
@@ -45,9 +51,14 @@ export default function OrderManagement() {
         return () => unsubscribe();
     }, [])
 
-    useEffect(()=>{
-        
-    }, [orders])
+    const uniqueServices = useMemo(() => {
+        const services = new Set();
+        orders.forEach(order => {
+            services.add(order[1].service_name);
+        });
+        return Array.from(services).sort(); 
+    }, [orders]);
+
 
     async function handleDelete(orderUid){
         swal.fire({
@@ -65,6 +76,60 @@ export default function OrderManagement() {
         });
     }
 
+    const displayOrders = [...orders]
+        .filter(order => {
+            
+            const search = searchTerm.toLowerCase();
+            const orderID = (order[1].order_id || "").toLowerCase();
+            const customerName = (order[1].customer_name || "").toLowerCase();
+            const passesSearch = orderID.includes(search) || customerName.includes(search);
+
+       
+            const passesStatus = (statusFilter === 'all') || (order[1].status.toLowerCase() === statusFilter.toLowerCase());
+
+          
+            const passesService = (serviceFilter === 'all') || (order[1].service_name === serviceFilter);
+            
+            return passesSearch && passesStatus && passesService;
+        })
+        .sort((a, b) => {
+         
+            let valA, valB;
+
+            switch (sortKey) {
+                case 'id':
+                    valA = (a[1].order_id || "").toLowerCase();
+                    valB = (b[1].order_id || "").toLowerCase();
+                    break;
+                case 'customer':
+                    valA = (a[1].customer_name || "").toLowerCase();
+                    valB = (b[1].customer_name || "").toLowerCase();
+                    break;
+                case 'service':
+                    valA = (a[1].service_name || "").toLowerCase();
+                    valB = (b[1].service_name || "").toLowerCase();
+                    break;
+                case 'items':
+                    valA = getNumberOfItems(a[1].order_items);
+                    valB = getNumberOfItems(b[1].order_items);
+                    break;
+                case 'amount':
+                    valA = parseFloat(a[1].amount);
+                    valB = parseFloat(b[1].amount);
+                    break;
+                default:
+                    return 0;
+            }
+
+            if (sortDirection === 'asc') {
+                if (typeof valA === 'string') return valA.localeCompare(valB);
+                return valA - valB;
+            } else { 
+                if (typeof valA === 'string') return valB.localeCompare(valA);
+                return valB - valA;
+            }
+        });
+
     return (
         <>
             <div className="management-header">
@@ -80,26 +145,76 @@ export default function OrderManagement() {
             </div>
 
             <div className="filter-controls">
+              
                 <div className="search-bar">
                     <i className="ti ti-search search-icon"></i>
-                    <input type="text" placeholder="Search laundry orders by ID..." />
+                    <input 
+                        type="text" 
+                        placeholder="Search by Order ID or Customer..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
+
                 <div className="filter-dropdown-container">
                     <i className="far fa-calendar" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select defaultValue="Date" className="filter-dropdown"> 
-                        <option value="Date" hidden>Date</option>
+                    <select 
+                        className="filter-dropdown"
+                        value={sortKey}
+                        onChange={(e) => setSortKey(e.target.value)}
+                    >
+                        <option value="id">Sort by Order ID</option>
+                        <option value="customer">Sort by Customer</option>
+                        <option value="amount">Sort by Amount</option>
                     </select>
                 </div>
+
                 <div className="filter-dropdown-container">
                     <i className="far fa-check-circle" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select defaultValue="Status" className="filter-dropdown">
-                        <option value="Status" hidden>Status</option>
+                    <select 
+                        className="filter-dropdown"
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                        <option value="all">All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Transferred">Transferred</option>
+                        <option value="Washing">Washing</option>
+                        <option value="Drying">Drying</option>
+                        <option value="Ironing">Ironing</option>
+                        <option value="Folding">Folding</option>
+                        <option value="Ready to Claim">Ready to Claim</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Rejected">Rejected</option>
                     </select>
                 </div>
+
                 <div className="filter-dropdown-container">
                     <i className="ti ti-wash-machine" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
-                    <select defaultValue="Service" className="filter-dropdown">
-                        <option value="Service" hidden>Service</option>
+                    <select 
+                        className="filter-dropdown"
+                        value={serviceFilter}
+                        onChange={(e) => setServiceFilter(e.target.value)}
+                    >
+                        <option value="all">All Services</option>
+                        {uniqueServices.map(service => (
+                            <option key={service} value={service}>{service}</option>
+                        ))}
+                    </select>
+                </div>
+                
+                <div className="filter-dropdown-container">
+                    <i className="ti ti-sort-ascending" style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)" }}></i>
+                    <select 
+                        className="filter-dropdown"
+                        value={sortDirection}
+                        onChange={(e) => setSortDirection(e.target.value)}
+                    >
+                        <option value="desc">Sort Desc</option>
+                        <option value="asc">Sort Asc</option>
                     </select>
                 </div>
                 
@@ -119,7 +234,7 @@ export default function OrderManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.length > 0 && orders.map((order, index) => (
+                        {displayOrders.length > 0 && displayOrders.map((order, index) => (
                             <tr key={order[1].order_id + index}>
                                 <td>{order[1].order_id}</td>
                                 <td>{order[1].customer_name}</td>
@@ -130,7 +245,7 @@ export default function OrderManagement() {
                                         {order[1].status}
                                     </span>
                                 </td>
-                                <td>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP' }).format(new BigNumber(order[1].amount))}</td>
+                                <td>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(order[1].amount))}</td>
                                 <td className="action-buttons">
                                     <NavLink to={`/admin/order/${order[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
@@ -138,7 +253,7 @@ export default function OrderManagement() {
                                     <NavLink to={`/admin/order/${order[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
-                                    <button className='delete' onClick={()=>handleDelete(order[0])}>
+                                    <button className='action-icon delete' onClick={()=>handleDelete(order[0])}>
                                         <i className="ti ti-trash"></i>
                                     </button>
                                 </td>

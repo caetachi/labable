@@ -9,7 +9,7 @@ import { getUser, getView } from "../../scripts/get";
 import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
-import { deleteInventory, deleteUser } from '../../scripts/delete';
+import { deleteInventory, deleteUser, deleteWashable, deleteService } from '../../scripts/delete';
 import { updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
@@ -104,10 +104,11 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 						["Accept", "accept-btn"],	
 					]
 					:
-				status === "canceled" ?
+				status === "canceled" || status === "rejected" ?
 					[] :
 					[
 						["Cancel", "cancel-btn"],
+						["Quick Update", "quick-btn"],
 						["Update", "update-btn"],
 					],
 			schedule: [
@@ -119,10 +120,10 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 				["Restock", "update-btn", props.inventoryRestock],
 			],
 			service: [
-				["Delete", "delete-btn"]
+				["Delete", "delete-btn", props.deleteService]
 			],
 			washable: [
-				["Delete", "delete-btn"]
+				["Delete", "delete-btn", props.deleteWashable]
 			],
 			customer: [
 				["Delete", "delete-btn", props.userDelete]
@@ -196,14 +197,23 @@ export default function ManagementView() {
 	async function inventoryRestock(){
 		swal.fire({
 			title: 'Are you sure?',
-			icon: 'warning',
+			input: 'number',
+			inputLabel: 'Enter the quantity to restock:',
+			inputAttributes: {
+				min: 1
+			},
 			showCancelButton: true,
 			confirmButtonColor: 'var(--bg-dark)',
 			cancelButtonColor: 'var(--error)',
-			confirmButtonText: 'Yes, restock it!'
+			
+			confirmButtonText: 'Continue Restock'
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + 1);
+				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + Number(result.value)).then(()=>{
+					toast.success("Inventory Item Restocked Successfully!")	
+					}).catch((error)=>{
+						toast.error("Error restocking inventory item: " + error.message)
+					});
 				}
 		});
 	}
@@ -242,6 +252,40 @@ export default function ManagementView() {
 		});
 	}
 
+	async function serviceDelete(){
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteService(viewId);
+				navigate('/admin/service');
+			}
+		});
+	}
+
+	async function washableDelete(){
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteWashable(viewId);
+				navigate('/admin/washable');
+			}
+		});
+	}
+
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
 
@@ -268,7 +312,7 @@ export default function ManagementView() {
 								: "washable items, pricing, and number of pieces per kilo"}
 						</h3>
 					</div>
-					<button className='return-btn' onClick={() => navigate('/admin/dashboard')}>Back</button>
+					<button className='return-btn' onClick={() => navigate(-1)}>Back</button>
 				</div>
 
 				<div className='details-container'>
@@ -304,6 +348,8 @@ export default function ManagementView() {
 						inventoryDelete={inventoryDelete}
 						inventoryRestock={inventoryRestock}
 						userDelete={userDelete}
+						deleteService={deleteService}
+						deleteWashable={deleteWashable}
 					/>
 				</div>
 			</div>
