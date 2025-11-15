@@ -41,8 +41,8 @@ export default function InventoryEdit({inventoryItem}){
         setQuantity(null)
         if (!temp.trim()) {
             error.innerHTML = 'Quantity is required';
-        } else if (isNaN(temp)) {
-            error.innerHTML = 'Quantity must be a number';
+        } else if (isNaN(temp) || Number(temp) <= 0) {
+            error.innerHTML = 'Quantity must be a positive number';
         } else {
             error.innerHTML = '';
             setQuantity(temp);
