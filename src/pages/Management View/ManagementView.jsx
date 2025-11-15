@@ -9,8 +9,8 @@ import { getUser, getView } from "../../scripts/get";
 import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
-import { deleteInventory, deleteUser } from '../../scripts/delete';
-import { updateInventoryItemStock } from '../../scripts/update'
+import { deleteInventory, deleteService, deleteUser, deleteWashable } from '../../scripts/delete';
+import { acceptOrder, rejectOrder, updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
 	order: [
@@ -26,7 +26,7 @@ const fieldGroups = {
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
 		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
-		["Claim Date", (v) => v.schedule ? formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
+		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date === "Not yet specified" ? "N/A" : formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
 	schedule: [
@@ -100,8 +100,8 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 			order:
 				status === "pending" ? 
 					[
-						["Reject", "reject-btn"],
-						["Accept", "accept-btn"],	
+						["Reject", "reject-btn", props.rejectOrder],
+						["Accept", "accept-btn", props.acceptOrder],	
 					]
 					:
 				status === "canceled" || status === "rejected" ?
@@ -109,7 +109,7 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 					[
 						["Cancel", "cancel-btn"],
 						["Quick Update", "quick-btn"],
-						["Update", "update-btn"],
+						["Update", "update-btn", props.editOrder],
 					],
 			schedule: [
 				["Cancel", "cancel-btn"],
@@ -120,10 +120,10 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 				["Restock", "update-btn", props.inventoryRestock],
 			],
 			service: [
-				["Delete", "delete-btn"]
+				["Delete", "delete-btn", props.serviceDelete]
 			],
 			washable: [
-				["Delete", "delete-btn"]
+				["Delete", "delete-btn", props.washableDelete]
 			],
 			customer: [
 				["Delete", "delete-btn", props.userDelete]
@@ -254,6 +254,83 @@ export default function ManagementView() {
 		});
 	}
 
+	async function orderAccept(){
+		swal.fire({
+			title: 'Accept this order?',
+			icon: 'question',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Accept'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await acceptOrder(viewId);
+				navigate('/admin/order');
+			}
+		});
+	}
+	async function orderReject(){
+		swal.fire({
+			title: 'Reject this order?',
+			icon: 'warning',
+			input: 'text',
+			inputLabel: 'Reason for rejection',
+			inputPlaceholder: 'Type your reason here...',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--error)',
+			cancelButtonColor: 'var(--bg-dark)',
+			confirmButtonText: 'Reject',
+			inputValidator: (value) =>{
+				if(!value){
+					return 'Reason is required!';
+				}
+			}
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await rejectOrder(viewId, result.value);
+				navigate('/admin/order');
+			}
+		});
+	}
+
+	async function serviceDelete(){
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteService(viewId);
+				navigate('/admin/service');
+			}
+		});
+	}
+
+	async function washableDelete(){
+		swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--bg-dark)',
+			cancelButtonColor: 'var(--error)',
+			confirmButtonText: 'Yes, delete it!'
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await deleteWashable(viewId);
+				navigate('/admin/washable');
+			}
+		});
+	}
+
+	async function orderEdit(){
+		navigate(`/admin/order/${viewId}/edit`);
+	}
+
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
 
@@ -290,9 +367,7 @@ export default function ManagementView() {
 							: `${titlecase(viewCategory)} `}
 						details
 					</h2>
-
 					<DetailsCard category={viewCategory} data={viewData} />
-
 					{viewCategory === "order" ? (
 						<div className='track-card'>
 							{Object.values(viewData.tracking || {}).map((t, i) => (
@@ -315,7 +390,12 @@ export default function ManagementView() {
 						status={viewData.status?.toString()?.toLowerCase() ?? ""}
 						inventoryDelete={inventoryDelete}
 						inventoryRestock={inventoryRestock}
+						acceptOrder={orderAccept}
+						rejectOrder={orderReject}
 						userDelete={userDelete}
+						serviceDelete={serviceDelete}
+						washableDelete={washableDelete}
+						editOrder={orderEdit}
 					/>
 				</div>
 			</div>

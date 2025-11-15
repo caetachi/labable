@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './management.css';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
@@ -18,6 +18,8 @@ export default function WashableManagement() {
     const [sortKey, setSortKey] = useState('name'); 
 
    
+    const navigate = useNavigate();
+
     useEffect(()=>{
         const washableRef = ref(db, 'washable_items');
         async function getWashableList() {
@@ -58,7 +60,10 @@ export default function WashableManagement() {
                 
                 await deleteWashable(washableUid); 
                 }
-        });
+                await deleteWashable(washableUid);
+                navigate('/admin/washable')
+            }
+        );
     }
 
     const displayWashables = [...washables]

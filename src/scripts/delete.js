@@ -71,12 +71,7 @@ export async function deleteWashable(washableUid) {
     await remove(washableRef);
     toast.success("Washable item deletion successful");
   } catch (error) {
-    localStorage.setItem(
-      "toastMessage",
-      error?.message || "Failed to delete washable item."
-    );
-    localStorage.setItem("toastType", "error");
-    window.location.reload();
+    toast.error("Failed to delete washable item: "+error);
   } 
 }
 

@@ -279,7 +279,14 @@ export default function OrderEdit({id}){
                 <p className='small-container-title'>Status</p>
                 <div className="small-container-input-container">
                     <i className="ti ti-circle-check input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].status} onChange={(e)=>setStatus(e.target.value)}/>
+                    {status && 
+                    <select className='small-container-input gray-border' defaultValue={status} onChange={(e) => setStatus(e.target.value)} >
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                    }
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
