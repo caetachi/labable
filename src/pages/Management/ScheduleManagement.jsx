@@ -256,7 +256,7 @@ export default function ScheduleManagement() {
                                 <td>{schedule[1].customer_name}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery ? "Pickup & Delivery" : schedule[2].pickup ? "Pickup" : schedule[2].delivery ? "Delivery" : "error"}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery && checkDateNan(schedule[2].delivery.scheduled_date) ?
-                                `${formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date))} : ${schedule[2].delivery.scheduled_date}` : 
+                                `${formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date))} : ${formatLocaleDate(formatMe(schedule[2].delivery.scheduled_date))}` : 
                                 schedule[2].pickup && schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ?
                                 `${formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date))} : ${formatLocaleDate(formatMe(schedule[2].delivery.scheduled_date))}` :
                                 schedule[2].pickup ? formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date)) :

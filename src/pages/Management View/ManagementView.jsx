@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import BigNumber from "bignumber.js";
 import { getUser, getView } from "../../scripts/get";
-import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
+import { formatMe, formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
 import { deleteInventory, deleteService, deleteUser, deleteWashable } from '../../scripts/delete';
 import { acceptOrder, quickUpdate, rejectOrder, updateInventoryItemStock } from '../../scripts/update'
+import { onValue, ref } from "firebase/database";
+import { db } from "../../firebase";
 
 const fieldGroups = {
 	order: [
@@ -26,16 +28,16 @@ const fieldGroups = {
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
 		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
-		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date === "Not yet specified" ? "N/A" : formatTextualDateTime(Object.values(v.schedule)[0].scheduled_date) : "N/A"],
+		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date === "Not yet specified" ? "Not yet specified" : "N/A" : "N/A"],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
 	schedule: [
 		["Schedule ID", (v) => v.order_id ? v.order_id : "N/A"],
-		["Scheduled Date", (v) => v.scheduled_date ? formatTextualDateTime(v.scheduled_date) : "N/A"],
+		["Scheduled Date", (v) => v.schedule ? Object.values(v.schedule)[0].created_at ? formatTextualDateTime(formatMe(Object.values(v.schedule)[0].created_at)) : "N/A" : "N/A"],
 		["Order ID", (v) => v.order_id ? v.order_id : "N/A"],
-		["Order Date", (v) => v.order_date ? formatTextualDate(v.order_date) : "N/A"],
+		["Order Date", (v) => v.created_at ? formatTextualDate(v.created_at) : "N/A"],
 		["Address", (v) => v.address ? v.address : "N/A"],
-		["Claim Date", (v) => v.mode_of_claiming ? formatTextualDateTime(v.mode_of_claiming) : "N/A"],
+		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date ? formatTextualDateTime(formatMe(Object.values(v.schedule)[0].scheduled_date)) : "N/A" : "N/A"],
 		["Claim Type", (v) => v.mode_of_claiming ? titlecase(v.mode_of_claiming) : "N/A"],
 		["Current Status", (v) => v.status && titlecase(v.status)],
 		["Customer", (v) => v.customer_name],
@@ -182,6 +184,7 @@ export default function ManagementView() {
 		getView(viewCategory, viewId).then((data) => {
 			setViewData(data);
 		});
+		
 	}, [viewCategory, viewId]);
 
 	useEffect(() => {
@@ -192,6 +195,14 @@ export default function ManagementView() {
 		const last = card.lastElementChild?.firstElementChild?.lastElementChild;
 		if (first) first.style.visibility = "hidden";
 		if (last) last.style.visibility = "hidden";
+		const fetchRef = ref(db, `${viewCategory}s/${viewId}`);
+		const unsubscribe = onValue(fetchRef, (snapshot) => {
+			if(snapshot.exists()){
+				getView(viewCategory, viewId).then((data) => {
+					setViewData(data);
+				});
+			}
+		});
 	}, []);
 
 	async function inventoryRestock(){
