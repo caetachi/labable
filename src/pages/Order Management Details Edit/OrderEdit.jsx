@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getItemPerKg, getOrder, getServiceUid, getWashableItems } from "../../scripts/get";
+import { getItemPerKg, getOrder, getServicePrice, getServices, getServiceUid, getWashableItems } from "../../scripts/get";
 
 import SearchLogo from '../../assets/search.svg'
 import PantsLogo from '../../assets/pants.svg'
@@ -18,6 +18,7 @@ export default function OrderEdit({id}){
     
     const [orderItems, setOrderItems] = useState([]);
     const [washableItems, setWashableItems] = useState([]);
+    const [services, setServices] = useState([]);
     const [order, setOrder] = useState([]);
 
     const [customerName, setCustomerName] = useState("");
@@ -33,6 +34,8 @@ export default function OrderEdit({id}){
     const [laundryTransferDateTime, setLaundryTransferDateTime] = useState("");
     const [arrivalDate, setArrivalDate] = useState("");
     const [notes, setNotes] = useState("");
+    const [totalKilo, setTotalKilo] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
 
 
@@ -91,19 +94,45 @@ export default function OrderEdit({id}){
     }
 
     useEffect(()=>{
-        console.log("Order Items:", orderItems);
+        console.log("Aytems");
+        function calculateTotalKilo() {
+            let total = 0;
+            for (let i = 0; i < orderItems.length; i++) {
+                total += orderItems[i].total_kilo;
+            }
+            setTotalKilo(Number(total).toFixed(2));
+        }
+        calculateTotalKilo();
     }, [orderItems])
+
+    useEffect(()=>{
+        async function calculateTotalPrice() {
+            const servicePrice = await getServicePrice(serviceType);
+            const price = servicePrice * totalKilo;
+            setTotalPrice(price.toFixed(2));
+        }
+        calculateTotalPrice();
+    }, [orderItems, totalKilo, serviceType, serviceName])
+
 
     useEffect(()=>{
         async function getStuff() {
             const washablesList = await getWashableItems();
+            const servicesList = await getServices();
             let washables = [];
+            let servicesNoCounter = [];
             for(let i = 0; i < washablesList.length; i++){
                 if(washablesList[i][0] != 'washables_counter'){
                     washables.push(washablesList[i]);
                 }
             }
+            for(let i = 0; i < servicesList.length; i++){
+                if(servicesList[i][0] != 'service_counter'){
+                    servicesNoCounter.push(servicesList[i]);
+                }
+            }
             setWashableItems(washables);
+            setServices(servicesNoCounter)
         }
         async function getOrderList() {
             const currOrder = await getOrder(String(id));
@@ -178,7 +207,13 @@ export default function OrderEdit({id}){
                 <p className='small-container-title'>Service Type</p>
                 <div className="small-container-input-container">
                     <i className="ti ti-wash-machine input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].service_name} onChange={(e)=>setServiceName(e.target.value)}/>
+                    {serviceName &&
+                    <select className='small-container-input gray-border' type="text" defaultValue={order[1].service_name} onChange={(e)=>setServiceName(e.target.value)}>
+                        {services && services.map((service)=>{
+                            return <option key={service[0]} value={service[1].service_name}>{service[1].service_name}</option>
+                        })}
+                    </select>
+                    }
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
@@ -278,6 +313,16 @@ export default function OrderEdit({id}){
                     <input className='small-container-input gray-border' type="text" defaultValue={order[1].notes ? order[1].notes.order_notes : ""} onChange={(e)=>setOrderNotes(e.target.value)}/>
                 </div>
             </div>
+            <span className="estimate-title">
+                <p className='weight-title'>Weight: {totalKilo}kg</p>
+                {
+                    totalKilo && (totalKilo < 1 ?
+                        <p className='weight-title-error'>Please add more items to your order.</p>
+                    :
+                        <p className='price-title'>Price: ₱{totalPrice}</p>
+                    )
+                }
+            </span>
             <Buttons onClick={update}/>
         </div>
     )

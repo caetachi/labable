@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import { useEffect, useState } from 'react'
-import { getServicePrice, getServices, getWashableItems, hasAddress } from '../../scripts/get'
+import { getMyAddress, getServicePrice, getServices, getWashableItems, hasAddress } from '../../scripts/get'
 import ServiceType from '../../components/Service Type - Create Order/ServiceType'
 import { toast } from 'react-toastify'
 import BigNumber from 'bignumber.js'
@@ -135,7 +135,12 @@ export default function CreateOrder() {
                 });
             }
         }
+        async function setDefaultAddress(){
+            const userAddress = await getMyAddress();
+            setAddress(userAddress);
+        }
         handleAddressCheckAndNavigation();
+        setDefaultAddress();
     }, [])
 
     useEffect(()=>{
@@ -295,7 +300,7 @@ export default function CreateOrder() {
                     <p className='section-title'>Address</p>
                 </div>
                 <div className="address-input-container">
-                    <input className='create-address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan' onChange={(e)=>setAddress(e.target.value)}/>
+                    <input className='create-address-input gray-border' type="text" placeholder='454, Sitio Uli-Ulit, Pinalagdan, Paombong, Bulacan' defaultValue={address && address} onChange={(e)=>setAddress(e.target.value)}/>
                     <img className='address-edit' src={EditLogo} alt="" />
                 </div>
                 <div className="order-items-container">

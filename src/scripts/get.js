@@ -1,6 +1,6 @@
 
 import { child, get, ref } from 'firebase/database'
-import { db } from '../firebase'
+import { auth, db } from '../firebase'
 
   export async function getServiceName(serviceUid) {
     const servicesRef = ref(db, 'service_types');
@@ -278,6 +278,14 @@ export async function getTotalSpentAmount(userUid) {
   export async function hasAddress(userUid) {
     const usersRef = ref(db, 'users');
     const userRef = child(usersRef, userUid);
+    const userSnap = await get(userRef);
+    const user = await userSnap.val();
+    return user.address;
+  }
+
+  export async function getMyAddress() {
+    const usersRef = ref(db, 'users');
+    const userRef = child(usersRef, auth.currentUser.uid);
     const userSnap = await get(userRef);
     const user = await userSnap.val();
     return user.address;
