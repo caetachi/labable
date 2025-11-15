@@ -160,7 +160,7 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
   const payment = await newPayment(newOrderUid, paymentMethod, 'unpaid', ordersCounter);
   let orderItems = [];
   for (let i = 0; i < orders.length; i++) {
-    const orderItem = await newOrderItem(newOrderUid, orders[i].washable_item_id, orders[i].quantity);
+    const orderItem = await newOrderItem(newOrderUid, orders[i].washable_item_id, orders[i].quantity, orders[i].item_per_kilo);
     orderItems.push(orderItem);
   }
   
@@ -326,13 +326,12 @@ export async function newOrderTrack(orderUid, status) {
   return orderTrackData;
 }
 
-export async function newOrderItem(orderUid, washableItemId, quantity) {
+export async function newOrderItem(orderUid, washableItemId, quantity, itemPerKilo) {
   const washableItemName = await getWashableItemName(washableItemId);
   const orderItemsRef = ref(db, 'order_items');
   
   await push(orderItemsRef);
 
-  const itemPerKilo = await getItemPerKg(washableItemId);
   const totalKilo = quantity / itemPerKilo;
 
   const orderItemData = {
@@ -340,7 +339,9 @@ export async function newOrderItem(orderUid, washableItemId, quantity) {
     "washable_item_id": washableItemId,
     "washable_item_name": washableItemName,
     "quantity": quantity,
-    "total_kilo": totalKilo
+    "total_kilo": totalKilo,
+    "item_per_kilo": itemPerKilo,
+
   }
 
   return orderItemData;

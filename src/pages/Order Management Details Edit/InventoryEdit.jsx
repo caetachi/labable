@@ -115,7 +115,8 @@ export default function InventoryEdit({inventoryItem}){
             <div className="small-container">
                 <p className='small-container-title'>Last Restock Date</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={lastRestocked} onChange={(e)=>onLastRestockedChange(e)}/>
+                    <p>{new Date(lastRestocked).toISOString()}</p>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={lastRestocked && new Date(lastRestocked).toISOString()} onChange={(e)=>setLastRestocked(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
                 <p className="error-message" id="lastRestockedError"></p>

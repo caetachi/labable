@@ -196,11 +196,13 @@ export default function ManagementView() {
 
 	async function inventoryRestock(){
 		swal.fire({
-			title: 'Are you sure?',
+			title: 'Enter Quantity',
+			inputLabel: 'Items to restock',
 			input: 'number',
-			inputLabel: 'Enter the quantity to restock:',
+			inputValue: 1, 
 			inputAttributes: {
-				min: 1
+				min: 1, 
+				step: 1 
 			},
 			showCancelButton: true,
 			confirmButtonColor: 'var(--bg-dark)',

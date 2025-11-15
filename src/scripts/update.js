@@ -107,7 +107,7 @@ export async function updateOrderDetails(orderUid, customerName, address, servic
   const orderRef = child(ordersRef, orderUid);
   const pickupRef = child(orderRef, 'schedule/pickup');
   const notesRef = child(orderRef, 'notes');
-  const orderData = { 
+  let orderData = { 
     'updated_at': currDate,
     'updated_by': auth.currentUser.uid,
   }
@@ -170,11 +170,12 @@ export async function cancelOrder(orderUid, status, reason) {
 }
 
 
-export async function updateScheduleDetails(orderUid, customerName, address, status, modeOfClaiming, laundryClaimDateTime) {
+export async function updateScheduleDetails(orderUid, customerName, address, status, modeOfTransfer, modeOfClaiming, laundryTransferDateTime, laundryClaimDateTime) {
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const deliveryRef = child(orderRef, 'schedule/delivery');
+  const pickupRef = child(orderRef, 'schedule/pickup');
   const orderData = { 
     'updated_at': currDate,
     'updated_by': auth.currentUser.uid,
@@ -182,10 +183,21 @@ export async function updateScheduleDetails(orderUid, customerName, address, sta
   if(customerName)orderData.customer_name = customerName;
   if(address)orderData.address = address;
   if(status)orderData.status = status; 
-  if(modeOfClaiming == "Delivery"){
+  if(modeOfClaiming == "Deliver"){
     orderData.mode_of_claiming = modeOfClaiming; 
-    await set(deliveryRef, {
-      "scheduled_date": laundryClaimDateTime,
+    if(laundryClaimDateTime){
+      await set(deliveryRef, {
+        "scheduled_date": laundryClaimDateTime,
+        "status": status,
+        "created_at": currDate
+      })
+      .then(()=>console.log("Updated"));
+    }
+  }
+  if(modeOfTransfer == "Pick-up"){
+    orderData.mode_of_transfer = modeOfTransfer; 
+    await set(pickupRef, {
+      "scheduled_date": laundryTransferDateTime,
       "status": status,
       "created_at": currDate
     })
