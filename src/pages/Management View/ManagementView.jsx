@@ -104,10 +104,11 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 						["Accept", "accept-btn"],	
 					]
 					:
-				status === "canceled" ?
+				status === "canceled" || status === "rejected" ?
 					[] :
 					[
 						["Cancel", "cancel-btn"],
+						["Quick Update", "quick-btn"],
 						["Update", "update-btn"],
 					],
 			schedule: [
@@ -206,12 +207,16 @@ export default function ManagementView() {
 			showCancelButton: true,
 			confirmButtonColor: 'var(--bg-dark)',
 			cancelButtonColor: 'var(--error)',
-			confirmButtonText: 'Yes, restock it!'
+			
+			confirmButtonText: 'Continue Restock'
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				const quantityString = result.value;
-				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + Number(quantityString));
-			}
+				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + Number(result.value)).then(()=>{
+					toast.success("Inventory Item Restocked Successfully!")	
+					}).catch((error)=>{
+						toast.error("Error restocking inventory item: " + error.message)
+					});
+				}
 		});
 	}
 
@@ -275,7 +280,7 @@ export default function ManagementView() {
 								: "washable items, pricing, and number of pieces per kilo"}
 						</h3>
 					</div>
-					<button className='return-btn' onClick={() => navigate('/admin/dashboard')}>Back</button>
+					<button className='return-btn' onClick={() => navigate(-1)}>Back</button>
 				</div>
 
 				<div className='details-container'>

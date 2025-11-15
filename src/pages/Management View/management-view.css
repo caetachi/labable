@@ -164,6 +164,14 @@
     background-color: color-mix(in srgb, var(--success) 80%, transparent);
 }
 
+.management-view-container .btn-container .quick-btn {
+    background-color: color-mix(in srgb, var(--hl-blue) 80%, transparent);
+}
+
+.management-view-container .btn-container .quick-btn:hover {
+    background-color: var(--hl-blue);
+}
+
 .management-view-container .btn-container .update-btn:hover {
     background-color: var(--success);
 }
