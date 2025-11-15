@@ -13,6 +13,7 @@ import WashableItem from "../../components/Washable Item - Create Order/Washable
 import { updateOrderDetails } from "../../scripts/update";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { formatMe } from "../../scripts/dateformat";
 
 export default function OrderEdit({id}){    
     
@@ -26,7 +27,6 @@ export default function OrderEdit({id}){
     const [serviceName, setServiceName] = useState("");
     const [serviceType, setServiceType] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
-    const [amount, setAmount] = useState("");
     const [status, setStatus] = useState("");
     const [modeOfTransfer, setModeOfTransfer] = useState("");
     const [modeOfClaiming, setModeOfClaiming] = useState("");
@@ -38,6 +38,18 @@ export default function OrderEdit({id}){
     const [totalPrice, setTotalPrice] = useState(0);
     const navigate = useNavigate();
 
+    async function update(){
+        console.log(totalPrice);
+        
+        await updateOrderDetails(id, customerName, address, serviceType, serviceName, paymentMethod, totalPrice, orderItems, status, modeOfTransfer, modeOfClaiming, orderDate, laundryTransferDateTime, arrivalDate, notes).then(()=>{
+            toast.success("Order Updated Successfully!");
+        }).catch((error)=>{
+            toast.error("Error updating order: " + error.message);
+        });
+        
+        navigate('/admin/order');
+    }
+
 
     async function addToOrderItems(washableItemUid, washableItemName, itemPerKg){
         console.log(itemPerKg);
@@ -47,9 +59,16 @@ export default function OrderEdit({id}){
                 item => item.washable_item_id === washableItemUid
             );
             if (existingItemIndex > -1) { // -1 pag wala
-                return prevOrderItems.map((item, index) => {
+                return prevOrderItems.map((current, index) => {
                     if (index === existingItemIndex) {
-                        return { ...item, quantity: item.quantity + 1, total_kilo: Number((item.quantity + 1) / itemPerKgNum)}; // update quantity and total kilo
+                        const newQuantity = current.quantity + 1;
+                        const newItemPerKilo = current.item_per_kilo;
+                        const newTotalKilo = Number(newQuantity / newItemPerKilo);
+                        return { 
+                            ...current, 
+                            quantity: newQuantity,
+                            total_kilo: newTotalKilo
+                        }; // update quantity and total kilo
                     }
                     return item;
                 });
@@ -67,24 +86,33 @@ export default function OrderEdit({id}){
             }
         });
     }
-
     function decrementQuantity(decrementIndex) {
         setOrderItems(prevOrderItems =>{
-            const item = prevOrderItems[decrementIndex];
-            if(item.quantity > 1){
+            const itemToDecrement = prevOrderItems[decrementIndex]; // Use a clearer variable name
+            
+            if (itemToDecrement.quantity > 1) {
                 return prevOrderItems.map((current, index) => {
                     if (index === decrementIndex) {
-                        if(item.quantity > 1){
-                            return { ...current, quantity: current.quantity - 1 }; // update quantity
-                        }
-                        return prevOrderItems;
+                        const newQuantity = Number(current.quantity - 1);
+                        const newItemPerKilo = Number(current.item_per_kilo); 
+                        const newTotalKilo = Number(newQuantity / newItemPerKilo);
+                        console.log(newQuantity);
+                        console.log(newItemPerKilo);
+                        console.log(newTotalKilo);
+                        
+                        
+                        return { 
+                            ...current, 
+                            quantity: newQuantity,
+                            total_kilo: newTotalKilo 
+                        }; 
                     }
                     return current;
                 });
-            }else{
-                return prevOrderItems.filter((current, index) => index != decrementIndex);
+            } else {
+                return prevOrderItems.filter((current, index) => index !== decrementIndex);
             }
-        })
+        });
     }
 
     function remove(removeIndex) {
@@ -92,27 +120,28 @@ export default function OrderEdit({id}){
             return prevOrderItems.filter((current, index) => index != removeIndex);
         })
     }
+    async function calculateTotalPrice() {
+        const servicePrice = await getServicePrice(serviceType);
+        const price = servicePrice * totalKilo;
+        setTotalPrice(price.toFixed(2));
+    }
 
-    useEffect(()=>{
-        console.log("Aytems");
+    useEffect(() => {
         function calculateTotalKilo() {
             let total = 0;
             for (let i = 0; i < orderItems.length; i++) {
                 total += orderItems[i].total_kilo;
-            }
-            setTotalKilo(Number(total).toFixed(2));
+        }
+        setTotalKilo(Number(total));
         }
         calculateTotalKilo();
-    }, [orderItems])
+    }, [orderItems]);
 
-    useEffect(()=>{
-        async function calculateTotalPrice() {
-            const servicePrice = await getServicePrice(serviceType);
-            const price = servicePrice * totalKilo;
-            setTotalPrice(price.toFixed(2));
+    useEffect(() => {
+        if (serviceType && totalKilo > 0) {
+            calculateTotalPrice();
         }
-        calculateTotalPrice();
-    }, [orderItems, totalKilo, serviceType, serviceName])
+    }, [totalKilo, serviceType]);
 
 
     useEffect(()=>{
@@ -149,7 +178,6 @@ export default function OrderEdit({id}){
         setAddress(order[1]?.address || "");
         setServiceName(order[1]?.service_name || "");
         setPaymentMethod(order[1]?.payment_method || "");
-        setAmount(order[1]?.amount || "");
         setStatus(order[1]?.status || "");
         setModeOfTransfer(order[1]?.mode_of_transfer || "");
         setModeOfClaiming(order[1]?.mode_of_claiming || "");
@@ -162,6 +190,7 @@ export default function OrderEdit({id}){
     useEffect(()=>{
         async function fetchServiceType() {
             const serviceUid = await getServiceUid(serviceName);
+            console.log(serviceName);
             setServiceType(serviceUid);
         }
         fetchServiceType();
@@ -171,15 +200,7 @@ export default function OrderEdit({id}){
         return <div className="order-edit-loading">Loading Order Details...</div>;
     }
 
-    async function update(){
-        await updateOrderDetails(id, customerName, address, serviceType, serviceName, paymentMethod, amount, orderItems, status, modeOfTransfer, modeOfClaiming, orderDate, laundryTransferDateTime, arrivalDate, notes).then(()=>{
-            toast.success("Order Updated Successfully!");
-        }).catch((error)=>{
-            toast.error("Error updating order: " + error.message);
-        });
-        
-        navigate('/admin/order');
-    }
+    
 
     return( 
         <div className="details-edit gray-border">
@@ -227,14 +248,6 @@ export default function OrderEdit({id}){
                     </select>
                 </div>
             </div>
-            <div className="small-container">
-                <p className='small-container-title'>Amount</p>
-                <div className="small-container-input-container">
-                    <i className="hgi hgi-stroke hgi-money-01 input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].amount} onChange={(e)=>setAmount(e.target.value)}/>
-                    <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
-                </div>
-            </div>
             <div className="order-items-container">
                 <div className="washable-items-container gray-border">
                     <p className='section-title washable-items-title'>Select Washable Item</p>
@@ -274,7 +287,10 @@ export default function OrderEdit({id}){
                 <p className='small-container-title'>Mode of Transfer</p>
                 <div className="small-container-input-container">
                     <i className="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].mode_of_transfer} onChange={(e)=>setModeOfTransfer(e.target.value)}/>
+                    <select className='small-container-input gray-border' type="text" defaultValue={modeOfTransfer} onChange={(e)=>setModeOfTransfer(e.target.value)}>
+                        <option value="Pick-up">Pickup</option>
+                        <option value="Deliver">Deliver</option>
+                    </select>
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
@@ -282,28 +298,31 @@ export default function OrderEdit({id}){
                 <p className='small-container-title'>Mode of Claiming</p>
                 <div className="small-container-input-container">
                     <i className="hgi hgi-stroke hgi-shipping-truck-01 input-icon left-icon"></i>
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].mode_of_claiming} onChange={(e)=>setModeOfClaiming(e.target.value)}/>
+                    <select className='small-container-input gray-border' type="text" defaultValue={modeOfClaiming} onChange={(e)=>setModeOfClaiming(e.target.value)}>
+                        <option value="Pick-up">Pickup</option>
+                        <option value="Deliver">Deliver</option>
+                    </select>
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Order Date</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].created_at} onChange={(e)=>setOrderDate(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={orderDate && formatMe(orderDate)} onChange={(e)=>setOrderDate(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Laundry Transfer Date Time</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].transfer_date} onChange={(e)=>setTransferDate(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].transfer_date} onChange={(e)=>setTransferDate(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Arrival Date</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].arrival_date} onChange={(e)=>setArrivalDate(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].arrival_date} onChange={(e)=>setArrivalDate(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
@@ -314,12 +333,12 @@ export default function OrderEdit({id}){
                 </div>
             </div>
             <span className="estimate-title">
-                <p className='weight-title'>Weight: {totalKilo}kg</p>
+                <p className='weight-title'>Weight: {totalKilo && totalKilo}kg</p>
                 {
                     totalKilo && (totalKilo < 1 ?
                         <p className='weight-title-error'>Please add more items to your order.</p>
                     :
-                        <p className='price-title'>Price: ₱{totalPrice}</p>
+                        <p className='price-title'>Price: ₱{totalPrice && totalPrice}</p>
                     )
                 }
             </span>

@@ -188,6 +188,8 @@ export default function CreateOrder() {
     }, [service])
 
     useEffect(()=>{
+        console.log(orderItems);
+        
         if(orderItems && pricePerKg){
             let total_kilo = new BigNumber(0);
             for(let i = 0; i < orderItems.length; i++){

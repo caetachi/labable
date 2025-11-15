@@ -195,16 +195,23 @@ export default function ManagementView() {
 
 	async function inventoryRestock(){
 		swal.fire({
-			title: 'Are you sure?',
-			icon: 'warning',
+			title: 'Enter Quantity',
+			inputLabel: 'Items to restock',
+			input: 'number',
+			inputValue: 1, 
+			inputAttributes: {
+				min: 1, 
+				step: 1 
+			},
 			showCancelButton: true,
 			confirmButtonColor: 'var(--bg-dark)',
 			cancelButtonColor: 'var(--error)',
 			confirmButtonText: 'Yes, restock it!'
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + 1);
-				}
+				const quantityString = result.value;
+				await updateInventoryItemStock(viewId, Number(viewData.quantity_in_stock) + Number(quantityString));
+			}
 		});
 	}
 
