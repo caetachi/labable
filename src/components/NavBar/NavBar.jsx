@@ -14,7 +14,7 @@ export default  function NavBar({image_url, name, hasAddress}) {
       if (image_url) {
         setImageUrl(image_url);
       } else if (name) {
-        setImageUrl(`https://avatar.iran.liara.run/username?username=${name}&background=random`);
+        setImageUrl(`https://avatar.iran.liara.run/username?username=${name}&background=000000&color=FFFFFF&bold=true`);
       }
     }, [image_url, name]);
 
