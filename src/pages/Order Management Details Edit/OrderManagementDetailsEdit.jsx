@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 import Leaflet from '../../components/Leaflet/Leaflet'
 import Buttons from '../../components/Buttons - Edit Details/Buttons'
 import { useParams } from 'react-router'
-import { getInventoryItem, getOrder, getServiceType, getWashableItem, getWashableItems } from '../../scripts/get'
+import { getInventoryItem, getOrder, getServiceType, getUser, getWashableItem, getWashableItems } from '../../scripts/get'
 import WashableItem from '../../components/Washable Item - Create Order/WashableItem'
 import OrderItem from '../../components/Order Item - Create Order/OrderItem'
 import WashableEdit from './WashableEdit'
@@ -14,6 +14,7 @@ import ServiceEdit from './ServiceEdit'
 import InventoryEdit from './InventoryEdit'
 import ScheduleEdit from './ScheduleEdit'
 import OrderEdit from './OrderEdit'
+import CustomerEdit from './CustomerEdit';
 
 export default function OrderManagementDetailsEdit(){
     const {toEdit, id} = useParams();
@@ -22,6 +23,7 @@ export default function OrderManagementDetailsEdit(){
     const [inventoryItem, setInventoryItem] = useState();
     const [serviceType, setServiceType] = useState();
     const [washableItem, setWashableItem] = useState();
+    const [customer, setCustomer] = useState();
     const [coordinates, setCoordinates] = useState([]);
     const [locationName, setLocationName] = useState("Malolos");
 
@@ -48,7 +50,7 @@ export default function OrderManagementDetailsEdit(){
         if(editDetail == 'service'){
             async function gettingServiceType(id) {
                 if(id){
-                    const serviceMo = await getServiceType(String(idprice));
+                    const serviceMo = await getServiceType(String(id));
                     console.log("Service "+serviceMo);
                     setServiceType(serviceMo);
                 }
@@ -63,6 +65,15 @@ export default function OrderManagementDetailsEdit(){
             }
             gettingWashableItem(id)
         }
+        if(editDetail == 'customer'){
+            async function getingCustomer(id) {
+                if(id){
+                    setCustomer(await getUser(String(id)));
+                }
+            }
+            getingCustomer(id)
+        }
+
     }, [editDetail])
 
     function onCoordinateChange(newCoordinates){
@@ -83,8 +94,8 @@ export default function OrderManagementDetailsEdit(){
                 <OrderEdit id={id} />
             }
             {
-                editDetail == 'schedule'  && order &&
-                <ScheduleEdit order={order} locationName={locationName} coordinates={coordinates} onCoordinateChange={onCoordinateChange} onLocationNameChange={onLocationNameChange} />
+                editDetail == 'schedule'  &&
+                <ScheduleEdit id={id} locationName={locationName} coordinates={coordinates} onCoordinateChange={onCoordinateChange} onLocationNameChange={onLocationNameChange} />
             }
             {
                 editDetail == 'inventory'  && inventoryItem &&
@@ -97,6 +108,10 @@ export default function OrderManagementDetailsEdit(){
             {
                 editDetail == 'washable'  && washableItem &&
                 <WashableEdit washableItem={washableItem}/>
+            }
+            {
+                editDetail == 'customer' && customer &&
+                <CustomerEdit customer={customer}/>
             }
         </div>
     )

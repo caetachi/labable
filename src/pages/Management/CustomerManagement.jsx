@@ -16,20 +16,20 @@ export default function CustomerManagement() {
     }
 
     async function handleDelete(userUid){
-            swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: 'var(--bg-dark)',
-                cancelButtonColor: 'var(--error)',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    await deleteUser(userUid);
-                    }
-            });
-        }
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--bg-dark)',
+            cancelButtonColor: 'var(--error)',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteUser(userUid);
+                }
+        });
+    }
 
     useEffect(()=>{
         const usersRef = ref(db, 'users');
@@ -45,7 +45,7 @@ export default function CustomerManagement() {
             
             setUsers(withoutCounter)
         }
-        onValue(usersRef, (snapshot)=>{
+        const unsubscribe = onValue(usersRef, (snapshot)=>{
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 getUsersList();
@@ -53,6 +53,7 @@ export default function CustomerManagement() {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe();
     }, [])
 
     return (
@@ -107,17 +108,17 @@ export default function CustomerManagement() {
                                 <td>{customer[1].fullname ? customer[1].fullname : "No name"}</td>
                                 <td>{customer[1].email ? customer[1].email : "No email"}</td>
                                 <td>{customer[1].phone ? customer[1].phone : "No phone number"}</td>
-                                <td>{customer[1].address ? customer[1].user_id : "No address"}</td>
+                                <td>{customer[1].address ? customer[1].address : "No address"}</td>
                                 <td>
                                     <span className={`status ${getStatusClass(customer[1].status)}`}>
                                         {customer[1].status}
                                     </span>
                                 </td>
                                 <td className="action-buttons">
-                                    <NavLink to={`/admin/customer/${customer[1].user_id}`} className="action-icon">
+                                    <NavLink to={`/admin/customer/${customer[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>
                                     </NavLink>
-                                    <NavLink to={`/admin/customer/${customer[1].user_id}/edit`} className="action-icon">
+                                    <NavLink to={`/admin/customer/${customer[0]}/edit`} className="action-icon">
                                         <i className="ti ti-pencil"></i>
                                     </NavLink>
                                     <button className="action-icon delete" onClick={()=>handleDelete(customer[0])}>

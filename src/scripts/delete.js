@@ -91,15 +91,18 @@ export async function deleteSchedulePickup(orderID) {
   }
   for(let i = 0; i < withoutCounter.length; i++){
     
-    if(withoutCounter[i][1].order_id == orderID){
+    if(withoutCounter[i][0] == orderID){
       const orderRef = child(ordersRef, withoutCounter[i][0]);
       const scheduleRef = child(orderRef, 'schedule'); 
       const pickupRef = child(scheduleRef, 'pickup');
       if(pickupRef){
         try {
           await remove(pickupRef);
+          console.log('lana');
+          
           toast.success("Schedule deletion successful");
         } catch (error) {
+          console.log('norem');
           localStorage.setItem(
             "toastMessage",
             error?.message || "Failed to delete schedule."
@@ -125,7 +128,7 @@ export async function deleteScheduleDelivery(orderID) {
   }
   for(let i = 0; i < withoutCounter.length; i++){
     
-    if(withoutCounter[i][1].order_id == orderID){
+    if(withoutCounter[i][0] == orderID){
       const orderRef = child(ordersRef, withoutCounter[i][0]);
       const scheduleRef = child(orderRef, 'schedule'); 
       const deliverypRef = child(scheduleRef, 'delivery');

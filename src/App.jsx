@@ -35,6 +35,7 @@ import ForgotPassword from "./pages/Login/ForgotPassword"
 export default function App() {
   const [user, setUser] = useState();
   const [userData, setUserData] = useState({});
+  const [hasAddress, setHasAddress] = useState(false);
 
   useEffect(()=>{
     onAuthStateChanged(auth, (currentUser)=>{
@@ -64,6 +65,16 @@ export default function App() {
     }
   },[])
 
+  useEffect(()=>{
+    if(userData && user){
+      async function checkAddress() {
+        const hasAddressBool = await get(ref(db, `users/${user.uid}/address`));
+        setHasAddress(hasAddressBool.exists());
+      }
+      checkAddress();
+    }
+  }, [userData])
+
   return (  
     <>
       <ToastWrapper />
@@ -84,7 +95,7 @@ function Layout({ user, userData }) {
       {!hideLayout && (
         userData?.role === "admin"
           ? <AdminSideBar name={userData.fullname} image_url={userData.image_url}/>
-          : <NavBar name={userData.fullname} image_url={userData.image_url}/>
+          : <NavBar name={userData.fullname} image_url={userData.image_url} hasAddress={userData.hasAddress}/>
       )}
 
       <Routes>

@@ -35,13 +35,14 @@ export default function OrderManagement() {
             }
             setOrders(withoutCounter)
         }
-        onValue(ordersRef, (snapshot)=>{
+        const unsubscribe = onValue(ordersRef, (snapshot)=>{
             if (snapshot.exists()) {
                 getOrdersList();
             } else {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe();
     }, [])
 
     useEffect(()=>{

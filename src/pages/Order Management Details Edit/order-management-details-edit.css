@@ -102,3 +102,7 @@
     justify-content: space-between;
     padding: 0px 30px;
 }
+
+.input-date{
+    padding-right: 15px;
+}

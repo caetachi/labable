@@ -29,13 +29,14 @@ export default function InventoryManagement() {
             console.log(withoutCounter);
             setInventory(withoutCounter)
         }
-        onValue(inventoryRef, (snapshot)=>{
+        const unsubscribe = onValue(inventoryRef, (snapshot)=>{
             if (snapshot.exists()) {
                 getInventoryList();
             } else {
                 console.log("No data available");
             }
         });
+        return () => unsubscribe();
     }, [])
 
     async function handleDelete(inventoryUid){
