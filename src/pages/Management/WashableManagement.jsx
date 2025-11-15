@@ -7,10 +7,17 @@ import { getWashableItems } from '../../scripts/get';
 import swal from 'sweetalert2';
 import { deleteWashable } from '../../scripts/delete';
 
-
 export default function WashableManagement() {
 
     const [washables, setWashables] = useState([]);
+   
+    const [searchTerm, setSearchTerm] = useState(''); 
+   
+    const [sortDirection, setSortDirection] = useState('asc');
+    
+    const [sortKey, setSortKey] = useState('name'); 
+
+   
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -19,7 +26,7 @@ export default function WashableManagement() {
             const getDaWashables = await getWashableItems();
             let withoutCounter = [];
             for(let i = 0; i < getDaWashables.length; i++){
-                if(getDaWashables[i][0] != 'washables_counter'){
+                if(getDaWashables[i][0] !== 'washables_counter'){
                     withoutCounter.push(getDaWashables[i])
                 }
             }
@@ -27,13 +34,15 @@ export default function WashableManagement() {
             
             setWashables(withoutCounter)
         }
+        
         const unsubscribe = onValue(washableRef, (snapshot)=>{
             if (snapshot.exists()) {
-                getWashableList();
+                getWashableList(); 
             } else {
                 console.log("No data available");
             }
         });
+        
         return () => unsubscribe();
     }, [])
 
@@ -48,11 +57,51 @@ export default function WashableManagement() {
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
             if (result.isConfirmed) {
+                
+                await deleteWashable(washableUid); 
+                }
                 await deleteWashable(washableUid);
                 navigate('/admin/washable')
             }
         });
     }
+
+    const displayWashables = [...washables]
+        .filter(item => {
+          
+            if (!searchTerm) return true; 
+            
+            return item[1].washable_item_name.toLowerCase().includes(searchTerm.toLowerCase());
+        })
+        .sort((a, b) => {
+            
+            let valA, valB;
+
+            if (sortKey === 'name') {
+                valA = a[1].washable_item_name.toLowerCase();
+                valB = b[1].washable_item_name.toLowerCase();
+            } else if (sortKey === 'kilo') {
+                valA = a[1].item_per_kilo; 
+                valB = b[1].item_per_kilo;
+            } else if (sortKey === 'id') {
+                valA = a[1].washable_item_id;
+                valB = b[1].washable_item_id;
+            }
+
+            if (sortDirection === 'asc') {
+                if (typeof valA === 'string') {
+                    return valA.localeCompare(valB); 
+                } else {
+                    return valA - valB; 
+                }
+            } else { 
+                if (typeof valA === 'string') {
+                    return valB.localeCompare(valA); 
+                } else {
+                    return valB - valA; 
+                }
+            }
+        });
 
     return (
         <>
@@ -72,12 +121,29 @@ export default function WashableManagement() {
             <div className="filter-controls">
                 <div className="search-bar">
                     <i className="ti ti-search search-icon"></i>
-                    <input type="text" placeholder="Search washable items..." />
+                    <input 
+                        type="text" 
+                        placeholder="Search washable items..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)} 
+                    />
                 </div>
-                <select defaultValue="Date" className="filter-dropdown">
-                    <option value="Date" disabled hidden>Date</option>
+                
+                <select 
+                    value={sortKey} 
+                    onChange={(e) => setSortKey(e.target.value)} 
+                    className="filter-dropdown"
+                >
+                    <option value="name">Sort by Name</option>
+                    <option value="kilo">Sort by Item/kg</option>
+                    <option value="id">Sort by Item ID</option>
                 </select>
-                <select defaultValue="asc" className="filter-dropdown">
+
+                <select 
+                    value={sortDirection} 
+                    onChange={(e) => setSortDirection(e.target.value)} 
+                    className="filter-dropdown"
+                >
                     <option value="asc">Sort Asc</option>
                     <option value="desc">Sort Desc</option>
                 </select>
@@ -94,7 +160,7 @@ export default function WashableManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {washables.map(item => (
+                        {displayWashables.map(item => (
                             <tr key={item[1].washable_item_id}>
                                 <td>{item[1].washable_item_id}</td>
                                 <td>{item[1].washable_item_name}</td>

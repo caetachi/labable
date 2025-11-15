@@ -5,7 +5,7 @@ import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase';
 import { getInventory } from '../../scripts/get';
 import swal from 'sweetalert2';
-import { deleteInventory } from '../../scripts/delete';;
+import { deleteInventory } from '../../scripts/delete';
 
 
 const getStatusClass = (status) => {
@@ -15,6 +15,12 @@ const getStatusClass = (status) => {
 export default function InventoryManagement() {
     const [inventory, setInventory] = useState([]);
     
+    const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [sortKey, setSortKey] = useState('name'); 
+    const [sortDirection, setSortDirection] = useState('asc');
+
+    
     useEffect(()=>{
         console.log('load');
         const inventoryRef = ref(db, 'inventory_items');
@@ -22,7 +28,7 @@ export default function InventoryManagement() {
             const getDaInventory = await getInventory();
             let withoutCounter = [];
             for(let i = 0; i < getDaInventory.length; i++){
-                if(getDaInventory[i][0] != 'inventory_counter'){
+                if(getDaInventory[i][0] !== 'inventory_counter'){
                     withoutCounter.push(getDaInventory[i])
                 }
             }
@@ -40,20 +46,63 @@ export default function InventoryManagement() {
     }, [])
 
     async function handleDelete(inventoryUid){
-                swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: 'var(--bg-dark)',
-                    cancelButtonColor: 'var(--error)',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then(async (result) => {
-                    if (result.isConfirmed) {
-                        await deleteInventory(inventoryUid);
-                        }
-                });
+            swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: 'var(--bg-dark)',
+                cancelButtonColor: 'var(--error)',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await deleteInventory(inventoryUid);
+                    }
+            });
     }
+
+    const displayInventory = [...inventory]
+        .filter(item => {
+            
+            const passesSearch = item[1].inventory_item_name
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase());
+
+           
+            const passesStatus = (statusFilter === 'all') || (item[1].status.toLowerCase() === statusFilter.toLowerCase());
+
+            return passesSearch && passesStatus;
+        })
+        .sort((a, b) => {
+            
+            let valA, valB;
+
+            switch (sortKey) {
+                case 'name':
+                    valA = a[1].inventory_item_name.toLowerCase();
+                    valB = b[1].inventory_item_name.toLowerCase();
+                    break;
+                case 'quantity':
+                    valA = a[1].quantity_in_stock; 
+                    valB = b[1].quantity_in_stock;
+                    break;
+                case 'date':
+                    valA = new Date(a[1].last_restocked); 
+                    valB = new Date(b[1].last_restocked);
+                    break;
+                default:
+                    return 0; 
+            }
+
+       
+            if (sortDirection === 'asc') {
+                if (typeof valA === 'string') return valA.localeCompare(valB);
+                return valA - valB;
+            } else { 
+                if (typeof valA === 'string') return valB.localeCompare(valA);
+                return valB - valA; 
+            }
+        });
 
     return (
         <>
@@ -71,15 +120,45 @@ export default function InventoryManagement() {
             </div>
 
             <div className="filter-controls">
+                
                 <div className="search-bar">
                     <i className="ti ti-search search-icon"></i>
-                    <input type="text" placeholder="Search Items..." />
+                    <input 
+                        type="text" 
+                        placeholder="Search Items..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Date</option>
+
+                <select 
+                    className="filter-dropdown"
+                    value={sortKey}
+                    onChange={(e) => setSortKey(e.target.value)}
+                >
+                    <option value="name">Sort by Name</option>
+                    <option value="quantity">Sort by Quantity</option>
+                    <option value="date">Sort by Last Restocked</option>
                 </select>
-                <select className="filter-dropdown">
-                    <option value="" disabled selected hidden>Status</option>
+
+                <select 
+                    className="filter-dropdown"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                    <option value="all">All Statuses</option>
+                    <option value="available">Available</option>
+                    <option value="low stock">Low Stock</option>
+                    <option value="out of stock">Out of Stock</option>
+                </select>
+
+                <select 
+                    className="filter-dropdown"
+                    value={sortDirection}
+                    onChange={(e) => setSortDirection(e.target.value)}
+                >
+                    <option value="asc">Sort Asc</option>
+                    <option value="desc">Sort Desc</option>
                 </select>
             </div>
 
@@ -97,7 +176,7 @@ export default function InventoryManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {inventory.map(item => (
+                        {displayInventory.map(item => (
                             <tr key={item[1].inventory_item_id}>
                                 <td>{item[1].inventory_item_id}</td>
                                 <td>{item[1].inventory_item_name}</td>

@@ -11,6 +11,10 @@ import BigNumber from 'bignumber.js';
 export default function ServiceManagement() {
 
     const [services, setServices] = useState([]);
+    
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortKey, setSortKey] = useState('name'); 
+    const [sortDirection, setSortDirection] = useState('asc'); 
 
     const getServicesIncluded = (serviceIncluded) => {
         let servicesIncluded = [];
@@ -26,7 +30,7 @@ export default function ServiceManagement() {
             const get_services = await getServices();
             let withoutCounter = [];
             for(let i = 0; i < get_services.length; i++){
-                if(get_services[i][0] != 'service_counter'){
+                if(get_services[i][0] !== 'service_counter'){
                     withoutCounter.push(get_services[i])
                 }
             }
@@ -42,21 +46,56 @@ export default function ServiceManagement() {
         return () => unsubscribe();
     }, [])
 
-     async function handleDelete(serviceUid){
-            swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: 'var(--bg-dark)',
-                cancelButtonColor: 'var(--error)',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    await deleteService(serviceUid);
+    async function handleDelete(serviceUid){
+        swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'var(--bg-dark)',
+            cancelButtonColor: 'var(--error)',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await deleteService(serviceUid);
+            }
+        });
+    }
+
+    const displayServices = [...services]
+        .filter(service => {
+           
+            if (!searchTerm) return true;
+            return service[1].service_name.toLowerCase().includes(searchTerm.toLowerCase());
+        })
+        .sort((a, b) => {
+            let valA, valB;
+
+            
+            if (sortKey === 'price') {
+             
+                valA = parseFloat(a[1].service_price);
+                valB = parseFloat(b[1].service_price);
+            } else if (sortKey === 'name') {
+                valA = a[1].service_name.toLowerCase();
+                valB = b[1].service_name.toLowerCase();
+            } else if (sortKey === 'id') {
+                valA = a[1].service_type_id;
+                valB = b[1].service_type_id;
+            }
+
+            if (sortDirection === 'asc') {
+                if (typeof valA === 'string') {
+                    return valA.localeCompare(valB);
                 }
-            });
-        }
+                return valA - valB;
+            } else {
+                if (typeof valA === 'string') {
+                    return valB.localeCompare(valA);
+                }
+                return valB - valA;
+            }
+        });
 
     return (
         <>
@@ -73,15 +112,34 @@ export default function ServiceManagement() {
             </div>
 
             <div className="filter-controls">
+            
                 <div className="search-bar">
                     <i className="ti ti-search search-icon"></i>
-                    <input type="text" placeholder="Search services..." />
+                    <input 
+                        type="text" 
+                        placeholder="Search services..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <select defaultValue="Date" className="filter-dropdown">
-                    <option value="Date" disabled hidden>Date</option>
+
+                <select 
+                    value={sortKey} 
+                    onChange={(e) => setSortKey(e.target.value)} 
+                    className="filter-dropdown"
+                >
+                    <option value="name">Sort by Name</option>
+                    <option value="price">Sort by Price</option>
+                    <option value="id">Sort by ID</option>
                 </select>
-                <select defaultValue="Services" className="filter-dropdown">
-                    <option value="Services" disabled hidden>Services</option>
+
+                <select 
+                    value={sortDirection} 
+                    onChange={(e) => setSortDirection(e.target.value)} 
+                    className="filter-dropdown"
+                >
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
                 </select>
             </div>
 
@@ -97,12 +155,15 @@ export default function ServiceManagement() {
                         </tr>
                     </thead>
                     <tbody>
-                        {services.map(service => (
+                        {displayServices.map(service => (
                             <tr key={service[1].service_type_id}>
                                 <td>{service[1].service_type_id}</td>
                                 <td>{service[1].service_name}</td>
                                 <td>{getServicesIncluded(service[1].services)}</td>
-                                <td>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(service[1].service_price).toFixed(2))}</td>
+                                <td>
+                                    {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' })
+                                    .format(new BigNumber(service[1].service_price).toFixed(2))}
+                                </td>
                                 <td className="action-buttons">
                                     <NavLink to={`/admin/service/${service[0]}`} className="action-icon">
                                         <i className="ti ti-eye"></i>

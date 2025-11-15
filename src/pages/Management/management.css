@@ -150,6 +150,14 @@
     font-weight: 500;
 }
 
+.management-table tbody tr {
+    border: 0.5px solid var(--sf-light);
+}
+
+.management-table tbody tr:nth-child(even){
+    background-color: color-mix(in srgb, var(--sf-light) 40%, transparent);
+}
+
 .management-table .status {
     padding: 5px 12px;
     border-radius: 50px;

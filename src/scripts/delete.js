@@ -39,7 +39,7 @@ export async function deleteInventory(inventoryUid) {
 
   try {
     await remove(inventoryRef);
-    toast.success("Service deletion successful");
+    toast.success("Inventory deletion successful");
   } catch (error) {
     localStorage.setItem(
       "toastMessage",
