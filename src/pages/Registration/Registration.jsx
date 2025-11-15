@@ -230,7 +230,7 @@ export default function Registration() {
                         <span className="consent">
                             <input type="checkbox" name="consent" id="registration-consent" 
                             onChange={onConsentChange} />
-                            I agree to the Terms and Conditions
+                            <NavLink to={'/terms-conditions'} target="_blank" style={{textDecoration: "underline"}}>I agree to the Terms and Conditions</NavLink>
                         </span>
                         
                         {firstName && lastName && email && phoneNumber && password && confirmPassword && consent?

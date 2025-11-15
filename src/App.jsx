@@ -31,6 +31,7 @@ import CreateService from "./pages/Management Create/CreateService"
 import CreateWashable from "./pages/Management Create/CreateWashable"
 import CreateSchedule from "./pages/Management Create/CreateSchedule"
 import ForgotPassword from "./pages/Login/ForgotPassword"
+import TermsConditions from "./pages/Terms and Conditions/TermsConditions"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -95,13 +96,13 @@ function Layout({ user, userData }) {
       {!hideLayout && (
         userData?.role === "admin"
           ? <AdminSideBar name={userData.fullname} image_url={userData.image_url}/>
-          : <NavBar name={userData.fullname} image_url={userData.image_url} hasAddress={userData.hasAddress}/>
+          : <NavBar name={userData.fullname} image_url={userData.image_url} hasAddress={userData.address}/>
       )}
 
       <Routes>
           {user? 
             <>
-            {/*public  routes*/}
+            {/*private  routes*/}
               <Route path="/create-order" element={<CreateOrder />} />
               <Route path="/order-summary" element={<OrderSummary />} />
               <Route path="/my-orders" element={<MyOrder />} />
@@ -126,7 +127,7 @@ function Layout({ user, userData }) {
             </>
             :
             <>
-            {/*private routes*/}
+            {/*public routes*/}
               <Route path="/login" element={<Login />} />
               <Route path="/registration" element={<Registration />} />
             </>
@@ -134,6 +135,7 @@ function Layout({ user, userData }) {
         <Route path="/" element={<Home />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/terms-conditions" element={<TermsConditions />} />
         <Route path="/example" element={<Example />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
