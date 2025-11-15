@@ -6,7 +6,7 @@ import { getOrders, hasDelivery, hasPickup } from '../../scripts/get';
 import { db } from '../../firebase';
 import {deleteSchedulePickup, deleteScheduleDelivery} from '../../scripts/delete';
 import Swal from 'sweetalert2';
-import { formatLocaleDate } from '../../scripts/dateformat';
+import { formatLocaleDate, formatMe } from '../../scripts/dateformat';
 import { fixCancelled } from '../../scripts/fix';
 
 const getStatusClass = (status) => {
@@ -256,11 +256,11 @@ export default function ScheduleManagement() {
                                 <td>{schedule[1].customer_name}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery ? "Pickup & Delivery" : schedule[2].pickup ? "Pickup" : schedule[2].delivery ? "Delivery" : "error"}</td>
                                 <td>{schedule[2].pickup && schedule[2].delivery && checkDateNan(schedule[2].delivery.scheduled_date) ?
-                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${schedule[2].delivery.scheduled_date}` : 
+                                `${formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date))} : ${schedule[2].delivery.scheduled_date}` : 
                                 schedule[2].pickup && schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ?
-                                `${formatLocaleDate(schedule[2].pickup.scheduled_date)} : ${formatLocaleDate(schedule[2].delivery.scheduled_date)}` :
-                                schedule[2].pickup ? formatLocaleDate(schedule[2].pickup.scheduled_date) :
-                                schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ? formatLocaleDate(schedule[2].delivery.scheduled_date) :
+                                `${formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date))} : ${formatLocaleDate(formatMe(schedule[2].delivery.scheduled_date))}` :
+                                schedule[2].pickup ? formatLocaleDate(formatMe(schedule[2].pickup.scheduled_date)) :
+                                schedule[2].delivery && !checkDateNan(schedule[2].delivery.scheduled_date) ? formatLocaleDate(formatMe(schedule[2].delivery.scheduled_date)) :
                                 schedule[2].delivery ? schedule[2].delivery.scheduled_date : "No date"
                                 }</td>
                                 <td>

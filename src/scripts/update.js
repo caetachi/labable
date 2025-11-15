@@ -1,6 +1,7 @@
-import { child, ref, set, update } from 'firebase/database'
+import { child, get, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
 import { newOrderTrack } from './create';
+import { getServicesIncluded } from './get';
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
@@ -227,4 +228,14 @@ export async function rejectOrder(orderUid, cancelReason) {
   window.location.reload(); 
     
 
+}
+
+export async function quickUpdate(orderUid, serviceUid) {
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  const trackingRef = child(orderRef, 'tracking');
+  const services = await getServicesIncluded(serviceUid);
+  const trackingSnap = await get(trackingRef);
+  const tracking = await trackingSnap.val();
+  console.log(tracking);
 }

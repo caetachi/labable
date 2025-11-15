@@ -36,6 +36,11 @@ function formatDMYTime(dateString) {
 
 export function formatMe(dateString){
     const dateObject = new Date(dateString);
+    if (dateString && !dateString.includes('T')) {
+        const datePart = dateString.slice(0, 10);
+        const timePart = dateString.slice(10);
+        return `${datePart}T${timePart}`;
+    }
     const toLocalDatetimeInput = (date) => {
         const parts = new Intl.DateTimeFormat('fr-CA', { 
         year: 'numeric', month: '2-digit', day: '2-digit', 

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Buttons from "../../components/Buttons - Edit Details/Buttons";
 import { updateServiceType } from "../../scripts/update";
 import { toast } from "react-toastify";
+import { getServicesIncluded } from "../../scripts/get";
 
 export default function ServiceEdit({serviceType}){
 
@@ -59,6 +60,13 @@ export default function ServiceEdit({serviceType}){
             setPrice(temp);
         }
     }
+
+    useEffect(()=>{
+        async function getServiceList() {
+            await getServicesIncluded(serviceType[0]);
+        }
+        getServiceList();
+    },)
 
     return(
         [serviceType && 

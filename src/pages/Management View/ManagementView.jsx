@@ -10,7 +10,7 @@ import { formatTextualDate, formatTextualDateTime } from "../../scripts/dateform
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
 import { deleteInventory, deleteService, deleteUser, deleteWashable } from '../../scripts/delete';
-import { acceptOrder, rejectOrder, updateInventoryItemStock } from '../../scripts/update'
+import { acceptOrder, quickUpdate, rejectOrder, updateInventoryItemStock } from '../../scripts/update'
 
 const fieldGroups = {
 	order: [
@@ -108,7 +108,7 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 					[] :
 					[
 						["Cancel", "cancel-btn"],
-						["Quick Update", "quick-btn"],
+						["Quick Update", "quick-btn", props.quickUpdate],
 						["Update", "update-btn", props.editOrder],
 					],
 			schedule: [
@@ -327,6 +327,10 @@ export default function ManagementView() {
 		});
 	}
 
+	async function updateQuick() {
+		await quickUpdate(viewId, viewData.service_type_id);
+	}
+
 	async function orderEdit(){
 		navigate(`/admin/order/${viewId}/edit`);
 	}
@@ -396,6 +400,7 @@ export default function ManagementView() {
 						serviceDelete={serviceDelete}
 						washableDelete={washableDelete}
 						editOrder={orderEdit}
+						quickUpdate={updateQuick}
 					/>
 				</div>
 			</div>
