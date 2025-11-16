@@ -84,12 +84,31 @@ function Profile() {
     return '';
   }
 
+  const validatePhonePrefix = (phone) => {
+  const trimmedPhone = phone.trim();
+  if (!trimmedPhone.startsWith('09')) {
+    return 'Phone number must start with 09.';
+  }
+  return '';
+  }
+
+  const validatePhoneNumber = (phone) => {
+      const trimmedPhone = phone.trim();
+      if (!/^\d{11}$/.test(trimmedPhone)) {
+        return 'Invalid phone format. Must be exactly 11 digits.';
+  } return ''
+}
   const handleInputChange = (field, value) => {
     setUserData(prev => ({ ...prev, [field]: value }))
     
     if (field === 'fullname') {
       const error = validateFullName(value);
       setErrors(prev => ({ ...prev, [field]: error }))
+    } else if (field === 'phone') {
+    const prefixError = validatePhonePrefix(value);
+    const lengthError = validatePhoneNumber(value);
+
+   setErrors(prev => ({ ...prev, [field]: prefixError || lengthError || '' }));
     } else {
       if (value.trim()) {
         setErrors(prev => ({ ...prev, [field]: '' }))
