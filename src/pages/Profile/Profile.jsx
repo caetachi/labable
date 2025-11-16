@@ -72,17 +72,26 @@ function Profile() {
   const [activeTab, setActiveTab] = useState('profile');
 
   const validateFullName = (name) => {
-    if (!name || !name.trim()) {
-      return 'Full name is required';
-    }
-    if (name.trim().length < 5) {
-      return 'Full name must be at least 4 characters';
-    }
-    if (/\d/.test(name)) {
-      return 'Full name cannot contain numbers';
-    }
-    return '';
+  if (!name || !name.trim()) {
+    return 'Full name is required';
   }
+
+  const trimmedName = name.trim();
+
+  if (trimmedName.length < 5) {
+    return 'Full name must be at least 4 characters';
+  }
+
+  if (/\d/.test(trimmedName)) {
+    return 'Full name cannot contain numbers';
+  }
+
+  if (!/^[a-zA-Z\s'-]+$/.test(trimmedName)) {
+    return 'Full name contains invalid characters';
+  }
+
+  return '';
+};
 
   const handleInputChange = (field, value) => {
     setUserData(prev => ({ ...prev, [field]: value }))
