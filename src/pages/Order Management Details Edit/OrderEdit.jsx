@@ -70,7 +70,7 @@ export default function OrderEdit({id}){
                             total_kilo: newTotalKilo
                         }; // update quantity and total kilo
                     }
-                    return item;
+                    return current;
                 });
             }else { // add
                 return [
