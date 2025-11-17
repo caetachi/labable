@@ -74,7 +74,7 @@ export default function CreateOrder() {
 
     function isAheadByHalfHour(dateTime){
         const now = new Date();
-        const halfHourAhead = new Date(now.getTime() + 30 * 60 * 1000);
+        const halfHourAhead = new Date(now.getTime() + 29 * 60 * 1000);
         return dateTime.getTime() >= halfHourAhead.getTime();
     }
 
