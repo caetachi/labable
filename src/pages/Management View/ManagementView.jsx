@@ -112,7 +112,6 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 						["Update", "update-btn", props.editOrder],
 					],
 			schedule: [
-				["Cancel", "cancel-btn"],
 				["Delete", "delete-btn"],
 			],
 			inventory: [
