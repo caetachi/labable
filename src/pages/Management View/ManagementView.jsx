@@ -5,7 +5,7 @@ import "./management-view.css";
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import BigNumber from "bignumber.js";
-import { getUser, getView } from "../../scripts/get";
+import { getView } from "../../scripts/get";
 import { formatMe, formatTextualDate, formatTextualDateTime } from "../../scripts/dateformat";
 import TrackNode from "../../components/TrackNode/TrackNode";
 import swal from 'sweetalert2';
@@ -13,6 +13,8 @@ import { deleteInventory, deleteService, deleteUser, deleteWashable } from '../.
 import { acceptOrder, quickUpdate, rejectOrder, updateInventoryItemStock } from '../../scripts/update'
 import { onValue, ref } from "firebase/database";
 import { db } from "../../firebase";
+import { toast } from "react-toastify";
+import { markAsComplete, cancelOrder } from "../../scripts/update";
 
 const fieldGroups = {
 	order: [
@@ -29,6 +31,7 @@ const fieldGroups = {
 		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
 		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date === "Not yet specified" ? "Not yet specified" : "N/A" : "N/A"],
+		["Cancel Reason", (v) => v.notes?.cancel_reason || ""],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
 	schedule: [
@@ -83,20 +86,31 @@ const fieldGroups = {
 	]
 };
 
-const DetailsCard = ({ category, data }) => (
-	<div className='details-card'>
-		{fieldGroups[category].map(([label, getter], i) => (
-			<div key={i} className='detail-cell'>
-				<p className='label'>{label}</p>
-				<p className='value'>{getter(data)}</p>	
-			</div>
-		))}
-	</div>
-);
+function DetailsCard({ category, data }) {
+	return (
+		<div className='details-card'>
+			{fieldGroups[category].map(([label, getter]) => {
+				const value = getter(data);
+
+				console.log(label, value)
+				if (label === "Cancel Reason" && (value == null || (typeof value === "string" && value.trim() === ""))
+				) return null;
+				
+				return (
+				<div key={label} className='detail-cell'>
+					<p className='label'>{label}</p>
+					<p className='value'>{value}</p>
+				</div>
+				);
+			})}
+		</div>
+	);
+}
 
 const ActionButtons = ({ id, category, status, ...props }) => {
 	const navigate = useNavigate();	
 	const base = <button className='edit-btn' onClick={() => navigate(`/admin/${category}/${id}/edit`)}>Edit</button>;
+
 	const actions =
 		{
 			order:
@@ -106,12 +120,16 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 						["Accept", "accept-btn", props.acceptOrder],	
 					]
 					:
-				status === "canceled" || status === "rejected" ?
+				status === "canceled" || status === "rejected" || status === "completed" ?
 					[] :
+				status === "out for delivery" ? 
 					[
-						["Cancel", "cancel-btn"],
+						["Mark as Complete", "complete-btn", props.markAsComplete],
+					] :
+					[
+						["Cancel", "cancel-btn", props.cancelOrder],
 						["Quick Update", "quick-btn", props.quickUpdate],
-						["Update", "update-btn", props.editOrder],
+						["Mark as Complete", "complete-btn", props.markAsComplete],
 					],
 			schedule: [
 				["Delete", "delete-btn"],
@@ -195,7 +213,7 @@ export default function ManagementView() {
 		if (first) first.style.visibility = "hidden";
 		if (last) last.style.visibility = "hidden";
 		const fetchRef = ref(db, `${viewCategory}s/${viewId}`);
-		const unsubscribe = onValue(fetchRef, (snapshot) => {
+		onValue(fetchRef, (snapshot) => {
 			if(snapshot.exists()){
 				getView(viewCategory, viewId).then((data) => {
 					setViewData(data);
@@ -279,6 +297,7 @@ export default function ManagementView() {
 			}
 		});
 	}
+
 	async function orderReject(){
 		swal.fire({
 			title: 'Reject this order?',
@@ -298,6 +317,30 @@ export default function ManagementView() {
 		}).then(async (result) => {
 			if (result.isConfirmed) {
 				await rejectOrder(viewId, result.value);
+				navigate('/admin/order');
+			}
+		});
+	}
+
+	async function orderCancel(){
+		swal.fire({
+			title: 'Cancel this order?',
+			icon: 'warning',
+			input: 'text',
+			inputLabel: 'Reason for cancelation',
+			inputPlaceholder: 'Type your reason here...',
+			showCancelButton: true,
+			confirmButtonColor: 'var(--error)',
+			cancelButtonColor: 'var(--bg-dark)',
+			confirmButtonText: 'Cancel',
+			inputValidator: (value) =>{
+				if(!value){
+					return 'Reason is required!';
+				}
+			}
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				await cancelOrder(viewId, "Canceled", result.value);
 				navigate('/admin/order');
 			}
 		});
@@ -341,9 +384,11 @@ export default function ManagementView() {
 		await quickUpdate(viewId, viewData.service_type_id);
 	}
 
-	async function orderEdit(){
-		navigate(`/admin/order/${viewId}/edit`);
+	async function orderMarkAsComplete() {
+		await markAsComplete(viewId);
 	}
+
+
 
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
@@ -406,11 +451,12 @@ export default function ManagementView() {
 						inventoryRestock={inventoryRestock}
 						acceptOrder={orderAccept}
 						rejectOrder={orderReject}
+						cancelOrder={orderCancel}
+						quickUpdate={updateQuick}
+						markAsComplete={orderMarkAsComplete}
 						userDelete={userDelete}
 						serviceDelete={serviceDelete}
 						washableDelete={washableDelete}
-						editOrder={orderEdit}
-						quickUpdate={updateQuick}
 					/>
 				</div>
 			</div>

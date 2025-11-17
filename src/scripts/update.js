@@ -1,7 +1,7 @@
-import { child, get, push, ref, set, update } from 'firebase/database'
+import { child, get, ref, set, update } from 'firebase/database'
+
 import { auth, db } from '../firebase'
-import { newOrderTrack } from './create';
-import { getServicesIncluded } from './get';
+import { newOrderTrack, statusMap } from './create';
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
@@ -106,12 +106,19 @@ export async function updateOrderDetails(orderUid, customerName, address, servic
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
+  const trackingRef = child(orderRef, 'tracking');
   const pickupRef = child(orderRef, 'schedule/pickup');
   const notesRef = child(orderRef, 'notes');
+
+  const existingSnap = await get(orderRef);
+  const existingOrder = existingSnap.val() || {};
+  const previousStatus = existingOrder.status;
+
   let orderData = { 
     'updated_at': currDate,
     'updated_by': auth.currentUser.uid,
   }
+
   if(customerName)orderData.customer_name = customerName;
   if(address)orderData.address = address;
   if(serviceUid)orderData.service_type_id = serviceUid;
@@ -123,8 +130,44 @@ export async function updateOrderDetails(orderUid, customerName, address, servic
   if(modeOfTransfer)orderData.mode_of_transfer = modeOfTransfer; 
   if(modeOfClaiming)orderData.mode_of_claiming = modeOfClaiming; 
   if(orderDate)orderData.created_at = orderDate; 
-  
   if(arrivalDate)orderData.arrival_date = arrivalDate; 
+  if (status && previousStatus !== status) {
+
+    
+    if (status === "Error") {
+      await newOrderTrack(orderUid, "Error");
+    } else {
+      if ((previousStatus === "Rejected" || previousStatus === "Canceled") && (status !== "Rejected" && status !== "Canceled")) {
+        await set(notesRef, { "notes": null });
+      }
+
+      const roadmap = Object.keys(statusMap);
+      const targetIndex = roadmap.indexOf(status);
+
+      if (targetIndex !== -1) {
+        await set(trackingRef, null);
+
+        let lastStatus = null;
+
+        const decisionStatuses = ["Accepted", "Canceled", "Rejected"];
+        const isDecisionTarget = decisionStatuses.includes(status);
+
+        for (let i = 0; i <= targetIndex; i++) {
+          const stepStatus = roadmap[i];
+
+          if (isDecisionTarget) {
+            if (stepStatus !== "Pending" && stepStatus !== status) continue;
+          }
+
+          if (stepStatus === lastStatus) continue;
+
+          await newOrderTrack(orderUid, stepStatus);
+          lastStatus = stepStatus;
+        }
+      }
+    }
+  }
+
   await update(orderRef, orderData)
   .then(()=>console.log("Updated"));
   if(laundryTransferDateTime){
@@ -134,7 +177,7 @@ export async function updateOrderDetails(orderUid, customerName, address, servic
   }
   if(notes){
     await update(notesRef, {
-      "order_notes": notes
+      "notes": notes
     })
   }
 }
@@ -169,7 +212,6 @@ export async function cancelOrder(orderUid, status, reason) {
   await update(orderRef, orderData);
   await newOrderTrack(orderUid, status);
 }
-
 
 export async function updateScheduleDetails(orderUid, customerName, address, status, modeOfTransfer, modeOfClaiming, laundryTransferDateTime, laundryClaimDateTime) {
   const currDate = new Date().toLocaleString();
@@ -209,65 +251,116 @@ export async function updateScheduleDetails(orderUid, customerName, address, sta
 }
 
 export async function acceptOrder(orderUid) {
-  const ordersRef = ref(db, 'orders');
-  const orderRef = child(ordersRef, orderUid);
-  await update(orderRef, {status: "In Progress"});
+  await updateOrderStatus(orderUid, "Accepted");
+  await newOrderTrack(orderUid, "Accepted");
   localStorage.setItem("toastMessage", "Order accepted!");
   localStorage.setItem("toastType", "success");
-  window.location.reload();
 }
 
 export async function rejectOrder(orderUid, cancelReason) {
+  await updateOrderStatus(orderUid, "Rejected");
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const notesRef = child(orderRef, 'notes');
-  await update(orderRef, {status: "Rejected"});
   await update(notesRef, {"cancel_reason": cancelReason});
+  await newOrderTrack(orderUid, "Rejected");
   localStorage.setItem("toastMessage", "Order rejected!");
   localStorage.setItem("toastType", "success");
-  window.location.reload(); 
-    
-
 }
-export async function quickUpdate(orderUid, serviceUid) {
-    const ordersRef = ref(db, 'orders');
-    const orderRef = child(ordersRef, orderUid);
-    const trackingRef = child(orderRef, 'tracking');
-    const services = await getServicesIncluded(serviceUid);
-    if (!services || services.length === 0) return;
-    const trackingSnap = await get(trackingRef);
-    const tracking = trackingSnap.val();
-    const now = new Date().toISOString(); 
-    
-    let currentStatus = null;
-    if (tracking) {
-        const trackingValues = Object.values(tracking);
-        const lastEntry = trackingValues[trackingValues.length - 1];
-        if (services.includes(lastEntry.status)) {
-            currentStatus = lastEntry.status;
-        }
+
+export async function quickUpdate(orderUid) {
+
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  const trackingRef = child(orderRef, 'tracking');
+
+  const roadmap = Object.keys(statusMap);
+  const acceptedIndex = roadmap.indexOf('Accepted');
+  const ofdIndex = roadmap.indexOf('Out for Delivery');
+
+  if (acceptedIndex === -1 || ofdIndex === -1 || ofdIndex <= acceptedIndex) return;
+
+  const orderSnap = await get(orderRef);
+  const order = orderSnap.val() || {};
+  const currentStatus = order.status;
+
+  const segment = roadmap.slice(acceptedIndex, ofdIndex + 1);
+  const currentIndex = segment.indexOf(currentStatus);
+
+  if (currentIndex === -1 || currentStatus === 'Out for Delivery') {
+    return;
+  }
+
+  const nextStatus = segment[currentIndex + 1];
+  if (!nextStatus) return;
+
+  const trackingSnap = await get(trackingRef);
+  const tracking = trackingSnap.val();
+  const trackingValues = tracking ? Object.values(tracking) : [];
+  const lastEntry = trackingValues[trackingValues.length - 1] || {};
+  const lastStatus = lastEntry.status;
+
+  if (lastStatus !== nextStatus) {
+    await newOrderTrack(orderUid, nextStatus);
+  }
+
+  const now = new Date().toLocaleString();
+  const orderUpdate = { status: nextStatus, updated_at: now, updated_by: auth.currentUser.uid };
+
+  await update(orderRef, orderUpdate);
+}
+
+export async function markAsComplete(orderUid) {
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  const trackingRef = child(orderRef, 'tracking');
+
+  const roadmap = Object.keys(statusMap);
+  const completedIndex = roadmap.indexOf("Completed");
+  if (completedIndex === -1) return;
+
+  const orderSnap = await get(orderRef);
+  const order = orderSnap.val() || {};
+  const currentStatus = order.status;
+  if (currentStatus === "Completed") {
+    localStorage.setItem("toastMessage", "Order already completed.");
+    localStorage.setItem("toastType", "success");
+    return;
+  }
+
+  let startIndex = 0;
+
+  if (currentStatus) {
+    const currentIndex = roadmap.indexOf(currentStatus);
+    if (currentIndex !== -1) {
+      startIndex = currentIndex + 1;
     }
-    if (currentStatus) {
-        const currentIndex = services.indexOf(currentStatus);
-        const nextIndex = currentIndex + 1;
-        if (nextIndex < services.length) {
-            const nextStatus = services[nextIndex];
-            const trackingData = {
-                "label": nextStatus,
-                "status": nextStatus,
-                "timestamp": now
-            };
-            await push(trackingRef, trackingData);
-        } else {
-            await update(orderRef, { status: 'Ready for Claim', timestamp: now });
-        }
-    } else {
-        const initialStatus = services[0];
-        const trackingData = {
-            "label": initialStatus,
-            "status": initialStatus,
-            "timestamp": now
-        };
-        await push(trackingRef, trackingData);
-    }
+  }
+
+  if (startIndex > completedIndex) {
+    startIndex = completedIndex;
+  }
+
+  const trackingSnap = await get(trackingRef);
+  const tracking = trackingSnap.val();
+  let lastStatus = tracking
+    ? (Object.values(tracking)[Object.values(tracking).length - 1] || {}).status
+    : null;
+
+  for (let i = startIndex; i <= completedIndex; i++) {
+    const stepStatus = roadmap[i];
+    if (stepStatus === lastStatus) continue;
+    await newOrderTrack(orderUid, stepStatus);
+    lastStatus = stepStatus;
+  }
+
+  const now = new Date().toLocaleString();
+  await update(orderRef, {
+    status: "Completed",
+    updated_at: now,
+    updated_by: auth.currentUser.uid,
+  });
+
+  localStorage.setItem("toastMessage", "Order marked as complete!");
+  localStorage.setItem("toastType", "success");
 }

@@ -4,19 +4,14 @@ import { getItemPerKg, getOrder, getServicePrice, getServices, getServiceUid, ge
 import SearchLogo from '../../assets/search.svg'
 import PantsLogo from '../../assets/pants.svg'
 import BigPantsLogo from '../../assets/pants-big.svg'
-import ShirtLogo from '../../assets/shirt.svg'
-import SkirtLogo from '../../assets/skirt.svg'
-import DressLogo from '../../assets/dress.svg'
 import Buttons from "../../components/Buttons - Edit Details/Buttons";
 import OrderItem from "../../components/Order Item - Create Order/OrderItem";
 import WashableItem from "../../components/Washable Item - Create Order/WashableItem";
 import { updateOrderDetails } from "../../scripts/update";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-import { formatMe } from "../../scripts/dateformat";
 
 export default function OrderEdit({id}){    
-    
     const [orderItems, setOrderItems] = useState([]);
     const [washableItems, setWashableItems] = useState([]);
     const [services, setServices] = useState([]);
@@ -86,6 +81,7 @@ export default function OrderEdit({id}){
             }
         });
     }
+    
     function decrementQuantity(decrementIndex) {
         setOrderItems(prevOrderItems =>{
             const itemToDecrement = prevOrderItems[decrementIndex]; // Use a clearer variable name
@@ -174,6 +170,8 @@ export default function OrderEdit({id}){
     }, [])
 
     useEffect(()=>{
+        console.log(order[1]);
+
         setCustomerName(order[1]?.customer_name || "");
         setAddress(order[1]?.address || "");
         setServiceName(order[1]?.service_name || "");
@@ -199,8 +197,6 @@ export default function OrderEdit({id}){
     if (order.length === 0 || !order[1]) {
         return <div className="order-edit-loading">Loading Order Details...</div>;
     }
-
-    
 
     return( 
         <div className="details-edit gray-border">
@@ -282,9 +278,17 @@ export default function OrderEdit({id}){
                     {status && 
                     <select className='small-container-input gray-border' defaultValue={status} onChange={(e) => setStatus(e.target.value)} >
                         <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Canceled">Canceled</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Transferred">Transferred</option>
+                        <option value="Washing">Washing</option>
+                        <option value="Drying">Drying</option>
+                        <option value="Folding">Folding</option>
+                        <option value="Ironing">Ironing</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
                         <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <option value="Error">Error</option>
                     </select>
                     }
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
@@ -315,14 +319,14 @@ export default function OrderEdit({id}){
             <div className="small-container">
                 <p className='small-container-title'>Order Date</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={orderDate && formatMe(orderDate)} onChange={(e)=>setOrderDate(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={orderDate && new Date(orderDate).toISOString().slice(0, 16)} onChange={(e)=>setOrderDate(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Laundry Transfer Date Time</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].transfer_date} onChange={(e)=>setTransferDate(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].transfer_date} onChange={(e)=>setLaundryTransferDateTime(e.target.value)}/>
                     <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
@@ -336,7 +340,7 @@ export default function OrderEdit({id}){
             <div className="small-container">
                 <p className='small-container-title'>Notes</p>
                 <div className="small-container-input-container">
-                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].notes ? order[1].notes.order_notes : ""} onChange={(e)=>setOrderNotes(e.target.value)}/>
+                    <input className='small-container-input gray-border' type="text" defaultValue={order[1].notes ? order[1].notes.order_notes : ""} onChange={(e)=>setNotes(e.target.value)}/>
                 </div>
             </div>
             <span className="estimate-title">

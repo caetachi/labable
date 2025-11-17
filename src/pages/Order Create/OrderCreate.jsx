@@ -68,14 +68,17 @@ export default function CreateOrder() {
         const hour = dateTime.getHours();
         const withinHours = hour >= startHour && hour <= endHour;
         const notInPast = dateTime.getTime() >= now.getTime();
-
-        return withinHours && notInPast;
+        
+        return true;    
+        //return withinHours && notInPast;
     }
 
     function isAheadByHalfHour(dateTime){
         const now = new Date();
-        const halfHourAhead = new Date(now.getTime() + 29 * 60 * 1000);
-        return dateTime.getTime() >= halfHourAhead.getTime();
+            const halfHourAhead = new Date(now.getTime() + 29 * 60 * 1000);
+        
+        return true;
+        //return dateTime.getTime() >= halfHourAhead.getTime();
     }
 
     function addOnChange(){
