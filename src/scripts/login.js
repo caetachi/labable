@@ -68,6 +68,9 @@ export async function loginViaGoogle() {
 	if(!snapshot.exists()){
 		const currDate = new Date().toLocaleString();
 		await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
+		localStorage.setItem("toastMessage", "Account successfully created!");
+		localStorage.setItem("toastType", "success");
+		window.location.href = '/';
 	}else{
 		localStorage.setItem("toastMessage", "Successfully logged in!");
 		localStorage.setItem("toastType", "success");

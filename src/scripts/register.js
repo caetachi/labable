@@ -4,7 +4,7 @@ import {createWithGoogle, createViaEmailAndPassword} from './create'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 export async function registerViaGoogle(){
-    const result = await signInWithPopup(auth, googleAuth).catch((err)=>{
+    const result = await signInWithPopup(auth, googleAuth).catch(()=>{
       localStorage.setItem("toastMessage", "Google sign-in failed. Please try again.");
       localStorage.setItem("toastType", "error");
     });
@@ -15,6 +15,9 @@ export async function registerViaGoogle(){
     if(!snapshot.exists()){
       const currDate = new Date().toLocaleString();
       await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
+      localStorage.setItem("toastMessage", "Account successfully created!");
+      localStorage.setItem("toastType", "success");
+      window.location.href = '/';
     }else{
       localStorage.setItem("toastMessage", "Successfully logged in with Google!");
       localStorage.setItem("toastType", "success");

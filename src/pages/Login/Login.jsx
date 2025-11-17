@@ -6,13 +6,11 @@ import heartBubble from '../../assets/heart-bubble.svg'
 import './login.css'
 import { useState } from 'react'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
-import { loginViaEmailAndPassword } from '../../scripts/login.js'
-import { registerViaGoogle } from '../../scripts/register.js'
+import { loginViaEmailAndPassword, loginViaGoogle } from '../../scripts/login.js'
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
     
     function handleEmailChange(e){
         const temp = e.target.value
@@ -123,7 +121,7 @@ export default function Login() {
                             <hr />
                         </div>
 
-                        <AltAccountButton register={registerViaGoogle}/>
+                        <AltAccountButton register={loginViaGoogle}/>
 
                         <span className="signup-redirect">
                             Don't have an account?
