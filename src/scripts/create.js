@@ -390,6 +390,7 @@ export async function newSchedule(orderID, scheduleType, date, time) {
   const orders = await getOrders();
   let ordersRef = ref(db, 'orders')
   let withoutCounter = [];
+  let idFound = false;
   for(let i = 0; i < orders.length; i++){
       if(orders[i][0] != 'orders_counter'){
           withoutCounter.push(orders[i])
@@ -408,12 +409,15 @@ export async function newSchedule(orderID, scheduleType, date, time) {
           "status": "Not yet received"
         }
       }
-      update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
+      await update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
         toast.success("New schedule created!");
+        idFound = true;
+        window.location.href = '/admin/schedule'
       })
     }
   }
-  console.log("ID not found");
-  toast.error("Order ID not found.");
+  if(!idFound){
+    toast.error("Order ID not found.");
+  }
   return;
 }
