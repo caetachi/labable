@@ -409,12 +409,14 @@ export async function newSchedule(orderID, scheduleType, date, time) {
           "status": "Not yet received"
         }
       }
-      update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
+      await update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
         toast.success("New schedule created!");
         idFound = true;
       })
     }
   }
-  !idFound ? toast.error("Order ID not found.") : '';
+  if(!idFound){
+    toast.error("Order ID not found.");
+  }
   return;
 }
