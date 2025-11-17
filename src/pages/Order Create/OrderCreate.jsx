@@ -30,7 +30,6 @@ export default function CreateOrder() {
     const [searchedWashableItems, setSearchedWashableItems] = useState([]);
     const [serviceTypes, setServiceTypes] = useState([]);
     const [amount, setAmount] = useState();
-    const [minDate, setMinDate] = useState();
     const [totalKilo, setTotalKilo] = useState();
     const navigate = useNavigate();
 
@@ -48,31 +47,35 @@ export default function CreateOrder() {
         });
     }
 
-    function getMinDateTime(hoursAhead) {
-        let now = new Date();
-        now.setHours(now.getHours()+hoursAhead);
-
-        const offset = now.getTimezoneOffset() * 60000; 
-        const localTime = new Date(now.getTime() - offset);
-        return localTime.toISOString().slice(0, 16);
-    }
-
     function isWithinBusinessHours(dateTime) {
+        const now = new Date();
+
         const day = dateTime.getDay();
         let startHour = 0;
         let endHour = 0;
+
         if (day >= 1 && day <= 5) { // Weekdays
             startHour = 8;
-            endHour = 19; //7PM
+            endHour = 19;
         } else if (day === 6) { // Saturday
             startHour = 9;
-            endHour = 17; //5PM
+            endHour = 17;
         } else { // Sunday
             startHour = 10;
-            endHour = 16; //4PM
+            endHour = 16;
         }
+
         const hour = dateTime.getHours();
-        return hour >= startHour && hour <= endHour;
+        const withinHours = hour >= startHour && hour <= endHour;
+        const notInPast = dateTime.getTime() >= now.getTime();
+
+        return withinHours && notInPast;
+    }
+
+    function isAheadByHalfHour(dateTime){
+        const now = new Date();
+        const halfHourAhead = new Date(now.getTime() + 30 * 60 * 1000);
+        return dateTime.getTime() >= halfHourAhead.getTime();
     }
 
     function addOnChange(){
@@ -81,6 +84,13 @@ export default function CreateOrder() {
             const selected = new Date(input.value);
             if (!isNaN(selected.getTime()) && !isWithinBusinessHours(selected)) {
                 toast.error('Selected time is outside operating hours.');
+                input.value = '';
+                setTransferDate(undefined);
+                return;
+            }
+
+            if (!isNaN(selected.getTime()) && !isAheadByHalfHour(selected)) {
+                toast.error('Please at least select a time that is at least 30 minutes ahead.');
                 input.value = '';
                 setTransferDate(undefined);
                 return;
@@ -144,8 +154,6 @@ export default function CreateOrder() {
     }, [])
 
     useEffect(()=>{
-        setMinDate(getMinDateTime(2));
-
         getStuff();
 
         const transfers = document.getElementsByName('transfer-mode');
@@ -360,7 +368,7 @@ export default function CreateOrder() {
                 </div>
                 <div className="transfer-date-container gray-border">
                     <p className='section-title'>Laundry Transfer Date</p>
-                    <input className='transfer-date-input gray-border' type="datetime-local" id="input-transfer" min={minDate} onChange={(e) => setTransferDate(e.target.value)}/>
+                    <input className='transfer-date-input gray-border' type="datetime-local" id="input-transfer" onChange={(e) => setTransferDate(e.target.value)}/>
                 </div>
             </div>
             <div className="receive-mode-container section gray-border">

@@ -2,7 +2,6 @@ import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
 import { newOrderTrack } from './create';
 import { getServicesIncluded } from './get';
-import { toast } from 'react-toastify';
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
