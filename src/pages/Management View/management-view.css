@@ -160,10 +160,6 @@
     background-color: var(--hl-yellow);
 }
 
-.management-view-container .btn-container .update-btn {
-    background-color: color-mix(in srgb, var(--success) 80%, transparent);
-}
-
 .management-view-container .btn-container .quick-btn {
     background-color: color-mix(in srgb, var(--hl-blue) 80%, transparent);
 }
@@ -172,7 +168,11 @@
     background-color: var(--hl-blue);
 }
 
-.management-view-container .btn-container .update-btn:hover {
+.management-view-container .btn-container .complete-btn {
+    background-color: color-mix(in srgb, var(--success) 80%, transparent);
+}
+
+.management-view-container .btn-container .complete-btn:hover {
     background-color: var(--success);
 }
 
@@ -182,6 +182,22 @@
 
 .management-view-container .btn-container .delete-btn:hover {
     background-color: var(--error);
+}
+
+.management-view-container .btn-container .reject-btn {
+    background-color: color-mix(in srgb, var(--error) 80%, transparent);
+}
+
+.management-view-container .btn-container .reject-btn:hover {
+    background-color: var(--error);
+}
+
+.management-view-container .btn-container .accept-btn {
+    background-color: color-mix(in srgb, var(--success) 80%, transparent);
+}
+
+.management-view-container .btn-container .accept-btn:hover {
+    background-color: var(--success);
 }
 
 .management-view-container .map-container {

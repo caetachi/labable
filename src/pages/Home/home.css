@@ -1,6 +1,7 @@
 .homepage-container {
   font-family: var(--primary-font);
   width: 100%;
+  margin-top: 100px;
 }
 .homepage-container section {
   padding: 60px 5vw;

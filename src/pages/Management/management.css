@@ -182,7 +182,7 @@
     background-color: color-mix(in srgb, var(--hl-gray) 20%, transparent);
     color: var(--hl-gray);
 }
-.status.delivered, .status.completed, .status.active, .status.good, .status.picked, .status.delivered, .status.accepted, .status.available{
+.status.completed, .status.active, .status.good, .status.picked, .status.delivered, .status.accepted, .status.available{
     background-color: color-mix(in srgb, var(--success) 20%, transparent);
     color: var(--success);
 }
@@ -191,7 +191,7 @@
     color: var(--hl-yellow);
 }
 
-.status.rejected, .status.cancelled, .status.deleted, .status.outofstock {
+.status.rejected, .status.canceled, .status.deleted, .status.outofstock, .status.error {
     background-color: color-mix(in srgb, var(--error) 20%, transparent);
     color: var(--error);
 }

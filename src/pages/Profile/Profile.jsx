@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { User, Shield, Mail, Phone, MapPin, Edit2, Calendar, Package } from 'lucide-react'
 import { onAuthStateChanged, sendPasswordResetEmail } from "firebase/auth"
-import { get, ref, update } from "firebase/database"
+import { get, ref } from "firebase/database"
 import { auth, db } from "../../firebase"
 import './profile.css'
 import { toast } from 'react-toastify'
 import { formatTextualDateTime } from '../../scripts/dateformat'
-function Profile() {
+import { updateUser } from '../../scripts/update'
 
+function Profile() {
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState({});
   const [originalData, setOriginalData] = useState({});
@@ -151,18 +152,14 @@ function Profile() {
     }
     
     try {
-      const userRef = ref(db, `users/${user.uid}`);
-      await update(userRef, {
-        fullname: userData.fullname,
-        phone: userData.phone,
-        address: userData.address
-      });
+      await updateUser(originalData.email, userData.fullname, userData.phone, userData.address, null);
       
       setOriginalData({
         ...originalData,
-        fullname: userData.fullname,
-        phone: userData.phone,
-        address: userData.address
+        email: userData.email || originalData.email,
+        fullname: userData.fullname || originalData.fullname,
+        phone: userData.phone || originalData.phone,
+        address: userData.address || originalData.address
       });
       
       setIsEditing({

@@ -229,17 +229,14 @@
     border: 2px solid black; 
     border-radius: 50%;
     outline: none; 
-    cursor: pointer; 
     position: relative;
+    cursor: default;
 }
 
 .radio:checked{
     /* background-color: var(--sf-dark); */
     border-color: var(--fg-dark); 
-    
 }
-
-
 
 .radio-label{
     font-size: 1.25em;
@@ -248,6 +245,7 @@
     display: flex;
     flex-direction: row;
     gap: 5px;
+    cursor: default;
 }
 
 .order-summary-date-input{
@@ -281,6 +279,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .action-button{
@@ -291,14 +290,17 @@
     border-radius: 50px;
 }
 
-.draft-button{
-    background-color: var(--fg-light);
+.back-button{
+    background-color: transparent;
+    border: 1px solid var(--fg-dark);
     color: var(--fg-dark);
     transition: ease 0.3s;
+    cursor: pointer;
 }
-.draft-button:hover{
-    background-color: var(--fg-dark);
-    color: var(--fg-light);
+.back-button:hover{
+    background-color: var(--sf-light);
+    border-color: var(--sf-light);
+    color: var(--fg-dark);
 }
 
 .summary-button{

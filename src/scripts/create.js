@@ -1,8 +1,58 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
-import { getItemPerKg, getOrders, getServiceName, getWashableItemName } from './get';
+import { getOrders, getServiceName, getWashableItemName } from './get';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+
+export const statusMap = {
+  Pending: {
+    label: "Order Pending",
+    value: "Your order is currently under approval.",
+  },
+  Canceled: {
+    label: "Order Canceled",
+    value: "Your order has been canceled.",
+  },
+  Rejected: {
+    label: "Order Rejected",
+    value: "Your order has been rejected.",
+  },
+  Accepted: {
+    label: "Order Approved",
+    value: "Your order has been accepted.",
+  },
+  "Transferred": {
+    label: "Transferred",
+    value: "Your order has been put into our care.",
+  },
+  Washing: {
+    label: "Washing Laundry",
+    value: "Your laundry is now being washed and cleaned.",
+  },
+  Drying: {
+    label: "Drying Laundry",
+    value: "Your laundry is now being dried.",
+  },
+  Folding: {
+    label: "Folding Laundry",
+    value: "Your laundry is now being folded.",
+  },
+  Ironing: {
+    label: "Ironing Laundry",
+    value: "Your laundry is now being ironed.",
+  },
+  "Out for Delivery": {
+    label: "Out for Delivery",
+    value: "Our delivery team will arrive at your location to deliver your laundry.",
+  },
+  Completed: {
+    label: "Completed",
+    value: "You have received your laundry and completed your order.",
+  },
+  Error: {
+    label: "Process Error",
+    value: "Something went wrong while trying to process your order.",
+  }
+};
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate) {
   const usersRef = ref(db, 'users');
@@ -23,8 +73,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      toast.success("New user created!");
-      window.location.href = '/';
     })
     .catch((err) => {
       toast.error("Error: "+err);
@@ -53,7 +101,6 @@ export async function createViaEmailAndPassword(authId, firstName, lastName, pho
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      toast.success("New user created!");
     })
     .catch((err) => {
       toast.error("Error: "+err);
@@ -174,34 +221,6 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
 
     "created_at": currDate,
     "created_by": auth.currentUser.uid,
-    // "updated_at": currDate,
-    // "updated_by": "uid_of_admin_2", // la pa
-
-    // "tracking":{ // sa update lang to lalabas
-    //   "-M1kL3q5R": { // push id to, di hard coded
-    //     "timestamp": "2025-11-06T11:30:00Z",
-    //     "status": "arrived",
-    //     "message": "Order confirmed in-shop."
-    //   },
-    //   "-M1kL4a6S": { 
-    //     "timestamp": "2025-11-06T14:30:00Z",
-    //     "status": "washing",
-    //     "message": "Items are now in the wash cycle."
-    //   }
-    // },
-
-    // "schedule":{ // sa update
-    //   "pickup": {
-    //       "scheduled_date": "2025-11-06T10:00:00Z",
-    //       "status": "completed", 
-    //       "date_completed": "2025-11-06T10:15:00Z"
-    //   },
-    //   "delivery": {
-    //     "scheduled_date": "2025-11-08T15:00:00Z",
-    //     "status": "out for delivery",
-    //     "date_completed": null
-    //   }
-    // }
   };
 
   if (transferMode == 'Pick-up' && claimMode == 'Deliver') {
@@ -256,49 +275,6 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
 }
 
 export async function newOrderTrack(orderUid, status) {
-  const statusMap = {
-    Pending: {
-      label: "Order Pending",
-      value: "Your order is currently under approval.",
-    },
-    Canceled: {
-      label: "Order Canceled",
-      value: "Your order has been canceled.",
-    },
-    Rejected: {
-      label: "Order Rejected",
-      value: "Your order has been rejected.",
-    },
-    Accepted: {
-      label: "Order Approved",
-      value: "Your order has been accepted.",
-    },
-    Received: {
-      label: "Received Laundry",
-      value: "We have received your laundry load.",
-    },
-    Washing: {
-      label: "Washing Laundry",
-      value: "Your laundry is now being washed and cleaned.",
-    },
-    Done: { 
-      label: "Finished Laundry", 
-      value: "Laundry has been finished." 
-    },
-    Delivery: { 
-      label: "Out for Delivery", 
-      value: "Your laundry is out for delivery." 
-    },
-    Completed: {
-      label: "Completed",
-      value: "You have received your laundry and completed your order.",
-    },
-    Error: {
-      label: "Process Error",
-      value: "Something went wrong while trying to process your order.",
-    },
-  };
-
   const orderTracksRef = ref(db, `orders/${orderUid}/tracking`);
   const newOrderTrackRef = await push(orderTracksRef);
   const currDate = new Date().toLocaleString();
@@ -329,7 +305,6 @@ export async function newOrderItem(orderUid, washableItemId, quantity, itemPerKi
     "quantity": quantity,
     "total_kilo": totalKilo,
     "item_per_kilo": itemPerKilo,
-
   }
 
   return orderItemData;
@@ -390,6 +365,7 @@ export async function newSchedule(orderID, scheduleType, date, time) {
   const orders = await getOrders();
   let ordersRef = ref(db, 'orders')
   let withoutCounter = [];
+  let idFound = false;
   for(let i = 0; i < orders.length; i++){
       if(orders[i][0] != 'orders_counter'){
           withoutCounter.push(orders[i])
@@ -408,12 +384,18 @@ export async function newSchedule(orderID, scheduleType, date, time) {
           "status": "Not yet received"
         }
       }
-      update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
+      await update(scheduleRef, scheduleData).then(()=>{
+        console.log("Schedule created");
         toast.success("New schedule created!");
+        idFound = true;
+        localStorage.setItem("toastMessage", "Stock updated!");
+        localStorage.setItem("toastType", "success");
+        window.location.href = '/admin/schedule';
       })
     }
   }
-  console.log("ID not found");
-  toast.error("Order ID not found.");
+  if(!idFound){
+    toast.error("Order ID not found.");
+  }
   return;
 }

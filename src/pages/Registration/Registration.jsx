@@ -17,6 +17,8 @@ export default function Registration() {
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
     const [consent, setConsent] = useState(false);
+    
+    const nameRegex = /^[A-Za-z\s]{1,}$/;
 
     function onFirstNameChange(e) {
         const temp = e.target.value;
@@ -25,9 +27,11 @@ export default function Registration() {
 
         if (!temp.trim()) {
             error.innerHTML = 'First name is required';
+        }else if (!temp.trim().match(nameRegex)) {
+            error.innerHTML = 'Name must be letters only';
         } else {
             error.innerHTML = '';
-            setFirstName(temp);
+            setFirstName(temp); 
         }
     }
 
@@ -38,6 +42,8 @@ export default function Registration() {
 
         if (!temp.trim()) {
             error.innerHTML = 'Last name is required';
+        }else if (!temp.trim().match(nameRegex)) {
+            error.innerHTML = 'Name must be letters only';
         } else {
             error.innerHTML = '';
             setLastName(temp);

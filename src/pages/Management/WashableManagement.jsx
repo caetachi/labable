@@ -56,12 +56,10 @@ export default function WashableManagement() {
             cancelButtonColor: 'var(--error)',
             confirmButtonText: 'Yes, delete it!'
         }).then(async (result) => {
-            if (result.isConfirmed) {
-                
+            if(result.isConfirmed) {
                 await deleteWashable(washableUid); 
-                }
-                await deleteWashable(washableUid);
                 navigate('/admin/washable')
+                }
             }
         );
     }

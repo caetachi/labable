@@ -200,11 +200,11 @@ export default function OrderSummary() {
                 </div>
                 <div className="additional-notes-container section gray-border">
                     <p className='section-title'>Notes</p>
-                    <textarea className='additional-textarea gray-border' name="" id="" placeholder='Notes' value={order?.note ?? ''} disabled ></textarea>
+                    <textarea className='additional-textarea gray-border' name="" id="" placeholder='No additional notes' value={order?.note ?? ''} disabled ></textarea>
                 </div>
                 <p className='section-title'>Estimated Cost: {amount ?? 'Calculating...'}</p>
                 <div className="action-buttons">
-                    <button className='action-button draft-button' onClick={() => navigate(-1)}>Back</button>
+                    <button className='action-button back-button' onClick={() => navigate(-1)}>Back</button>
                     <button className='action-button summary-button' onClick={confirmAndInsert} disabled={loading}>
                         {loading ? 'Submitting...' : 'Checkout'}
                     </button>
