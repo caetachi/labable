@@ -412,6 +412,7 @@ export async function newSchedule(orderID, scheduleType, date, time) {
       await update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
         toast.success("New schedule created!");
         idFound = true;
+        window.location.href = '/admin/schedule'
       })
     }
   }
