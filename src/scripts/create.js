@@ -405,10 +405,13 @@ export async function newSchedule(orderID, scheduleType, date, time) {
           "status": "Not yet received"
         }
       }
-      await update(scheduleRef, scheduleData).then(()=>{console.log("Schedule created");
+      await update(scheduleRef, scheduleData).then(()=>{
+        console.log("Schedule created");
         toast.success("New schedule created!");
         idFound = true;
-        window.location.href = '/admin/schedule'
+        localStorage.setItem("toastMessage", "Stock updated!");
+        localStorage.setItem("toastType", "success");
+        window.location.href = '/admin/schedule';
       })
     }
   }

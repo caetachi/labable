@@ -55,7 +55,7 @@ export default function CreateSchedule() {
                 </div>
                 <div className="input-field">
                     <label>Type</label>
-                    <select name="schedule-type" id="schedule_type" onChange={(e)=>setScheduleType(e.target.value)}>
+                    <select name="schedule-type" id="schedule_type" defaultValue={""} onChange={(e)=>setScheduleType(e.target.value)}>
                         <option value="" disabled selected hidden>Select type</option>
                         <option value="delivery">Delivery</option>
                         <option value="pickup">Pickup</option>
