@@ -1,7 +1,8 @@
-import { child, get, ref, set, update } from 'firebase/database'
+import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
 import { newOrderTrack } from './create';
 import { getServicesIncluded } from './get';
+import { toast } from 'react-toastify';
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
@@ -229,23 +230,45 @@ export async function rejectOrder(orderUid, cancelReason) {
     
 
 }
-
 export async function quickUpdate(orderUid, serviceUid) {
-  const ordersRef = ref(db, 'orders');
-  const orderRef = child(ordersRef, orderUid);
-  const trackingRef = child(orderRef, 'tracking');
-  const services = await getServicesIncluded(serviceUid);
-  const trackingSnap = await get(trackingRef);
-  const tracking = await trackingSnap.val();
-  const trackingList = Object.entries(tracking);
-  let stateFound = false;
-  for(let i = 0; i < trackingList.length; i++){
-    for(let j = 0; j < services.length; i++){
-      if(trackingList[i][1].status == services[j]){
-        stateFound = true;
-        
-        break;
-      }
+    const ordersRef = ref(db, 'orders');
+    const orderRef = child(ordersRef, orderUid);
+    const trackingRef = child(orderRef, 'tracking');
+    const services = await getServicesIncluded(serviceUid);
+    if (!services || services.length === 0) return;
+    const trackingSnap = await get(trackingRef);
+    const tracking = trackingSnap.val();
+    const now = new Date().toISOString(); 
+    
+    let currentStatus = null;
+    if (tracking) {
+        const trackingValues = Object.values(tracking);
+        const lastEntry = trackingValues[trackingValues.length - 1];
+        if (services.includes(lastEntry.status)) {
+            currentStatus = lastEntry.status;
+        }
     }
-  }
+    if (currentStatus) {
+        const currentIndex = services.indexOf(currentStatus);
+        const nextIndex = currentIndex + 1;
+        if (nextIndex < services.length) {
+            const nextStatus = services[nextIndex];
+            const trackingData = {
+                "label": nextStatus,
+                "status": nextStatus,
+                "timestamp": now
+            };
+            await push(trackingRef, trackingData);
+        } else {
+            await update(orderRef, { status: 'Ready for Claim', timestamp: now });
+        }
+    } else {
+        const initialStatus = services[0];
+        const trackingData = {
+            "label": initialStatus,
+            "status": initialStatus,
+            "timestamp": now
+        };
+        await push(trackingRef, trackingData);
+    }
 }

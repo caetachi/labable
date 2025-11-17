@@ -340,12 +340,12 @@ export default function OrderEdit({id}){
                 </div>
             </div>
             <span className="estimate-title">
-                <p className='weight-title'>Weight: {totalKilo && totalKilo}kg</p>
+                <p className='weight-title'>Weight: {totalKilo && Number(totalKilo).toFixed(2)}kg</p>
                 {
                     totalKilo && (totalKilo < 1 ?
                         <p className='weight-title-error'>Please add more items to your order.</p>
                     :
-                        <p className='price-title'>Price: ₱{totalPrice && totalPrice}</p>
+                        <p className='price-title'>Price: ₱{totalPrice && Number(totalPrice).toFixed(2)}</p>
                     )
                 }
             </span>
