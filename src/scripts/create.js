@@ -1,8 +1,7 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
-import { getItemPerKg, getOrders, getServiceName, getWashableItemName } from './get';
+import { getOrders, getServiceName, getWashableItemName } from './get';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 
 export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, currentDate) {
   const usersRef = ref(db, 'users');
@@ -23,8 +22,6 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      toast.success("New user created!");
-      window.location.href = '/';
     })
     .catch((err) => {
       toast.error("Error: "+err);
@@ -53,7 +50,6 @@ export async function createViaEmailAndPassword(authId, firstName, lastName, pho
   }
   set(ref(db, `users/${authId}`), userData) // auth id nalang ginamit ko kasi mas madali gamitin
     .then(() => {
-      toast.success("New user created!");
     })
     .catch((err) => {
       toast.error("Error: "+err);
