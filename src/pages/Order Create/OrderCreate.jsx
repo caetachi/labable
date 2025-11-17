@@ -90,7 +90,7 @@ export default function CreateOrder() {
             }
 
             if (!isNaN(selected.getTime()) && !isAheadByHalfHour(selected)) {
-                toast.error('Please at least select a time that is at least 30 minutes ahead.');
+                toast.error('Please select a time that is at least 30 minutes ahead.');
                 input.value = '';
                 setTransferDate(undefined);
                 return;
@@ -410,7 +410,7 @@ export default function CreateOrder() {
                 <p className='weight-title'>Weight: {totalKilo ? new Intl.NumberFormat('en-US').format(totalKilo.toFixed(2)) : '0'}kg</p>
                 {
                     totalKilo && (totalKilo < 1 ?
-                        <p className='weight-title-error'>Please add more items to your order.</p>
+                        <p className='weight-title-error'>Please add more items to your order. Minimum 1kg</p>
                     :
                         <p className='price-title'>Price: {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP' }).format(amount.toFixed(2))}</p>
                     )
@@ -418,10 +418,10 @@ export default function CreateOrder() {
             </span>
 
             <div className="action-buttons">
-                {address && service && orderItems.length > 0 && modeTransfer && transferDate && modeClaim && payment ?
-                    <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary <p className='summary-number'>{orderItems.length}</p></button>
+                {address && service && orderItems.length > 0 && modeTransfer && transferDate && modeClaim && payment && totalKilo && totalKilo >= 1 ?
+                    <button className='action-button summary-button' onClick={() => submit()}>Review Order Summary</button>
                 :
-                    <button className='action-button summary-button disabled' disabled>Proceed to Summary</button>
+                    <button className='action-button summary-button disabled' disabled>Review Order Summary</button>
                 }
             </div>
             </div>
