@@ -184,6 +184,22 @@
     background-color: var(--error);
 }
 
+.management-view-container .btn-container .reject-btn {
+    background-color: color-mix(in srgb, var(--error) 80%, transparent);
+}
+
+.management-view-container .btn-container .reject-btn:hover {
+    background-color: var(--error);
+}
+
+.management-view-container .btn-container .accept-btn {
+    background-color: color-mix(in srgb, var(--success) 80%, transparent);
+}
+
+.management-view-container .btn-container .accept-btn:hover {
+    background-color: var(--success);
+}
+
 .management-view-container .map-container {
     height: 500px;
     display: flex;
