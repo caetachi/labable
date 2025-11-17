@@ -263,7 +263,7 @@ export default function Home() {
 
               <div className="info-group">
                 <h4>Address</h4>
-                <p>Malolos Guinhawa, Bulacan.</p>
+                <p>Malolos Guinhawa, Bulacan</p>
               </div>
             </div>
             <div className="business-hours">
