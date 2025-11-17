@@ -204,7 +204,7 @@ export default function OrderSummary() {
                 </div>
                 <p className='section-title'>Estimated Cost: {amount ?? 'Calculating...'}</p>
                 <div className="action-buttons">
-                    <button className='action-button draft-button' onClick={() => navigate(-1)}>Back</button>
+                    <button className='action-button back-button' onClick={() => navigate(-1)}>Back</button>
                     <button className='action-button summary-button' onClick={confirmAndInsert} disabled={loading}>
                         {loading ? 'Submitting...' : 'Checkout'}
                     </button>
