@@ -15,13 +15,16 @@ export default function CreateWashable() {
 
     function onNameChange(e) {
         const temp = e.target.value;
+        const nameRegex = /^[A-Za-z]+(?:[ -'][A-Za-z]+)*$/;
         const error = document.getElementById('nameError');
         setName(null)
         if (!temp.trim()) {
-            error.innerHTML = 'Name is required';
-        } else {
+            error.innerHTML = 'Item name is required';
+        } else if (!nameRegex.test(temp)) {
+            error.innerHTML = 'Item name can only contain letters, spaces, hyphens, and apostrophes';
+        }else {
             error.innerHTML = '';
-            setName(temp);
+            setWashableName(temp);
         }
     }
 
@@ -32,7 +35,11 @@ export default function CreateWashable() {
 
         if (!temp.trim()) {
             error.innerHTML = 'Item/Kg is required';
-        } else {
+        } else if (isNaN(temp)) {
+            error.innerHTML = 'Item/Kg must be a number';
+        } else if(temp <= 0) {
+            error.innerHTML = 'Item/Kg must be greater than 0';
+        }else {
             error.innerHTML = '';
             setItemPerKg(temp);
         }

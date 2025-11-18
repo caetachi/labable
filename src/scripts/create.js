@@ -1,6 +1,6 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
-import { getOrders, getServiceName, getWashableItemName } from './get';
+import { getOrders, getServiceName, getUser, getWashableItemName } from './get';
 import { toast } from 'react-toastify';
 
 export const statusMap = {
@@ -185,6 +185,7 @@ export async function newWashableItem(itemName, itemPerKilo, imgUrl) {
 }
 
 export async function newOrder(serviceUid, address, paymentMethod, transferMode, transferDate, arrivalDate, claimMode, note, orders, amount) {
+  const user = await getUser(auth.currentUser.uid);
   const serviceName = await getServiceName(serviceUid);
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');
@@ -204,7 +205,7 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
     "order_id": orderId,
     "user_id": auth.currentUser.uid,
 
-    "customer_name": auth.currentUser.displayName,
+    "customer_name": user.fullname,
     "service_name": serviceName,
 
     "service_type_id": serviceUid,
