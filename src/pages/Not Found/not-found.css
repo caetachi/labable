@@ -1,0 +1,36 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sf-light);
+    margin-top: 80px;
+}
+
+.not-found-container img {
+    aspect-ratio: 4/3;
+    width: 50%;
+    margin-top: 20px;
+}
+
+.not-found-container h1 {
+    font-size: 5rem;
+    color: var(--fg-dark);
+}
+
+.not-found-container h2 {
+    font-size: 2rem;
+    color: var(--fg-dark);
+}
+
+.not-found-container p {
+    font-size: 1.2rem;
+    color: var(--sf-dark);
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .not-found-container img {
+        width: 100%;
+    }
+}
