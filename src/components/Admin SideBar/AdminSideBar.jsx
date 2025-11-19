@@ -1,12 +1,14 @@
 import './admin-side-bar.css'
 import logo from '../../assets/labable-black.svg'
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { useState, useEffect } from 'react';
 import { auth } from '../../firebase.js';
 import Swal from 'sweetalert2';
 
 function AdminSideBar({image_url, name}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+
   function sidebarFunc() {
     if (isSidebarOpen) {
       setIsSidebarOpen(false);
@@ -105,8 +107,10 @@ function AdminSideBar({image_url, name}) {
           <button onClick={sidebarFunc} className="admin-sidebar-menu-open-button">
             <i className="fa-solid fa-bars"></i>
           </button>
-          <img src={logo} alt="Labable" />
-          <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
+          <div className="logo" onClick={() => navigate('/')}>
+            <img src={logo} alt="Labable" />
+            <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
+          </div>
         </div>
         <div className="admin-profile">
           <i className="fa-regular fa-bell"></i>

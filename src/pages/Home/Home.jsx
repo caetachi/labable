@@ -10,6 +10,7 @@ import studentPack from "../../assets/Student Pack.png";
 import PackageServiceCard from "../../components/Package Service Card/PackageServiceCard";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router";
+import AIAssistant from "../../components/AI Assistant/AIAssistant";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -278,6 +279,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <AIAssistant/>
     </main>
   );
 }
