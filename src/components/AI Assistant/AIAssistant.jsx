@@ -1,5 +1,5 @@
 import './ai-assistant.css'
-import RobabaleIcon from '../../assets/robable.svg'
+import RobabaleIcon from '../../assets/mascot.png'
 import { useEffect, useState } from 'react';
 export default function AIAssistant(){
     
@@ -87,8 +87,9 @@ export default function AIAssistant(){
         <div className="ai-assistant-container">
             <div className="ai-chat-container">
                 <div className="chat-header">
-                    <i className="fas fa-window-minimize minimize-icon" onClick={closeChat}></i>
+                    <img src={RobabaleIcon} alt="Robable Icon" />
                     <p className='chat-header-title'>Robable Chat Assistant</p>
+                    <i className="fas fa-window-minimize minimize-icon" onClick={closeChat}></i>
                 </div>
                     <div className="chats-container">
                         {messages && messages.map((currMessage)=>{
@@ -99,7 +100,7 @@ export default function AIAssistant(){
                         })}
                     </div>
                     <div className="chat-input-container">
-                        <input type="text" className='chat-input' id='chat-input' onChange={(e) => setMessage(e.target.value)}/>
+                        <input type="text" className='chat-input' id='chat-input' placeholder='Ask me anything' onChange={(e) => setMessage(e.target.value)}/>
                         <i className="ti ti-send-2 send-icon" onClick={() => sendMessage()}></i>
                     </div>
             </div>
