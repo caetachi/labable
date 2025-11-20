@@ -1,6 +1,6 @@
 import { child, get, push, ref, set, update } from 'firebase/database'
 import { auth, db } from '../firebase'
-import { getOrders, getServiceName, getWashableItemName } from './get';
+import { getOrders, getServiceName, getUser, getWashableItemName } from './get';
 import { toast } from 'react-toastify';
 
 export const statusMap = {
@@ -193,6 +193,7 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
   const orderId = 'ORD-' + String(ordersCounter + 1).padStart(3, '0');
   const newOrderUid = newOrderRef.key;
   const payment = await newPayment(newOrderUid, paymentMethod, 'unpaid', ordersCounter);
+  const user = await getUser(auth.currentUser.uid);
   let orderItems = [];
   for (let i = 0; i < orders.length; i++) {
     const orderItem = await newOrderItem(newOrderUid, orders[i].washable_item_id, orders[i].quantity, orders[i].item_per_kilo);
@@ -202,9 +203,9 @@ export async function newOrder(serviceUid, address, paymentMethod, transferMode,
 
   const orderData = {
     "order_id": orderId,
-    "user_id": auth.currentUser.uid,
+    "user_id": user.auth_id,
 
-    "customer_name": auth.currentUser.displayName,
+    "customer_name": user.fullname,
     "service_name": serviceName,
 
     "service_type_id": serviceUid,
