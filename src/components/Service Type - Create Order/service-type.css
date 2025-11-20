@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 5px;
     padding: 20px 10px;
     width: 200px;
     cursor: pointer;
@@ -39,4 +39,20 @@
     font-weight: 600;
     width: 100%;
     text-align: center;
+}
+
+.create-service-type-amount{
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+    color: var(--sf-dark);
+}
+
+.create-service-type-included{
+    font-size: 0.85rem;
+    font-weight: 400;
+    width: 100%;
+    text-align: center;
+    color: var(--hl-purple);
 }

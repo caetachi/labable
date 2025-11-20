@@ -345,7 +345,7 @@ export default function CreateOrder() {
                 <p className='section-title'>Type of Service</p>
                 <div className="services-container">
                     {serviceTypes && serviceTypes.map((service, index)=>{
-                        return <ServiceType key={index} icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]}/>
+                        return <ServiceType key={index} icon='shirt' imgUrl={service[1].image_url} name={service[1].service_name} id={service[0]} amount={service[1].service_price} included={service[1].services}/>
                     })}
                 </div>
             </div>
