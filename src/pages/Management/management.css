@@ -186,7 +186,7 @@
     background-color: color-mix(in srgb, var(--success) 20%, transparent);
     color: var(--success);
 }
-.status.pending, .status.outforpickup, .status.outfordelivery, .status.inactive, .status.lowstock{
+.status.pending, .status.outforpickup, .status.outfordelivery, .status.delivered, .status.inactive, .status.lowstock{
     background-color: color-mix(in srgb, var(--hl-yellow) 20%, transparent);
     color: var(--hl-yellow);
 }

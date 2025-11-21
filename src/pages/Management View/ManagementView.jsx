@@ -14,7 +14,7 @@ import { acceptOrder, quickUpdate, rejectOrder, updateInventoryItemStock } from 
 import { onValue, ref } from "firebase/database";
 import { db } from "../../firebase";
 import { toast } from "react-toastify";
-import { markAsComplete, cancelOrder } from "../../scripts/update";
+import { deliveredOrder, cancelOrder } from "../../scripts/update";
 
 const fieldGroups = {
 	order: [
@@ -122,12 +122,16 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 					[] :
 				status === "out for delivery" ? 
 					[
-						["Mark as Complete", "complete-btn", props.markAsComplete],
+						["Order Delivered", "complete-btn", props.deliveredOrder],
+					] :
+				status === "delivered" ?
+					[
+						["Waiting for confirmation", "waiting-btn"]
 					] :
 					[
 						["Cancel", "cancel-btn", props.cancelOrder],
 						["Quick Update", "quick-btn", props.quickUpdate],
-						["Mark as Complete", "complete-btn", props.markAsComplete],
+						["Delivered", "complete-btn", props.deliveredOrder],
 					],
 			schedule: [
 				["Delete", "delete-btn"],
@@ -149,11 +153,15 @@ const ActionButtons = ({ id, category, status, ...props }) => {
 
 	return (
 		<div className='btn-container'>
-			{base}
+			{status == "waiting" ? base : null}
 			{actions.map(([txt, cls, onClick]) => (
-				<button key={cls} className={cls} onClick={onClick}>
-					{txt}
-				</button>
+				status == "delivered" ?
+					<button key={cls} className={cls} disabled>
+						{txt}
+					</button> :
+					<button key={cls} className={cls} onClick={onClick}>
+						{txt}
+					</button>
 			))}
 		</div>
 	);
@@ -382,11 +390,9 @@ export default function ManagementView() {
 		await quickUpdate(viewData.user_id, viewId);
 	}
 
-	async function orderMarkAsComplete() {
-		await markAsComplete(viewData.user_id, viewId);
+	async function orderDelivered() {
+		await deliveredOrder(viewData.user_id, viewId);
 	}
-
-
 
 	if (!["order", "schedule", "customer", "inventory", "service", "washable"].includes(viewCategory))
 		return <Navigate to='/admin-dashboard' />;
@@ -451,7 +457,7 @@ export default function ManagementView() {
 						rejectOrder={orderReject}
 						cancelOrder={orderCancel}
 						quickUpdate={updateQuick}
-						markAsComplete={orderMarkAsComplete}
+						deliveredOrder={orderDelivered}
 						userDelete={userDelete}
 						serviceDelete={serviceDelete}
 						washableDelete={washableDelete}

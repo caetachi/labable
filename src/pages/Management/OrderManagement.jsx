@@ -14,8 +14,11 @@ export default function OrderManagement() {
     }
     const getNumberOfItems = (orderItems) => {
         let numberOfItems = 0;
-        for(let i = 0; i < orderItems.length; i++){
-            numberOfItems += orderItems[i].quantity;
+
+        if (orderItems){
+            for(let i = 0; i < orderItems.length; i++){
+                numberOfItems += orderItems[i].quantity;
+            }
         }
         return Number(numberOfItems);
     }
@@ -186,6 +189,7 @@ export default function OrderManagement() {
                         <option value="Folding">Folding</option>
                         <option value="Ready to Claim">Ready to Claim</option>
                         <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivered">Delivered</option>
                         <option value="Completed">Completed</option>
                         <option value="Canceled">Canceled</option>
                         <option value="Rejected">Rejected</option>
@@ -239,10 +243,10 @@ export default function OrderManagement() {
                                 <td>{order[1].order_id}</td>
                                 <td>{order[1].customer_name}</td>
                                 <td>{order[1].service_name}</td>
-                                <td>{getNumberOfItems(order[1].order_items)}</td>
+                                <td>{getNumberOfItems(order[1].order_items) || "N/A"}</td>
                                 <td>
-                                    <span className={`status ${getStatusClass(order[1].status)}`}>
-                                        {order[1].status}
+                                    <span className={`status ${getStatusClass(order[1].status == "Delivered" ? "Out for Delivery" : order[1].status != undefined ? order[1].status : "Pending")}`}>
+                                        {order[1].status == "Delivered" ? "Out for Delivery" : order[1].status != undefined ? order[1].status : "Pending"}
                                     </span>
                                 </td>
                                 <td>{new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(new BigNumber(order[1].amount))}</td>

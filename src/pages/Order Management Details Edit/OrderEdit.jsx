@@ -35,7 +35,6 @@ export default function OrderEdit({id}){
 
     async function update(){
         if (order[1].status !== status) {
-            console.log(order[1].user_id);
             await newUserNotification(order[1].user_id, "Order Updated", "Your order has been updated to " + status);
         }
         
@@ -289,6 +288,7 @@ export default function OrderEdit({id}){
                         <option value="Folding">Folding</option>
                         <option value="Ironing">Ironing</option>
                         <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivered">Delivered</option>
                         <option value="Completed">Completed</option>
                         <option value="Error">Error</option>
                     </select>

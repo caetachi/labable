@@ -44,6 +44,10 @@ export const statusMap = {
     label: "Out for Delivery",
     value: "Our delivery team will arrive at your location to deliver your laundry.",
   },
+  "Delivered": {
+    label: "Delivered",
+    value: "Your laundry has been delivered.",
+  },
   Completed: {
     label: "Completed",
     value: "You have received your laundry and completed your order.",

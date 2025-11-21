@@ -110,11 +110,11 @@ function CustomerDashboard() {
                                     orderHashId={orderId}
                                     orderId={order.order_id ?? "N/A"}
                                     orderedDate={order.created_at ?? "N/A"}
-                                    status={order.status ?? "Pending"}
+                                    status={order.status ? order.status == "Delivered" ? "Out for Delivery" : order.status : "Pending"}
                                     total={order.amount ?? 0}
                                     serviceType={order.service_name ?? "N/A"}
                                     items={order.order_items ?? {}}
-                                    deliveryDate={0}
+                                    deliveryDate={order.delivery_date ?? "N/A"}
                                 />
                             );
                         })}

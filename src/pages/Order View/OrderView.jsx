@@ -6,7 +6,7 @@ import TrackNode from "../../components/TrackNode/TrackNode";
 import { formatTextualDateTime } from "../../scripts/dateformat";
 import BigNumber from "bignumber.js";
 import Swal from "sweetalert2";
-import { cancelOrder } from "../../scripts/update";
+import { cancelOrder, receiveOrder } from "../../scripts/update";
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
@@ -74,6 +74,17 @@ export default function OrderView() {
 		if (last) last.style.visibility = "hidden";
 	}, []);
 
+	async function handleReceiveOrder() {
+		if (!viewId) return;
+		await receiveOrder(viewId);
+		try {
+			const updated = await getView("order", viewId);
+			setViewData(updated);
+		} catch (err) {
+			console.error("Failed to refresh order after receive", err);
+		}
+	}
+
 	const cancelNotice = () => {
 		Swal.fire({
 			title: 'Are you sure you want to cancel this order?',
@@ -85,7 +96,7 @@ export default function OrderView() {
 			background: 'var(--bg-light)',
 			color: 'var(--fg-dark)',
 			input: 'textarea',
-			inputPlaceholder: 'Please enter the reason for cancellation (optional)'
+			inputPlaceholder: 'Please enter the reason for cancelation (optional)'
 		}).then(async (result) => {
 			if (result.isConfirmed) {
 				const reason = result.value || 'No reason provided';
@@ -116,37 +127,37 @@ export default function OrderView() {
 		});
 	}
 
-	const ActionButtons = ({ category, status }) => {
+	const ActionButtons = ({ category, status: orderStatus }) => {
 		const actions =
 			{
 				order:
-					status === "Out for delivery" ?
+					orderStatus === "delivered" || orderStatus === "out for delivery" ?
 						[
-							["Order Received", "accept-btn"],
-						]
-						: 
-					status === "Pending" ?
+							["Order Received", "accept-btn", { onClick: handleReceiveOrder }],
+						]	
+						: 	
+					orderStatus === "pending" ?
 						[
 							["Cancel Order", "cancel-btn", { onClick: () => cancelNotice() }],
 						]
 						:
-					status === "Received" ?
+					orderStatus === "received" ?
 						[
 							["Rate", "rate-btn"],
 							["Order Again", "order-again-btn"],
 						] 
 						:
-					status ===  "Accepted" ?
+					orderStatus ===  "accepted" ?
 						[
 							["Processing Order", "processing-btn"]
 						]
 						:
-					status === "Canceled" ?
+					orderStatus === "canceled" ?
 						[
 							["You have canceled this order", "canceled-btn"]
 						] 
 						:
-					status === "Rejected" ?
+					orderStatus === "rejected" ?
 						[
 							["Your order was rejected", "rejected-btn"]
 						]
@@ -157,7 +168,12 @@ export default function OrderView() {
 		return (
 			<div className='btn-container'>
 				{actions.map(([txt, cls, props]) => (
-					<button key={cls} className={cls} {...props} disabled={["Accepted", "Canceled", "Rejected"].includes(status)}>
+					<button
+						key={cls}
+						className={cls}
+						{...props}
+						disabled={["accepted", "canceled", "rejected", "completed"].includes(orderStatus)}
+					>
 						{txt}
 					</button>
 				))}
@@ -200,10 +216,10 @@ export default function OrderView() {
 
 							<ActionButtons
 								category={'order'}
-								status={viewData.status}
+								status={viewData.status.toLowerCase()}
 							/>
 						</>
-					) : (
+					) : (	
 						<p className='placeholder-msg'>Loading order...</p>
 					)}
 				</div>

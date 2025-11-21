@@ -314,26 +314,78 @@ export async function quickUpdate(userUid, orderUid) {
   await newUserNotification(userUid, "Order Updated", `Your order has been updated to ${nextStatus}`);
 }
 
-export async function markAsComplete(userUid, orderUid) {
+export async function deliveredOrder(userUid, orderUid) {
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const trackingRef = child(orderRef, 'tracking');
 
   const roadmap = Object.keys(statusMap);
-  const completedIndex = roadmap.indexOf("Completed");
-  if (completedIndex === -1) return;
+  const deliveredIndex = roadmap.indexOf('Delivered');
+  if (deliveredIndex === -1) return;
 
   const orderSnap = await get(orderRef);
   const order = orderSnap.val() || {};
   const currentStatus = order.status;
-  if (currentStatus === "Completed") {
-    localStorage.setItem("toastMessage", "Order already completed.");
-    localStorage.setItem("toastType", "success");
-    return;
-  }
 
   let startIndex = 0;
+  if (currentStatus) {
+    const currentIndex = roadmap.indexOf(currentStatus);
+    if (currentIndex !== -1) {
+      startIndex = currentIndex + 1;
+    }
+  }
 
+  if (startIndex > deliveredIndex) {
+    startIndex = deliveredIndex;
+  }
+
+  const trackingSnap = await get(trackingRef);
+  const tracking = trackingSnap.val();
+  let lastStatus = tracking
+    ? (Object.values(tracking)[Object.values(tracking).length - 1] || {}).status
+    : null;
+
+  for (let i = startIndex; i <= deliveredIndex; i++) {
+    const stepStatus = roadmap[i];
+    if (stepStatus === lastStatus) continue;
+    await newOrderTrack(orderUid, stepStatus);
+    lastStatus = stepStatus;
+  }
+
+  const now = new Date().toLocaleString();
+
+  await update(orderRef, {
+    status: 'Delivered',
+    updated_at: now,
+    updated_by: auth.currentUser.uid,
+  });
+
+  await newUserNotification(
+    userUid,
+    'Order Updated',
+    'You have received your laundry. Please confirm the order.'
+  );
+
+  localStorage.setItem('toastMessage', 'Order marked as delivered!');
+  localStorage.setItem('toastType', 'success');
+}
+
+export async function receiveOrder(orderUid) {
+  const ordersRef = ref(db, 'orders');
+  const orderRef = child(ordersRef, orderUid);
+  const trackingRef = child(orderRef, 'tracking');
+
+  const orderSnap = await get(orderRef);
+  const order = orderSnap.val() || {};
+  const userUid = order.user_uid;
+
+  const roadmap = Object.keys(statusMap);
+  const completedIndex = roadmap.indexOf('Completed');
+  if (completedIndex === -1) return;
+
+  const currentStatus = order.status;
+
+  let startIndex = 0;
   if (currentStatus) {
     const currentIndex = roadmap.indexOf(currentStatus);
     if (currentIndex !== -1) {
@@ -359,12 +411,14 @@ export async function markAsComplete(userUid, orderUid) {
   }
 
   const now = new Date().toLocaleString();
+
   await update(orderRef, {
-    status: "Completed",
+    status: 'Completed',
     updated_at: now,
     updated_by: auth.currentUser.uid,
   });
-  await newUserNotification(userUid, "Order Completed", "Your order has been completed!");
-  localStorage.setItem("toastMessage", "Order marked as complete!");
-  localStorage.setItem("toastType", "success");
+
+  await newUserNotification(userUid, 'Order Completed', 'Your order has been completed!');
+  localStorage.setItem('toastMessage', 'Order received!');
+  localStorage.setItem('toastType', 'success');
 }
