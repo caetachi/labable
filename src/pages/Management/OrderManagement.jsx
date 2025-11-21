@@ -187,7 +187,7 @@ export default function OrderManagement() {
                         <option value="Ready to Claim">Ready to Claim</option>
                         <option value="Out for Delivery">Out for Delivery</option>
                         <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <option value="Canceled">Canceled</option>
                         <option value="Rejected">Rejected</option>
                     </select>
                 </div>

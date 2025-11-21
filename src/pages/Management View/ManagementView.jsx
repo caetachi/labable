@@ -30,7 +30,7 @@ const fieldGroups = {
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
 		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
-		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date === "Not yet specified" ? "Not yet specified" : "N/A" : "N/A"],
+		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date : Object.values(v.schedule)[0].scheduled_date],
 		["Cancel Reason", (v) => v.notes?.cancel_reason || ""],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
