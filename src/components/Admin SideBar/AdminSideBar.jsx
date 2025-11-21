@@ -4,10 +4,15 @@ import { NavLink, useNavigate } from 'react-router'
 import { useState, useEffect } from 'react';
 import { auth } from '../../firebase.js';
 import Swal from 'sweetalert2';
+import { getAdminNotifications } from '../../scripts/get.js';
+import Notification from '../Notification/Notification';
+import { formatTextualDate } from '../../scripts/dateformat.js';
+import { deleteAdminNotification, truncateAdminNotification } from '../../scripts/delete.js';
 
 function AdminSideBar({image_url, name}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
 
   function sidebarFunc() {
     if (isSidebarOpen) {
@@ -26,6 +31,11 @@ function AdminSideBar({image_url, name}) {
           setImageUrl(`https://avatar.iran.liara.run/username?username=${name}&background=random`);
         }
       }, [image_url, name]);
+
+  function toggleFloatingNotification(){
+    const floatingNav = document.querySelector('.floating-notification-container');
+    floatingNav.classList.toggle('open');
+  }
 
   function logout() {
           Swal.fire({
@@ -51,6 +61,40 @@ function AdminSideBar({image_url, name}) {
               }
           });
       }
+
+      async function clearNotifications(id) {
+          await deleteAdminNotification(id);
+          let newNotifications = notifications.filter(notification => notification.id !== id);
+          setNotifications(newNotifications);
+      }
+
+      async function clearAllNotifications() {
+          await truncateAdminNotification();
+          setNotifications([]);
+      }
+
+  useEffect(() => {
+    async function getNotifications() {
+      const notifications = await getAdminNotifications();
+      const unreadNotifications = [];
+      notifications
+        .sort((a, b) => new Date(b[1].created_at) - new Date(a[1].created_at))
+        .forEach(notification => {
+          const notif = {
+            id: notification[0],
+            title: notification[1].title,
+            message: notification[1].message,
+            created_at: formatTextualDate(notification[1].created_at),
+            status: notification[1].status
+          }
+
+          unreadNotifications.push(notif);
+        });
+
+      setNotifications(unreadNotifications);
+    }
+    getNotifications();
+  }, []);
 
   return (
     <>
@@ -107,13 +151,49 @@ function AdminSideBar({image_url, name}) {
           <button onClick={sidebarFunc} className="admin-sidebar-menu-open-button">
             <i className="fa-solid fa-bars"></i>
           </button>
-          <div className="logo" onClick={() => navigate('/')}>
+          <div className="logo" onClick={() => navigate('/  ')}>
             <img src={logo} alt="Labable" />
             <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
           </div>
         </div>
         <div className="admin-profile">
-          <i className="fa-regular fa-bell"></i>
+          <div className="notification">
+            <button className="notification-btn" onClick={toggleFloatingNotification}>
+              <i className="fa-regular fa-bell"></i>
+            </button>
+            <div className="floating-notification-container">
+              {
+                notifications?.length > 0 && (
+                  <p className="clear-notification" onClick={clearAllNotifications}>Clear notification</p>
+                )
+              }
+              <div className="notification-container">
+                {
+                    notifications?.length > 0 ? (
+                      notifications.map((notification, idx) => (
+                        <>
+                          <Notification
+                              key={idx}
+                              title={notification.title}
+                              message={notification.message}
+                              createdAt={notification.created_at}
+                              clear={async () => await clearNotifications(notification.id)}
+                          />
+                          {
+                            notifications.length > 1 && idx !== notifications.length - 1 && (
+                              <hr />
+                            )
+                          }
+                        </>
+                      ))
+                    ) : (
+                      <p className="notification-message">All notifications are read</p>
+                    )
+                }
+              </div>
+            </div>
+          </div>
+
           {name && imageUrl &&
             <div className="admin-profile-info">
               <img src={imageUrl} alt="" />
@@ -124,4 +204,5 @@ function AdminSideBar({image_url, name}) {
     </>
   );
 }
+
 export default AdminSideBar;

@@ -166,7 +166,7 @@
     display: inline-block;
 }
 
-.status.washing, .status.inprogress{
+.status.washing, .status.transferred{
     background-color: color-mix(in srgb, var(--hl-blue) 20%, transparent);
     color: var(--hl-blue);
 }

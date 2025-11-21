@@ -2,6 +2,7 @@ import { get, ref } from 'firebase/database';
 import { auth, db, googleAuth } from '../firebase'
 import {createWithGoogle, createViaEmailAndPassword} from './create'
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { newAdminNotification } from './create';
 
 export async function registerViaGoogle(){
     const result = await signInWithPopup(auth, googleAuth).catch((err)=>{
@@ -11,13 +12,14 @@ export async function registerViaGoogle(){
     const user = result.user;
     const userRef = ref(db, `users/${user.uid}`);
     const snapshot = await get(userRef);
+    const currDate = new Date().toLocaleString();
 
     if(!snapshot.exists()){
-      const currDate = new Date().toLocaleString();
       await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
     }else{
       localStorage.setItem("toastMessage", "Successfully logged in with Google!");
       localStorage.setItem("toastType", "success");
+      await newAdminNotification("New User", "A new user has logged in.", currDate);
       if(snapshot.val().role === "admin"){
         console.log("Redirecting to admin dashboard");
         window.location.href = '/admin/dashboard';
@@ -26,7 +28,6 @@ export async function registerViaGoogle(){
       }
       return;
     }
-    
   }
 
 export async function registerViaEmailPass(email, firstName, lastName, phoneNumber, password){

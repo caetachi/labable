@@ -1,7 +1,7 @@
 import { child, get, ref, set, update } from 'firebase/database'
 
 import { auth, db } from '../firebase'
-import { newOrderTrack, statusMap } from './create';
+import { newOrderTrack, newUserNotification, statusMap } from './create';
 
 export async function updateUser(email, name, phoneNum, address, imgUrl) {
     const currDate = new Date().toLocaleString();
@@ -182,7 +182,7 @@ export async function updateOrderDetails(orderUid, customerName, address, servic
   }
 }
 
-export async function updateOrderStatus(orderUid, status) {
+export async function updateOrderStatus(userUid, orderUid, status) {
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
@@ -192,9 +192,10 @@ export async function updateOrderStatus(orderUid, status) {
   }
   if(status)orderData.status = status; 
   await update(orderRef, orderData);
+  await newUserNotification(userUid, "Order Status Update", `Your order status has been updated to ${status}`);
 }
 
-export async function cancelOrder(orderUid, status, reason) {
+export async function cancelOrder(userUid, orderUid, status, reason) {
   const currDate = new Date().toLocaleString();
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
@@ -211,6 +212,7 @@ export async function cancelOrder(orderUid, status, reason) {
 
   await update(orderRef, orderData);
   await newOrderTrack(orderUid, status);
+  await newUserNotification(userUid, "Order Canceled", `Your order has been canceled. Reason: ${reason}`);
 }
 
 export async function updateScheduleDetails(orderUid, customerName, address, status, modeOfTransfer, modeOfClaiming, laundryTransferDateTime, laundryClaimDateTime) {
@@ -250,26 +252,27 @@ export async function updateScheduleDetails(orderUid, customerName, address, sta
   .then(()=>console.log("Updated"));
 }
 
-export async function acceptOrder(orderUid) {
-  await updateOrderStatus(orderUid, "Accepted");
+export async function acceptOrder(userUid, orderUid) {
+  await updateOrderStatus(userUid, orderUid, "Accepted");
   await newOrderTrack(orderUid, "Accepted");
+  await newUserNotification(userUid, "Order Accepted", "Your order has been accepted!");
   localStorage.setItem("toastMessage", "Order accepted!");
   localStorage.setItem("toastType", "success");
 }
 
-export async function rejectOrder(orderUid, cancelReason) {
-  await updateOrderStatus(orderUid, "Rejected");
+export async function rejectOrder(userUid, orderUid, cancelReason) {
+  await updateOrderStatus(userUid, orderUid, "Rejected");
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const notesRef = child(orderRef, 'notes');
   await update(notesRef, {"cancel_reason": cancelReason});
   await newOrderTrack(orderUid, "Rejected");
+  await newUserNotification(userUid, "Order Rejected", `Your order has been rejected. Reason: ${cancelReason}`);
   localStorage.setItem("toastMessage", "Order rejected!");
   localStorage.setItem("toastType", "success");
 }
 
-export async function quickUpdate(orderUid) {
-
+export async function quickUpdate(userUid, orderUid) {
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const trackingRef = child(orderRef, 'tracking');
@@ -308,9 +311,10 @@ export async function quickUpdate(orderUid) {
   const orderUpdate = { status: nextStatus, updated_at: now, updated_by: auth.currentUser.uid };
 
   await update(orderRef, orderUpdate);
+  await newUserNotification(userUid, "Order Updated", `Your order has been updated to ${nextStatus}`);
 }
 
-export async function markAsComplete(orderUid) {
+export async function markAsComplete(userUid, orderUid) {
   const ordersRef = ref(db, 'orders');
   const orderRef = child(ordersRef, orderUid);
   const trackingRef = child(orderRef, 'tracking');
@@ -360,7 +364,7 @@ export async function markAsComplete(orderUid) {
     updated_at: now,
     updated_by: auth.currentUser.uid,
   });
-
+  await newUserNotification(userUid, "Order Completed", "Your order has been completed!");
   localStorage.setItem("toastMessage", "Order marked as complete!");
   localStorage.setItem("toastType", "success");
 }

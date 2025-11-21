@@ -96,7 +96,7 @@ function Layout({ user, userData }) {
       {!hideLayout && (
         userData?.role === "admin"
           ? <AdminSideBar name={userData.fullname} image_url={userData.image_url}/>
-          : <NavBar name={userData.fullname} image_url={userData.image_url} hasAddress={userData.address}/>
+          : <NavBar userid={user?.uid} name={userData.fullname} image_url={userData.image_url} hasAddress={userData.address}/>
       )}
 
       <Routes>

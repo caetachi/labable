@@ -1,0 +1,56 @@
+.notification-card {
+    width: 100% ;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 20px;
+}
+
+.notification-card .notification-content {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.notification-card .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-card .notification-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--fg-dark);
+}
+
+.notification-card .notification-message {
+    font-size: .9rem;
+    color: var(--ov-dark);
+}
+
+.notification-card .notification-date {
+    font-size: .9rem;
+    color: var(--sf-dark);
+}
+
+.notification-card .notification-clear-btn {
+    width: 5%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sf-dark);
+    transition: 0.3s ease;
+}
+
+.notification-card .notification-clear-btn i {
+    font-size: 1rem;
+}
+
+.notification-card .notification-clear-btn:hover {
+    color: var(--error);
+}

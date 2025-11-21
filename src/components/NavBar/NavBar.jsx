@@ -4,11 +4,15 @@ import { HashLink } from 'react-router-hash-link';
 import './nav-bar.css'
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { auth } from '../../firebase.js';
+import { auth, db } from '../../firebase.js';
+import { ref, onValue } from 'firebase/database';
+import Notification from '../Notification/Notification';
+import { formatTextualDate } from '../../scripts/dateformat.js';
+import { deleteUserNotification, truncateUserNotification } from '../../scripts/delete.js';
 
-
-export default  function NavBar({image_url, name, hasAddress}) {
+export default function NavBar({userid, image_url, name, hasAddress}) {
     const [imageUrl, setImageUrl] = useState();
+    const [notifications, setNotifications] = useState([]);
     
     useEffect(() => {
       if (image_url) {
@@ -20,6 +24,11 @@ export default  function NavBar({image_url, name, hasAddress}) {
 
     function toggleFloatingNav(){
         const floatingNav = document.querySelector('.floating-nav-container');
+        floatingNav.classList.toggle('open');
+    }
+
+    function toggleFloatingNotification(){
+        const floatingNav = document.querySelector('.floating-notification-container');
         floatingNav.classList.toggle('open');
     }
 
@@ -47,6 +56,56 @@ export default  function NavBar({image_url, name, hasAddress}) {
             }
         });
     }
+
+    async function clearNotifications(id) {
+        if (userid) {
+            await deleteUserNotification(userid, id);
+            let newNotifications = notifications.filter(notification => notification.id !== id);
+            setNotifications(newNotifications);
+        }
+    }
+
+    async function clearAllNotifications() {
+        if (userid) {
+            await truncateUserNotification(userid);
+            setNotifications([]);
+        }
+    }
+
+  useEffect(() => {
+    if (!userid) return;
+
+    const notificationsRef = ref(db, `users/${userid}/notifications`);
+
+    const unsubscribe = onValue(notificationsRef, (snapshot) => {
+      const data = snapshot.val();
+
+      if (!data) {
+        setNotifications([]);
+        return;
+      }
+
+      const entries = Object.entries(data);
+      const formattedNotifications = [];
+
+      entries
+        .sort((a, b) => new Date(b[1].created_at) - new Date(a[1].created_at))
+        .forEach(([id, value]) => {
+          const notif = {
+            id,
+            title: value.title,
+            message: value.message,
+            created_at: formatTextualDate(value.created_at),
+          };
+
+          formattedNotifications.push(notif);
+        });
+
+      setNotifications(formattedNotifications);
+    });
+
+    return () => unsubscribe();
+  }, [userid]);
 
     return(
         <>
@@ -93,32 +152,76 @@ export default  function NavBar({image_url, name, hasAddress}) {
                         </>
                     }
                 </div>
-                {name && imageUrl ?
-                    <div className="profile-picture" onClick={toggleFloatingNav}>
-                        <img src={imageUrl} alt="Profile" />
-                        <h5>{name}</h5>
-                        <i className="ti ti-caret-down"></i>
-                        <div className="floating-nav-container">
-                            <NavLink to='/profile' className='floating-nav-link'>
-                                <i className="ti ti-user"></i>
-                                <p>Profile</p>
-                            </NavLink>
-                            <NavLink to='/customer/dashboard' className='floating-nav-link'>
-                                <i className="ti ti-layout-dashboard"></i>
-                                <p>Dashboard</p>
-                            </NavLink>
-                            <button className='floating-nav-link' onClick={logout}>
-                                <i className="ti ti-logout"></i>
-                                <p>Logout</p>
-                            </button>
+                
+                <div className="profile">
+                {
+                    name ?
+                    <div className="notification">
+                        <button className="notification-btn" onClick={toggleFloatingNotification}>
+                        <i className="fa-regular fa-bell"></i>
+                        </button>
+                        <div className="floating-notification-container">
+                            {
+                                notifications?.length > 0 && (
+                                <p className="clear-notification" onClick={clearAllNotifications}>Clear notification</p>
+                                )
+                            }
+
+                            <div className="notification-container">
+                                {
+                                    notifications?.length > 0 ? (
+                                        notifications.map((notification, idx) => (
+                                        <>
+                                            <Notification
+                                                key={idx}
+                                                title={notification.title}
+                                                message={notification.message}
+                                                createdAt={notification.created_at}
+                                                clear={async () => await clearNotifications(notification.id)}
+                                            />
+                                            {
+                                            idx !== notifications.length - 1 && (
+                                                <hr />
+                                            )
+                                            }
+                                        </>
+                                        ))
+                                    ) : (
+                                        <p className="notification-message">All notifications are read</p>
+                                    )
+                                }
+                            </div>
                         </div>
                     </div>
+                : null
+                }
+                {name && imageUrl ?
+                        <div className="profile-picture" onClick={toggleFloatingNav}>
+                            <img src={imageUrl} alt="Profile" />
+                            <h5>{name}</h5>
+                            <i className="ti ti-caret-down"></i>
+                            <div className="floating-nav-container">
+                                <NavLink to='/profile' className='floating-nav-link'>
+                                    <i className="ti ti-user"></i>
+                                    <p>Profile</p>
+                                </NavLink>
+                                <NavLink to='/customer/dashboard' className='floating-nav-link'>
+                                    <i className="ti ti-layout-dashboard"></i>
+                                    <p>Dashboard</p>
+                                </NavLink>
+                                <button className='floating-nav-link' onClick={logout}>
+                                    <i className="ti ti-logout"></i>
+                                    <p>Logout</p>
+                                </button>
+                            </div>
+                        </div>
                     :
                     <div className="login-signup">
                         <NavLink to='/login' className='login'>Login</NavLink>
                         <NavLink to='/registration' className='signup'>Signup</NavLink>
                     </div>    
                 }
+                </div>
             </nav>
         </>
     )

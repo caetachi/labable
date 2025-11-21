@@ -142,3 +142,59 @@ export async function deleteScheduleDelivery(orderID) {
     }
   }
 }
+
+export async function deleteUserNotification(userID, notificationID) {
+  const notificationRef = ref(db, `users/${userID}/notifications/${notificationID}`);
+
+  try {
+    await remove(notificationRef);
+  } catch (error) {
+    localStorage.setItem(
+      "toastMessage",
+      error?.message || "Failed to clear notification!"
+    );
+    localStorage.setItem("toastType", "error");
+  }
+}
+
+export async function truncateUserNotification(userID) {
+  const notificationRef = ref(db, `users/${userID}/notifications`);
+
+  try {
+    await remove(notificationRef);
+  } catch (error) {
+    localStorage.setItem(
+      "toastMessage",
+      error?.message || "Failed to clear all notifications!"
+    );
+    localStorage.setItem("toastType", "error");
+  }
+}
+
+export async function deleteAdminNotification(notificationID) {
+  const notificationRef = ref(db, `notifications/${notificationID}`);
+
+  try {
+    await remove(notificationRef);
+  } catch (error) {
+    localStorage.setItem(
+      "toastMessage",
+      error?.message || "Failed to clear notification!"
+    );
+    localStorage.setItem("toastType", "error");
+  }
+}
+
+export async function truncateAdminNotification() {
+  const notificationRef = ref(db, `notifications`);
+
+  try {
+    await remove(notificationRef);
+  } catch (error) {
+    localStorage.setItem(
+      "toastMessage",
+      error?.message || "Failed to clear all notifications!"
+    );
+    localStorage.setItem("toastType", "error");
+  }
+}

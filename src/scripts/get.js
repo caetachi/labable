@@ -10,7 +10,6 @@ import { auth, db } from '../firebase'
   }
 
   export async function getServicePrice(serviceUid) {
-    console.log(serviceUid);
     const servicesRef = ref(db, 'service_types');
     const serviceRef = child(servicesRef, serviceUid);
     const service = await (await get(serviceRef)).val();
@@ -244,7 +243,6 @@ export async function getTotalSpentAmount(userUid) {
     const washableRef = ref(db, 'washable_items');
     const washables = await (await get(washableRef)).val();
     const washablesArray = Object.entries(washables);
-    console.log(washable_item_name);
     for(let i = 0; i < washablesArray.length; i++){
       console.log(washablesArray[i][1]);
       if(washablesArray[i][1].washable_item_name == washableName){
@@ -258,7 +256,6 @@ export async function getTotalSpentAmount(userUid) {
     const ordersRef = ref(db, 'orders');
     const orderRef = child(ordersRef, orderUid);
     const orderSnap = await get(orderRef);
-    const orderId = orderSnap.key;
     const order = await orderSnap.val();
     console.log(order.schedule);
     console.log(order.schedule.pickup);
@@ -269,7 +266,6 @@ export async function getTotalSpentAmount(userUid) {
     const ordersRef = ref(db, 'orders');
     const orderRef = child(ordersRef, orderUid);
     const orderSnap = await get(orderRef);
-    const orderId = orderSnap.key;
     const order = await orderSnap.val();
     console.log(order.schedule);
     console.log(order.schedule.delivery);
@@ -298,7 +294,20 @@ export async function getTotalSpentAmount(userUid) {
     const services = await (await get(serviceRef)).val();
     const service = Object.entries(services);
     
-    console.log(service[7][1]);
-    
     return service[7][1];
+  }
+
+  export async function getAdminNotifications() {
+    const notificationRef = ref(db, 'notifications');
+    const notificationSnap = await get(notificationRef);
+    const notification = await notificationSnap.val();
+    
+    return Object.entries(notification || {});
+  }
+
+  export async function getUserNotifications(userUid) {
+    const notificationRef = ref(db, `users/${userUid}/notifications`);
+    const notificationSnap = await get(notificationRef);
+    const notification = await notificationSnap.val();
+    return Object.entries(notification || {});
   }

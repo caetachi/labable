@@ -10,13 +10,13 @@ import WashableItem from "../../components/Washable Item - Create Order/Washable
 import { updateOrderDetails } from "../../scripts/update";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { newUserNotification } from "../../scripts/create";
 
 export default function OrderEdit({id}){    
     const [orderItems, setOrderItems] = useState([]);
     const [washableItems, setWashableItems] = useState([]);
     const [services, setServices] = useState([]);
     const [order, setOrder] = useState([]);
-
     const [customerName, setCustomerName] = useState("");
     const [address, setAddress] = useState("");
     const [serviceName, setServiceName] = useState("");
@@ -34,7 +34,10 @@ export default function OrderEdit({id}){
     const navigate = useNavigate();
 
     async function update(){
-        console.log(totalPrice);
+        if (order[1].status !== status) {
+            console.log(order[1].user_id);
+            await newUserNotification(order[1].user_id, "Order Updated", "Your order has been updated to " + status);
+        }
         
         await updateOrderDetails(id, customerName, address, serviceType, serviceName, paymentMethod, totalPrice, orderItems, status, modeOfTransfer, modeOfClaiming, orderDate, laundryTransferDateTime, arrivalDate, notes).then(()=>{
             toast.success("Order Updated Successfully!");
@@ -116,6 +119,7 @@ export default function OrderEdit({id}){
             return prevOrderItems.filter((current, index) => index != removeIndex);
         })
     }
+    
     async function calculateTotalPrice() {
         const servicePrice = await getServicePrice(serviceType);
         const price = servicePrice * totalKilo;
@@ -170,8 +174,6 @@ export default function OrderEdit({id}){
     }, [])
 
     useEffect(()=>{
-        console.log(order[1]);
-
         setCustomerName(order[1]?.customer_name || "");
         setAddress(order[1]?.address || "");
         setServiceName(order[1]?.service_name || "");

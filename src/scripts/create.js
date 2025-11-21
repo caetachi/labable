@@ -67,6 +67,7 @@ export async function createWithGoogle(authId, email, phoneNum, name, imgUrl, cu
     'phone': phoneNum, // null if wala
     'address': null, // user input
     'status': 'active',
+    'notifications' : {},
     'image_url': imgUrl, // null if wala
     created_at: currentDate,
     created_by: authId
@@ -96,6 +97,7 @@ export async function createViaEmailAndPassword(authId, firstName, lastName, pho
     'email': email,
     'role': 'customer',
     'status': 'active',
+    'notifications' : {},
     created_at: currentDate,
     created_by: authId
   }
@@ -399,4 +401,38 @@ export async function newSchedule(orderID, scheduleType, date, time) {
     toast.error("Order ID not found.");
   }
   return;
+}
+
+export async function newUserNotification(userID, title, message) {
+  const notificationsRef = ref(db, 'users/' + userID + '/notifications');
+  const newNotificationRef = await push(notificationsRef);
+  const currDate = new Date().toLocaleString();
+  const notificationData = {
+    "title": title,
+    "message": message,
+    "created_at": currDate
+  }
+
+  await update(newNotificationRef, notificationData).then(() => {
+    console.log("Notif created");
+  })
+    .catch(() => {
+    })
+}
+
+export async function newAdminNotification(title, message) {
+  const notificationsRef = ref(db, 'notifications');
+  const newNotificationRef = await push(notificationsRef);
+  const currDate = new Date().toLocaleString();
+  const notificationData = {
+    "title": title,
+    "message": message,
+    "created_at": currDate
+  }
+
+  await update(newNotificationRef, notificationData).then(() => {
+    console.log("Notif created");
+  })
+    .catch(() => {
+    })
 }

@@ -27,9 +27,6 @@ export default function OrderManagementDetailsEdit(){
     const [coordinates, setCoordinates] = useState([]);
     const [locationName, setLocationName] = useState("Malolos");
 
-    
-    
-
     useEffect(()=>{
         if(editDetail == 'order' || editDetail == 'schedule'){
             async function getOrderList(id) {

@@ -64,9 +64,9 @@ export async function loginViaGoogle() {
 	const user = result.user;
 	const userRef = ref(db, `users/${user.uid}`);
 	const snapshot = await get(userRef);
+	const currDate = new Date().toLocaleString();
 
 	if(!snapshot.exists()){
-		const currDate = new Date().toLocaleString();
 		await createWithGoogle(user.uid, user.email, user.phoneNumber, user.displayName, user.photoURL, currDate);
 	}else{
 		localStorage.setItem("toastMessage", "Successfully logged in!");
@@ -76,7 +76,7 @@ export async function loginViaGoogle() {
 			window.location.href = "/admin/dashboard";
 		}else{
 			window.location.href = "/";
-		}
+		}	
 	}
 
 	return user;

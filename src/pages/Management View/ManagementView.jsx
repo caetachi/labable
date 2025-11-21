@@ -30,7 +30,7 @@ const fieldGroups = {
 		["No. of Items", (v) => v.order_items ? new Intl.NumberFormat('en-PH').format(Object.values(v.order_items).map(oi => oi.quantity || 1).reduce((a, b) => a + b, 0)) : ""],
 		["Additional Notes", (v) => v.notes == "" ? v.notes.order_notes : "No additional notes."],
 		["Current Status", (v) => v.status && titlecase(v.status)],
-		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date : Object.values(v.schedule)[0].scheduled_date],
+		["Claim Date", (v) => v.schedule ? Object.values(v.schedule)[0].scheduled_date : "Not yet specified"],
 		["Cancel Reason", (v) => v.notes?.cancel_reason || ""],
 		["Customer", (v) => v.customer_name && titlecase(`${v.customer_name}`)],
 	],
@@ -91,8 +91,6 @@ function DetailsCard({ category, data }) {
 		<div className='details-card'>
 			{fieldGroups[category].map(([label, getter]) => {
 				const value = getter(data);
-
-				console.log(label, value)
 				if (label === "Cancel Reason" && (value == null || (typeof value === "string" && value.trim() === ""))
 				) return null;
 				
@@ -292,7 +290,7 @@ export default function ManagementView() {
 			confirmButtonText: 'Accept'
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				await acceptOrder(viewId);
+				await acceptOrder(viewData.user_id, viewId);
 				navigate('/admin/order');
 			}
 		});
@@ -316,7 +314,7 @@ export default function ManagementView() {
 			}
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				await rejectOrder(viewId, result.value);
+				await rejectOrder(viewData.user_id, viewId, result.value);
 				navigate('/admin/order');
 			}
 		});
@@ -340,7 +338,7 @@ export default function ManagementView() {
 			}
 		}).then(async (result) => {
 			if (result.isConfirmed) {
-				await cancelOrder(viewId, "Canceled", result.value);
+				await cancelOrder(viewData.user_id, viewId, "Canceled", result.value);
 				navigate('/admin/order');
 			}
 		});
@@ -381,11 +379,11 @@ export default function ManagementView() {
 	}
 
 	async function updateQuick() {
-		await quickUpdate(viewId, viewData.service_type_id);
+		await quickUpdate(viewData.user_id, viewId);
 	}
 
 	async function orderMarkAsComplete() {
-		await markAsComplete(viewId);
+		await markAsComplete(viewData.user_id, viewId);
 	}
 
 
