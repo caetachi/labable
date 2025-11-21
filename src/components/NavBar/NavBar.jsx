@@ -102,6 +102,8 @@ export default function NavBar({userid, image_url, name, hasAddress}) {
         });
 
       setNotifications(formattedNotifications);
+
+
     });
 
     return () => unsubscribe();
@@ -158,7 +160,7 @@ export default function NavBar({userid, image_url, name, hasAddress}) {
                     name ?
                     <div className="notification">
                         <button className="notification-btn" onClick={toggleFloatingNotification}>
-                        <i className="fa-regular fa-bell"></i>
+                        <i className={notifications?.length > 0 ? "ti ti-bell-ringing" : "ti ti-bell"}></i>
                         </button>
                         <div className="floating-notification-container">
                             {

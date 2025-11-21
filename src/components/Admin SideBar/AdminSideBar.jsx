@@ -159,7 +159,7 @@ function AdminSideBar({image_url, name}) {
         <div className="admin-profile">
           <div className="notification">
             <button className="notification-btn" onClick={toggleFloatingNotification}>
-              <i className="fa-regular fa-bell"></i>
+              <i className={notifications?.length > 0 ? "ti ti-bell-ringing" : "ti ti-bell"}></i>
             </button>
             <div className="floating-notification-container">
               {
