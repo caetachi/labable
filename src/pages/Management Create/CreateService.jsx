@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './management-create.css'
 import { newServiceType } from '../../scripts/create';
+import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateService() {
 
@@ -80,6 +81,7 @@ export default function CreateService() {
                     <button className="create-button">Create Service</button>  }
                 </div>
             </div>
+            <AIAssistant/>
         </div>
     )
 }

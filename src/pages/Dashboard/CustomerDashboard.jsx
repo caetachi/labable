@@ -6,6 +6,7 @@ import { onValue, ref } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
 import { getActiveOrderCount, getCompleteOrderCount, getTotalSpentAmount, getUserRecentOrders } from '../../scripts/get.js';
 import { NavLink } from 'react-router';
+import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 function CustomerDashboard() {
     const [userData, setUserData] = useState({});
@@ -121,6 +122,7 @@ function CustomerDashboard() {
                 </div>
             </div>
         )}
+        <AIAssistant pageContext="Customer Dashboard – customer can see summary cards (Active Orders, Completed Orders, Total Spent), a 'New Order' button that links to the Create Order page, and a list of recent orders with status, amount, service type, items, and delivery date." />
         </>
     );
 }

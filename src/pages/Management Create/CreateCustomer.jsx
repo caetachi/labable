@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './management-create.css'
 import { registerViaEmailPass } from '../../scripts/register';
+import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateCustomer() {
 
@@ -153,6 +154,7 @@ export default function CreateCustomer() {
                     }
                 </div>
             </div>
+            <AIAssistant/>
         </div>
     )
 }

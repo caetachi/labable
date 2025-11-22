@@ -8,6 +8,7 @@ import { useState } from 'react'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { loginViaEmailAndPassword } from '../../scripts/login.js'
 import { registerViaGoogle } from '../../scripts/register.js'
+import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -56,96 +57,98 @@ export default function Login() {
     }
 
     return (
-        
-        <section className="login-container">
-            <i className="fa-solid fa-xmark" onClick={()=>{window.history.back()}}></i>
-            <div className="content">
+        <> 
+            <section className="login-container">
+                <i className="fa-solid fa-xmark" onClick={()=>{window.history.back()}}></i>
+                <div className="content">
 
-                    <img src={bubble} className="bubble" style={{top: '-3%', left: '-2%'}}/>
-                    <img src={bubble} className="bubble" style={{top: '10%', left: '15%'}}/>
-                    <img src={bubble} className="bubble" style={{top: '85%', left: '10%'}}/>
-                    <img src={bubble} className="bubble" style={{top: '80%', left: '-5%'}}/>
-                    <img src={bubble} className="bubble" style={{top: '60%', left: '-1%'}}/>
-                
-                    <img src={heartBubble} className="heart-bubble" style={{top: '1%', right: '2%'}}/>
-                    <img src={heartBubble} className="heart-bubble" style={{top: '4%', right: '1%'}}/>
-                    <img src={heartBubble} className="heart-bubble" style={{top: '80%', right: '-1%'}}/>
-                    <img src={heartBubble} className="heart-bubble" style={{top: '90%', right: '3%'}}/>
-                    <img src={heartBubble} className="heart-bubble" style={{top: '70%', right: '8%'}}/>
+                        <img src={bubble} className="bubble" style={{top: '-3%', left: '-2%'}}/>
+                        <img src={bubble} className="bubble" style={{top: '10%', left: '15%'}}/>
+                        <img src={bubble} className="bubble" style={{top: '85%', left: '10%'}}/>
+                        <img src={bubble} className="bubble" style={{top: '80%', left: '-5%'}}/>
+                        <img src={bubble} className="bubble" style={{top: '60%', left: '-1%'}}/>
+                    
+                        <img src={heartBubble} className="heart-bubble" style={{top: '1%', right: '2%'}}/>
+                        <img src={heartBubble} className="heart-bubble" style={{top: '4%', right: '1%'}}/>
+                        <img src={heartBubble} className="heart-bubble" style={{top: '80%', right: '-1%'}}/>
+                        <img src={heartBubble} className="heart-bubble" style={{top: '90%', right: '3%'}}/>
+                        <img src={heartBubble} className="heart-bubble" style={{top: '70%', right: '8%'}}/>
 
-                    <div className="col form">
-                        <div className="field">
-                            <p className="label-field">
-                                Email address
+                        <div className="col form">
+                            <div className="field">
+                                <p className="label-field">
+                                    Email address
+                                </p>
+                                <div className="input-field">
+                                    <i className="fa-regular fa-envelope"></i>
+                                    <input type="email" name="email" id="login-email" placeholder='name@example.com' 
+                                    onChange={(e)=>handleEmailChange(e)} />
+                                </div>
+                                <p className='error-message' id='emailError'></p>
+                            </div>
+
+                            <div className="field">
+                                <p className="label-field">
+                                    Password
+                                </p>
+                                <div className="input-field">
+                                    <i className="ti ti-lock"></i>
+                                    <input type="password" name="password" id="login-password" placeholder='••••••••••' 
+                                    onChange={(e)=>handlePasswordChange(e)} />
+                                </div>
+                                <p className='error-message' id='passwordError'></p>
+                            </div>
+
+                            <div className="utils">
+                                <div className="remember">
+                                    <input type="checkbox" name="remember" id="login-remember" />
+                                    <p>Remember me</p>
+                                </div>
+
+                                <NavLink to={'/forgot-password'}>Forgot password?</NavLink>
+                            </div>
+
+                            {email && password ?
+                                <button className="login-btn" id="loginBtn" onClick={handleLogin}>
+                                    Login
+                                </button>
+                                :
+                                <button className="login-btn disabled" id="loginBtn" disabled>
+                                    Login
+                                </button>
+                            }
+
+                            <div className="alt-login-label">
+                                <hr />
+                                <p>or continue with</p>
+                                <hr />
+                            </div>
+
+                            <AltAccountButton register={registerViaGoogle}/>
+
+                            <span className="signup-redirect">
+                                Don't have an account?
+                                <NavLink to={'/registration'}>Sign up</NavLink>
+                            </span>
+                        </div>
+                        <div className="col splash">
+                            <div className="logo">
+                                <img src={labableLogo} alt="Labable" className='logo'/>
+                                <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
+                            </div>
+                            
+                            <div className="splash-container">
+                                <img src={Mascot} alt="Labable mascot image" />
+                            </div>
+
+                            <p className="label">
+                                Welcome Back!
                             </p>
-                            <div className="input-field">
-                                <i className="fa-regular fa-envelope"></i>
-                                <input type="email" name="email" id="login-email" placeholder='name@example.com' 
-                                onChange={(e)=>handleEmailChange(e)} />
-                            </div>
-                            <p className='error-message' id='emailError'></p>
                         </div>
-
-                        <div className="field">
-                            <p className="label-field">
-                                Password
-                            </p>
-                            <div className="input-field">
-                                <i className="ti ti-lock"></i>
-                                <input type="password" name="password" id="login-password" placeholder='••••••••••' 
-                                onChange={(e)=>handlePasswordChange(e)} />
-                            </div>
-                            <p className='error-message' id='passwordError'></p>
-                        </div>
-
-                        <div className="utils">
-                            <div className="remember">
-                                <input type="checkbox" name="remember" id="login-remember" />
-                                <p>Remember me</p>
-                            </div>
-
-                            <NavLink to={'/forgot-password'}>Forgot password?</NavLink>
-                        </div>
-
-                        {email && password ?
-                            <button className="login-btn" id="loginBtn" onClick={handleLogin}>
-                                Login
-                            </button>
-                            :
-                            <button className="login-btn disabled" id="loginBtn" disabled>
-                                Login
-                            </button>
-                        }
-
-                        <div className="alt-login-label">
-                            <hr />
-                            <p>or continue with</p>
-                            <hr />
-                        </div>
-
-                        <AltAccountButton register={registerViaGoogle}/>
-
-                        <span className="signup-redirect">
-                            Don't have an account?
-                            <NavLink to={'/registration'}>Sign up</NavLink>
-                        </span>
-                    </div>
-                    <div className="col splash">
-                        <div className="logo">
-                            <img src={labableLogo} alt="Labable" className='logo'/>
-                            <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
-                        </div>
-                        
-                        <div className="splash-container">
-                            <img src={Mascot} alt="Labable mascot image" />
-                        </div>
-
-                        <p className="label">
-                            Welcome Back!
-                        </p>
-                    </div>
-            </div>
-        </section>
+                </div>
+            </section>
+            <AIAssistant pageContext="Login page – user can enter email and password, toggle 'Remember me', use the 'Forgot password?' link, log in with email/password or continue with Google, and navigate to the Registration page via the Sign up link." />
+        </>
     )
 }
 

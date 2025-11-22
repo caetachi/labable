@@ -8,6 +8,7 @@ import BigNumber from "bignumber.js";
 import Swal from "sweetalert2";
 import { cancelOrder, receiveOrder, updateOrderPaymentStatus } from "../../scripts/update";
 import GCash from "../../components/GcashPayment/GCash";
+import AIAssistant from "../../components/AI Assistant/AIAssistant";
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
@@ -241,6 +242,7 @@ export default function OrderView() {
 				
 					<GCash amount={viewData?.amount || 0} handleClose={() => setShowGcash(false)} onPaymentSuccess={onPaymentSuccess} />}
 			</div>
+			<AIAssistant />
 		</div>
 	);
 }
