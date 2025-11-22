@@ -18,7 +18,7 @@ function DashboardOrderHistoryCard({ orderHashId, orderId, orderedDate, status, 
 
                     <p>{serviceType} • {new Intl.NumberFormat('en-PH').format(itemCount)} items</p>
                     <p>Ordered: {formatTextualDateTime(orderedDate)}</p>
-                    <p>{deliveryDate ? `• Delivered: ${formatTextualDateTime(deliveryDate)}` : ''}</p>
+                    <p>{deliveryDate ? `Delivered: ${formatTextualDateTime(deliveryDate)}` : ''}</p>
                 </div>
             </div>
             <div className="order-history-amount">
