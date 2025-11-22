@@ -8,6 +8,7 @@ import BigNumber from "bignumber.js";
 import Swal from "sweetalert2";
 import { cancelOrder, receiveOrder, updateOrderPaymentStatus } from "../../scripts/update";
 import GCash from "../../components/GcashPayment/GCash";
+import { auth } from "../../firebase";
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
@@ -103,7 +104,7 @@ export default function OrderView() {
 			if (result.isConfirmed) {
 				const reason = result.value || 'No reason provided';
 				try {
-					await cancelOrder(viewId, "Canceled", reason);
+					await cancelOrder(auth.currentUser.uid, viewId, "Canceled", reason);
 					Swal.fire({
 						title: 'Order Canceled',
 						text: 'Your order has been successfully canceled.',
