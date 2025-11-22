@@ -75,7 +75,7 @@ export default function ServiceEdit({serviceType}){
             <div className="small-container">
                 <p className='small-container-title'>Price</p>
                 <div className="small-container-input-container">
-                    <i class="hgi hgi-stroke hgi-money-02 input-icon left-icon"></i>
+                    <i className="hgi hgi-stroke hgi-money-02 input-icon left-icon"></i>
                     <input className='small-container-input gray-border' type="text" defaultValue={price} onChange={(e) => setPrice(e.target.value)}/>
                     <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
