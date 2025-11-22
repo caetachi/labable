@@ -6,13 +6,12 @@ const client = new OpenAI({
 });
 
 export async function sendChatMessage(userMessage, pageContext) {
-  try {
-    const now = new Date();
-    const isoNow = now.toISOString();
-    const humanNow = now.toLocaleString();
-    const businessHours = 'Laundry service business hours (local time): Weekdays (Mon–Fri) 8:00–20:00, Saturday 9:00–18:00, Sunday 10:00–17:00.';
+  const now = new Date();
+  const isoNow = now.toISOString();
+  const humanNow = now.toLocaleString();
+  const businessHours = 'Laundry service business hours (local time): Weekdays (Mon to Fri) 8:00 to 20:00, Saturday 9:00 to 18:00, Sunday 10:00 to 7:00.';
 
-    const prompt = `You are Robable, an AI assistant embedded in Labable. You help both customers and admins understand features and navigate the UI. Be concise and clearly explain how to use Labable based on the page and elements the user describes.
+  const prompt = `You are Robable, an AI assistant embedded in Labable. You help both customers and admins understand features and navigate the UI. Be concise and clearly explain how to use Labable based on the page and elements the user describes.
 
 IMPORTANT FORMAT RULES:
 - Always respond as plain text suitable for direct insertion into an HTML <p> or <div>.
@@ -46,6 +45,7 @@ Assistant: The 'Error timed out.' message appears when the chat assistant does n
 Now answer the following user question as Robable:
 User: ${userMessage}`;
 
+  try {
     const response = await client.responses.create({
       model: 'gpt-4o-mini',
       input: prompt,
@@ -65,8 +65,17 @@ User: ${userMessage}`;
     }
 
     return 'Sorry, I could not understand the response.';
-  } catch (error) {
-    console.error('Error calling OpenAI:', error);
-    throw error;
+  } catch (err) {
+    const msg = String(err && err.message ? err.message : err);
+
+    if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
+      throw new Error('RATE_LIMIT');
+    }
+
+    if (import.meta.env && import.meta.env.DEV) {
+      console.error('Error calling OpenAI:', err);
+    }
+
+    throw new Error('GENERIC_ERROR');
   }
 }

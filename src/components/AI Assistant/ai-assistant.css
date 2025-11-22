@@ -134,7 +134,7 @@
 }
 
 .user-message, .ai-message {
-    padding: .5rem;
+    padding: .5rem 1rem;
     border-radius: 25px;
     width: fit-content;
     max-width: 70%;

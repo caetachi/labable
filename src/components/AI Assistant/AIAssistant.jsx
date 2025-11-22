@@ -7,25 +7,26 @@ export default function AIAssistant({ pageContext }){
     let chat = document.querySelector('.ai-chat-container');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+
     const [prefetchedGreeting, setPrefetchedGreeting] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
 
-    async function sendMessage(){
-        if (!message || isLoading) {
+    async function sendMessage(overrideMessage){
+
+        if ((!message && !overrideMessage) || isLoading) {
             return;
         }
 
         const now = new Date().toLocaleString();
-        const userMessage = message;
+        const userMessage = overrideMessage ?? message;
         const input = document.getElementById('chat-input');
 
         if (input) {
             input.disabled = true;
             setMessage('');
         }
-        
+
         setMessages(prev =>{
             return [...prev,{
                 message: userMessage,
@@ -34,7 +35,6 @@ export default function AIAssistant({ pageContext }){
             }]
         })
 
-        setError(null);
         setIsLoading(true);
         let stop;
         requestAnimationFrame(() => {
@@ -43,18 +43,32 @@ export default function AIAssistant({ pageContext }){
 
         try {
             const reply = await sendChatMessage(userMessage, pageContext);
-            const replyTime = new Date().toLocaleString();
-
             setMessages(prev => {
                 return [...prev, {
                     message: reply,
-                    date_sent: replyTime,
+                    date_sent: now,
                     from: 'assistant'
                 }]
             })
         } catch (err) {
-            console.error(err);
-            setError('Something went wrong.');
+            const code = err && err.message ? err.message : '';
+            if (code === 'RATE_LIMIT') {
+                setMessages(prev => {
+                    return [...prev, {
+                        message: 'Too many requests. Please try again in 20 seconds.',
+                        date_sent: now,
+                        from: 'assistant'
+                    }]
+                })
+            } else {
+                setMessages(prev => {
+                    return [...prev, {
+                        message: 'Something went wrong.',
+                        date_sent: now,
+                        from: 'assistant'
+                    }]
+                })
+            }
         } finally {
             if (stop) {
                 stop();
@@ -116,6 +130,7 @@ export default function AIAssistant({ pageContext }){
         (async () => {
             try {
                 const reply = await sendChatMessage('Greet', pageContext);
+
                 const replyTime = new Date().toLocaleString();
 
                 setPrefetchedGreeting({
@@ -124,10 +139,10 @@ export default function AIAssistant({ pageContext }){
                     from: 'assistant'
                 });
             } catch (err) {
-                console.error(err);
+                err
             }
         })();
-    }, [pageContext])
+    }, [])
 
     useEffect(() => {
         const chats = document.querySelector('.chats-container');
@@ -160,6 +175,7 @@ export default function AIAssistant({ pageContext }){
             <div className="ai-chat-container">
                 <div className="chat-header">
                     <img src={RobabaleIcon} alt="Robable Icon" />
+
                     <span className='chat-header-content'>
                         <p className='chat-header-title'>Robable</p>
                         <p className='chat-header-desc'>AI Assistant</p>
@@ -168,34 +184,34 @@ export default function AIAssistant({ pageContext }){
                         <i className="ti ti-x close-icon"></i>
                     </button>
                 </div>
-                    <div className="chats-container">
-                        {messages && messages.map((currMessage, idx)=>{
-                            const isUser = currMessage.from === 'user';
-                            const containerClass = isUser ? 'user-message-container' : 'ai-message-container';
-                            const messageClass = isUser ? 'user-message' : 'ai-message';
-                            return <div id={'msg-' + idx} key={idx} className={containerClass} onClick={()=>messageClick(idx)}>
-                                        <p className={messageClass}>{error ? error : currMessage.message}</p>
-                                        <p className='message-date'>{currMessage.date_sent}</p>
-                                    </div>
-                        })}
-                    </div>
+                <div className="chats-container">
+                    {messages && messages.map((currMessage, idx)=>{
+                        const isUser = currMessage.from === 'user';
+                        const containerClass = isUser ? 'user-message-container' : 'ai-message-container';
+                        const messageClass = isUser ? 'user-message' : 'ai-message';
+                        return <div id={'msg-' + idx} key={idx} className={containerClass} onClick={()=>messageClick(idx)}>
+                                    <p className={messageClass}>{currMessage.message}</p>
+                                    <p className='message-date'>{currMessage.date_sent}</p>
+                                </div>
+                    })}
+                </div>
 
-                    <div className="chat-input-container">
-                        <textarea
-                            className='chat-input'
-                            id='chat-input'
-                            placeholder='Ask me anything'
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    sendMessage();
-                                }
-                            }}
-                        />
-                        <i className="ti ti-send-2 send-icon" onClick={() => sendMessage()}></i>
-                    </div>
+                <div className="chat-input-container">
+                    <textarea
+                        className='chat-input'
+                        id='chat-input'
+                        placeholder='Ask me anything'
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                sendMessage();
+                            }
+                        }}
+                    />
+                    <i className="ti ti-send-2 send-icon" onClick={() => sendMessage()}></i>
+                </div>
 
             </div>
             <div className="ai-assistant-button" onClick={showChat}>

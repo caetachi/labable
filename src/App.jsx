@@ -30,6 +30,7 @@ import CreateWashable from "./pages/Management Create/CreateWashable"
 import CreateSchedule from "./pages/Management Create/CreateSchedule"
 import ForgotPassword from "./pages/Login/ForgotPassword"
 import TermsConditions from "./pages/Terms and Conditions/TermsConditions"
+import AIAssistant from "./components/AI Assistant/AIAssistant"
 
 export default function App() {
   const [user, setUser] = useState();
@@ -84,10 +85,45 @@ export default function App() {
   )
 }
 
+const getPageContext = (path) => {
+  let pageContext;
+
+  if (path === '/') {
+    pageContext = 'Home page – marketing overview of the Labable laundry service.';
+  } else if (path === '/about-us') {
+    pageContext = 'About Us page – information about the Labable laundry business in Malolos.';
+  } else if (path === '/login') {
+    pageContext = 'Login page – user enters email and password to sign in to Labable.';
+  } else if (path === '/registration') {
+    pageContext = 'Registration page – new customer creates an account for Labable laundry services.';
+  } else if (path === '/forgot-password') {
+    pageContext = 'Forgot Password page – user can request a password reset email.';
+  } else if (path === '/terms-conditions') {
+    pageContext = 'Terms and Conditions page – legal terms for using Labable laundry services in Malolos.';
+  } else if (path === '/create-order') {
+    pageContext = 'Create Order page – customer sets up a new laundry order with items, services, transfer mode, date/time, and payment.';
+  } else if (path === '/order-summary') {
+    pageContext = 'Order Summary page – customer reviews the details of their laundry order before confirming.';
+  } else if (path === '/profile') {
+    pageContext = 'Profile page (customer) – view and edit personal information and default delivery address, plus security options.';
+  } else if (path === '/customer/dashboard') {
+    pageContext = 'Customer Dashboard – overview of recent laundry orders and quick actions for a regular customer.';
+  } else if (path.startsWith('/admin')) {
+    pageContext = 'Admin Management or Dashboard page – admin manages orders, customers, inventory, services, schedules, and views statistics.';
+  } else if (path.startsWith('/order/')) {
+    pageContext = 'Order View page – detailed view of a specific laundry order, including status and items.';
+  }
+
+  return pageContext;
+}
+
 function Layout({ user, userData }) {
   const location = useLocation();
   const noNavPaths = ['/login', '/registration', '/forgot-password'];
   const hideLayout = noNavPaths.includes(location.pathname);
+
+  const path = location.pathname;
+  const pageContext = getPageContext(path);
 
   return (
     <>
@@ -138,6 +174,8 @@ function Layout({ user, userData }) {
       </Routes>
 
       {!hideLayout && <Footer />}
+      
+      <AIAssistant pageContext={pageContext} />
     </>
   );
 }

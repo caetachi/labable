@@ -1,5 +1,4 @@
 import './terms-conditions.css';
-import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function TermsConditions() {
     return (
@@ -71,8 +70,6 @@ export default function TermsConditions() {
                     These Terms shall be governed and construed in accordance with the laws of <span className="highlight-bold">the Philippines</span>, and the courts in <span className="highlight-bold">Malolos, Bulacan</span>, shall have jurisdiction over any claims arising from the use of the Service, without regard to its conflict of law provisions.
                 </p>
             </section>
-            <AIAssistant pageContext="Terms and Conditions page – user can read the legal terms for using Labable, including acceptance of terms, description of service, user accounts and responsibilities, order process, payment and refunds, limitations of liability, changes to terms, and governing law and jurisdiction." />
         </div>
-    
     );
 }
