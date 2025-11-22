@@ -15,7 +15,6 @@ import BigNumber from 'bignumber.js'
 import searchWashableItems from '../../scripts/search'
 import { auth } from '../../firebase'
 import Swal from 'sweetalert2'
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -341,6 +340,7 @@ export default function CreateOrder() {
                         })}
                     </div>
                 </div>
+            </div>
             
             <div className="service-types-containter gray-border">
                 <p className='section-title'>Type of Service</p>
@@ -350,6 +350,7 @@ export default function CreateOrder() {
                     })}
                 </div>
             </div>
+
             <div className="transfer-details-container">
                 <div className="transfer-mode-container gray-border">
                     <p className='section-title'>Mode of Laundry Transfer</p>
@@ -373,6 +374,7 @@ export default function CreateOrder() {
                     <input className='transfer-date-input gray-border' type="datetime-local" id="input-transfer" onChange={(e) => setTransferDate(e.target.value)}/>
                 </div>
             </div>
+
             <div className="receive-mode-container section gray-border">
                 <p className='section-title'>How would you like to receive your clean laundry?</p>
                 <div className="radio-container">
@@ -388,6 +390,7 @@ export default function CreateOrder() {
                     </label>
                 </div>
             </div>
+
             <div className="payment-method-container section gray-border">
                 <p className='section-title'>Payment Method</p>
                 <div className="radio-container">
@@ -403,6 +406,7 @@ export default function CreateOrder() {
                     </label>
                 </div>
             </div>
+
             <div className="additional-notes-container section gray-border">
                 <p className='section-title'>Additional Notes (Optional)</p>
                 <textarea className='additional-textarea gray-border' name="notes" id="" placeholder='Any special instructions...' onChange={(e) => setNotes(e.target.value)}></textarea>
@@ -426,8 +430,6 @@ export default function CreateOrder() {
                     <button className='action-button summary-button disabled' disabled>Review Order Summary</button>
                 }
             </div>
-            </div>
-            <AIAssistant pageContext="Create Order page – customer can set the address, search and add washable items into the 'Your Order' list, choose a service card, select transfer mode and date/time (validated against business hours and at least 30 minutes ahead), choose receive mode and payment method, add additional notes, see estimated weight and price, and click 'Review Order Summary' once all required fields are filled and at least 1kg is reached." />
         </div>
     )
 }

@@ -7,7 +7,6 @@ import { onValue, ref } from 'firebase/database';
 import { db, auth } from '../../firebase.js';
 import { getOrders, getUsers } from '../../scripts/get.js';
 import BigNumber from 'bignumber.js';
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 function AdminDashboard() {
     const [userData, setUserData] = useState({});
@@ -316,7 +315,6 @@ const MyAreaChart = () => {
                         <p>Washables</p>
                     </NavLink>
                 </div>
-                <AIAssistant pageContext="Admin Dashboard – admin can see total orders, total revenue, total customers, day-specific stats, adjust the year to view a revenue chart, and use dashboard buttons to navigate quickly to Orders, Schedules, Customers, Inventory, Services, and Washables." />
             </div>
         )}
         </>

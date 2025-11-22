@@ -15,7 +15,6 @@ import { onValue, ref } from "firebase/database";
 import { db } from "../../firebase";
 import { toast } from "react-toastify";
 import { deliveredOrder, cancelOrder } from "../../scripts/update";
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 const fieldGroups = {
 	order: [
@@ -403,7 +402,7 @@ export default function ManagementView() {
 	}
 
 	return (
-		<div className='management-view-container'>
+			<div className='management-view-container'>
 			<div className='content'>
 				<div className='header'>
 					<div className='title'>
@@ -465,7 +464,6 @@ export default function ManagementView() {
 					/>
 				</div>
 			</div>
-			<AIAssistant pageContext="Admin Management View – shows a single record (such as an order, schedule, customer, inventory item, service, or washable) with its details and action buttons (for example accept, reject, cancel, delivered, delete) depending on the category." />
 		</div>
 	);
 }

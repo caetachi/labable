@@ -8,7 +8,6 @@ import { useState } from 'react'
 import AltAccountButton from '../../components/AltAuth/AltAccountButton'
 import { loginViaEmailAndPassword } from '../../scripts/login.js'
 import { registerViaGoogle } from '../../scripts/register.js'
-import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -147,7 +146,6 @@ export default function Login() {
                         </div>
                 </div>
             </section>
-            <AIAssistant pageContext="Login page – user can enter email and password, toggle 'Remember me', use the 'Forgot password?' link, log in with email/password or continue with Google, and navigate to the Registration page via the Sign up link." />
         </>
     )
 }
