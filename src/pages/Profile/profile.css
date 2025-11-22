@@ -100,8 +100,9 @@
 }
 
 .save-button:hover {
-  background-color: #1f2937;
-}
+  color: #000000;
+  border: solid 1px black;
+  background-color: white;}
 
 .save-button.disabled {
   opacity: 0.5;
@@ -338,4 +339,29 @@
   color: red;
   margin-top: 10px;
   transition: 0.3s;
+} .map-container {
+height: 300px;
+ width: 100%; 
+ margin-bottom: 15px;
+  border-radius: 8px;
+   overflow: hidden; 
+   border: 1px solid #ddd;
+} .map-button {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 0.875rem;
+  color: #ffffff;
+  border-radius: 20px;
+  background-color: black;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 10px 20px;
+  transition: ease-in-out 0.2s;
+} .map-button:hover {
+  color: #000000;
+  border: solid 1px black;
+  background-color: white;
 }
