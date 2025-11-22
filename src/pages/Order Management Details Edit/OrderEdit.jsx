@@ -308,7 +308,6 @@ export default function OrderEdit({id}){
                         <option value="Pick-up">Pickup</option>
                         <option value="Deliver">Deliver</option>
                     </select>
-                    <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
@@ -319,28 +318,24 @@ export default function OrderEdit({id}){
                         <option value="Pick-up">Pickup</option>
                         <option value="Deliver">Deliver</option>
                     </select>
-                    <i className="hgi hgi-stroke hgi-arrow-down-01 input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Order Date</p>
                 <div className="small-container-input-container">
                     <input className='small-container-input gray-border' type="datetime-local" defaultValue={orderDate && new Date(orderDate).toISOString().slice(0, 16)} onChange={(e)=>setOrderDate(e.target.value)}/>
-                    <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Laundry Transfer Date Time</p>
                 <div className="small-container-input-container">
                     <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].transfer_date} onChange={(e)=>setLaundryTransferDateTime(e.target.value)}/>
-                    <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
                 <p className='small-container-title'>Arrival Date</p>
                 <div className="small-container-input-container">
                     <input className='small-container-input gray-border' type="datetime-local" defaultValue={order[1].arrival_date} onChange={(e)=>setArrivalDate(e.target.value)}/>
-                    <i className="ti ti-calendar-week input-icon right-icon"></i>
                 </div>
             </div>
             <div className="small-container">
