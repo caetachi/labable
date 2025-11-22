@@ -1,0 +1,149 @@
+.gcash-payment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    border-radius: 8px;
+    background-image: linear-gradient(
+        to bottom, 
+        var(--hl-blue) 0%, 
+        var(--hl-blue) 50%,
+        var(--bg-light) 50%, 
+        var(--bg-light) 100% 
+    );
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: auto;   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gcash-payment-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 5px;
+    color: var(--fg-light);
+    margin-bottom: 10px;
+}
+
+.gcash-payment-header h2{
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.gcash-payment-header img{
+    width: 40px;
+    height: 40px;
+    filter: invert();
+}
+
+.gcash-payment-card{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 30px;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.gcash-payment-container .merchant-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--sf-dark);
+}
+
+.gcash-payment-container .amount-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--sf-dark);
+}
+
+.gcash-payment-container .amount-container h3{
+    font-size: 1.25em;
+    font-weight: 600;
+    color: var(--hl-blue);
+}
+
+.gcash-payment-container .input-group{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+    border-bottom: 1px solid var(--sf-dark);
+}
+
+.gcash-payment-container .input-group p{
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.gcash-payment-container .input-group input{
+    border: none;
+    outline: none;
+    border-left: 1px solid var(--sf-dark);
+    font-size: 1em;
+    font-weight: 500;
+    width: 100%;
+    padding: 0px 10px;
+    font-family: var(--primary-font);
+}
+
+.gcash-payment-container .gcash-actions button{
+    color: var(--fg-light);
+    background-color: var(--hl-blue);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.gcash-payment-container .gcash-actions button:hover{
+    transition: 0.3s ease;
+    transform: translateY(-2px);
+}
+
+.gcash-payment-container .gcash-actions button.disabled{
+    background-color: var(--sf-light);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.gcash-payment-container .fa-solid.fa-x{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5em;
+    color: var(--fg-light);
+    cursor: pointer;
+}
+
+.gcash-payment-container .total-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--sf-dark);
+    border-top: 1px solid var(--sf-dark);
+    padding-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .gcash-payment-container {
+        width: 95%;
+        padding: 20px;
+    }
+}

@@ -422,3 +422,23 @@ export async function receiveOrder(orderUid) {
   localStorage.setItem('toastMessage', 'Order received!');
   localStorage.setItem('toastType', 'success');
 }
+
+export async function updateOrderPaymentStatus(orderId) {
+    const orderSnap = await get(ref(db, `orders/${orderId}`));
+    const orderData = orderSnap.val() || {};
+    const userUid = orderData.user_id;
+    const orderRef = ref(db, `orders/${orderId}/payment`);
+    try {
+        await update(orderRef, {
+            status: 'paid'
+        });
+        console.log(`Order ${orderId} payment status updated to paid.`);
+        console.log("User UID:", userUid);
+        await newUserNotification(userUid, 'Payment Successful', 'Your payment has been received!');
+        localStorage.setItem('toastMessage', 'Payment successful!');
+        localStorage.setItem('toastType', 'success');
+        window.location.reload();
+    } catch (error) {
+        console.error("Error updating payment status: ", error);
+    }
+}
