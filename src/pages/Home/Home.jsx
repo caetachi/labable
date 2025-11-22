@@ -1,7 +1,7 @@
 import "./home.css";
 import helloGif from "../../assets/hello_laundry.gif";
 import laundryVideo from "../../assets/laundry_process.mp4";
-import superb from "../../assets/superb.png";
+import superb from "../../assets/Superb.png";
 import good from "../../assets/Good.png";
 import budget from "../../assets/Budget.png";
 import superbThick from "../../assets/Superb-Thick.png";

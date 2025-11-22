@@ -1,5 +1,5 @@
 import './ai-assistant.css'
-import RobabaleIcon from '../../assets/mascot.png'
+import RobabaleIcon from '../../assets/Mascot.png'
 import { useEffect, useState } from 'react';
 import { sendChatMessage } from '../../scripts/ai';
 
