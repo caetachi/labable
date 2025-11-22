@@ -128,9 +128,13 @@ export default function OrderEdit({id}){
     useEffect(() => {
         function calculateTotalKilo() {
             let total = 0;
-            for (let i = 0; i < orderItems.length; i++) {
-                total += orderItems[i].total_kilo;
-        }
+
+            if (orderItems.length > 0) {
+                for (let i = 0; i < orderItems.length; i++) {
+                    total += orderItems[i].total_kilo;
+                }
+            }
+        
         setTotalKilo(Number(total));
         }
         calculateTotalKilo();
