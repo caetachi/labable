@@ -11,12 +11,9 @@ import InventoryEdit from './InventoryEdit'
 import ScheduleEdit from './ScheduleEdit'
 import OrderEdit from './OrderEdit'
 import CustomerEdit from './CustomerEdit';  
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function OrderManagementDetailsEdit(){
     const {toEdit, id} = useParams();
-    const [editDetail, setEditDetail] = useState(toEdit);
-    const [order, setOrder] = useState();
     const [inventoryItem, setInventoryItem] = useState();
     const [serviceType, setServiceType] = useState();
     const [washableItem, setWashableItem] = useState();
@@ -25,7 +22,7 @@ export default function OrderManagementDetailsEdit(){
     const [locationName, setLocationName] = useState("Malolos");
 
     useEffect(()=>{
-        if(editDetail == 'order' || editDetail == 'schedule'){
+        if(toEdit == 'order' || toEdit == 'schedule'){
             async function getOrderList(id) {
                 if(id){
                     await getOrder(String(id));
@@ -33,7 +30,7 @@ export default function OrderManagementDetailsEdit(){
             }
             getOrderList(id)
         }
-        if(editDetail == 'inventory'){
+        if(toEdit == 'inventory'){
             async function gettingInventoryItem(id) {
                 if(id){
                     setInventoryItem(await getInventoryItem(String(id)));
@@ -41,15 +38,15 @@ export default function OrderManagementDetailsEdit(){
             }
             gettingInventoryItem(id)
         }
-        if(editDetail == 'service'){
+        if(toEdit == 'service'){
             async function gettingServiceType(id) {
                 if(id){
-                    await getServiceType(String(id));
+                    setServiceType(await getServiceType(String(id)));
                 }
             }
             gettingServiceType(id)
         }
-        if(editDetail == 'washable'){
+        if(toEdit == 'washable'){
             async function gettingWashableItem(id) {
                 if(id){
                     setWashableItem(await getWashableItem(String(id)));
@@ -57,7 +54,7 @@ export default function OrderManagementDetailsEdit(){
             }
             gettingWashableItem(id)
         }
-        if(editDetail == 'customer'){
+        if(toEdit == 'customer'){
             async function getingCustomer(id) {
                 if(id){
                     setCustomer(await getUser(String(id)));
@@ -66,7 +63,7 @@ export default function OrderManagementDetailsEdit(){
             getingCustomer(id)
         }
 
-    }, [editDetail])
+    }, [toEdit])
 
     function onCoordinateChange(newCoordinates){
         setCoordinates(newCoordinates);
@@ -83,31 +80,30 @@ export default function OrderManagementDetailsEdit(){
                     <h1><span>Laba</span><span className='highlight-tag'>ble</span></h1>
                 </div>
                 {
-                    editDetail == 'order'  &&
+                    toEdit == 'order'  &&
                     <OrderEdit id={id} />
                 }
                 {
-                    editDetail == 'schedule'  &&
+                    toEdit == 'schedule'  &&
                     <ScheduleEdit id={id} locationName={locationName} coordinates={coordinates} onCoordinateChange={onCoordinateChange} onLocationNameChange={onLocationNameChange} />
                 }
                 {
-                    editDetail == 'inventory'  && inventoryItem &&
+                    toEdit == 'inventory'  && inventoryItem &&
                     <InventoryEdit inventoryItem={inventoryItem}/>
                 }
                 {
-                    editDetail == 'service'  && serviceType &&
+                    toEdit == 'service'  && serviceType &&
                     <ServiceEdit serviceType={serviceType}/>
                 }
                 {
-                    editDetail == 'washable'  && washableItem &&
+                    toEdit == 'washable'  && washableItem &&
                     <WashableEdit washableItem={washableItem}/>
                 }
                 {
-                    editDetail == 'customer' && customer &&
+                    toEdit == 'customer' && customer &&
                     <CustomerEdit customer={customer}/>
                 }
             </div>
-            <AIAssistant/>
         </>
 
     )

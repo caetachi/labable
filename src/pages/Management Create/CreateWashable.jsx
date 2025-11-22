@@ -2,7 +2,6 @@ import { useState } from 'react'
 import './management-create.css'
 import { newWashableItem } from '../../scripts/create';
 import { useNavigate } from 'react-router';
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateWashable() {
 
@@ -63,7 +62,6 @@ export default function CreateWashable() {
                     <button className="create-button disabled" disabled>Create Washable</button>} 
                 </div>
             </div>
-            <AIAssistant/>
         </div>
     )
 }

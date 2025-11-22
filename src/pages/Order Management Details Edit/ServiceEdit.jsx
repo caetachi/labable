@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { getServicesIncluded } from "../../scripts/get";
 
 export default function ServiceEdit({serviceType}){
-
     const [serviceName, setServiceName] = useState(serviceType[1].service_name);
     const [services, setServices] = useState(serviceType[1].services.join(', '));
     const [price, setPrice] = useState(serviceType[1].service_price);
@@ -46,20 +45,6 @@ export default function ServiceEdit({serviceType}){
             setServices(temp);
         }
     }   
-
-    function onPrice(e) {
-        const temp = e.target.value;
-        const error = document.getElementById('priceError');
-        setPrice(null)
-        if (!temp.trim()) {
-            error.innerHTML = 'Price is required';
-        } else if (isNaN(temp)) {
-            error.innerHTML = 'Price must be a number';
-        } else {
-            error.innerHTML = '';
-            setPrice(temp);
-        }
-    }
 
     useEffect(()=>{
         async function getServiceList() {

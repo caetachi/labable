@@ -10,7 +10,6 @@ import BigNumber from 'bignumber.js'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
-import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function OrderSummary() {
     const {state} = useLocation();
@@ -211,7 +210,6 @@ export default function OrderSummary() {
                     </button>
                 </div>
             </div>
-            <AIAssistant />
         </div>
     )
 }

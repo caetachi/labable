@@ -20,6 +20,7 @@
     overflow: hidden;
     position: relative;
     bottom: 15px;
+    z-index: 9999;
 }
 
 .chat-header{
@@ -175,15 +176,16 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.5s ease-out;
+    will-change: transform;
+    backface-visibility: hidden;
+    overflow: hidden;
 }
 
 .ai-chat-container.active{
     display: flex;
 }
 
-.ai-assistant-button:hover{
-    box-shadow: 0 5px 25px var(--sf-light);
-    transform: translateY(-5px);
+.ai-assistant-button:hover {
     animation: buttonBounce 1.2s infinite ease-in-out;
 }
 
@@ -232,10 +234,10 @@
 
 @keyframes buttonBounce {
     0%, 100% {
-        transform: translateY(0);
+        transform: translate3d(0, 0, 0);
     }
     50% {
-        transform: translateY(-10px);
+        transform: translate3d(0, -10px, 0);
     }
 }
 

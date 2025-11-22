@@ -4,11 +4,8 @@ import { useEffect, useState } from 'react';
 import { sendChatMessage } from '../../scripts/ai';
 
 export default function AIAssistant({ pageContext }){
-    let chat = document.querySelector('.ai-chat-container');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-
-    const [prefetchedGreeting, setPrefetchedGreeting] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -124,26 +121,6 @@ export default function AIAssistant({ pageContext }){
         }
     }
 
-    useEffect(()=>{
-        chat = document.querySelector('.ai-chat-container');
-
-        (async () => {
-            try {
-                const reply = await sendChatMessage('Greet', pageContext);
-
-                const replyTime = new Date().toLocaleString();
-
-                setPrefetchedGreeting({
-                    message: reply,
-                    date_sent: replyTime,
-                    from: 'assistant'
-                });
-            } catch (err) {
-                err
-            }
-        })();
-    }, [])
-
     useEffect(() => {
         const chats = document.querySelector('.chats-container');
         if (!chats) return;
@@ -151,20 +128,30 @@ export default function AIAssistant({ pageContext }){
     }, [messages]);
 
     function showChat(){
-        if(!chat){
-            return
+        const chatEl = document.querySelector('.ai-chat-container');
+        if (!chatEl) {
+            return;
         }
-        if(chat.classList.contains('active')){
-            chat.style.display = 'none'
-            chat.classList.remove('active')
-        }else{
-            chat.style.display = 'flex'
-            chat.classList.add('active')
 
-            if (messages.length === 0 && prefetchedGreeting){
+        if(chatEl.classList.contains('active')){
+            chatEl.style.display = 'none'
+            chatEl.classList.remove('active')
+        }else{
+            chatEl.style.display = 'flex'
+            chatEl.classList.add('active')
+
+            if (messages.length === 0){
+                const replyTime = new Date().toLocaleString();
+                
+                const greeting = {
+                    message: 'Hello! I am Robable, your AI assistant. How can I help you today?',
+                    date_sent: replyTime,
+                    from: 'assistant'
+                }
+                
                 setMessages(prev => {
                     if (prev.length > 0) return prev;
-                    return [...prev, prefetchedGreeting];
+                    return [...prev, greeting];
                 });
             }
         }

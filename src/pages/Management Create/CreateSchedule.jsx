@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './management-create.css'
 import { newSchedule } from '../../scripts/create';
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateSchedule() {
 
@@ -82,7 +81,6 @@ export default function CreateSchedule() {
                     }
                 </div>
             </div>
-            <AIAssistant/>
         </div>
     )
 }

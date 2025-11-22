@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './management-create.css'
 import { newInventory } from '../../scripts/create';
-import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateInventory() {
 
@@ -94,7 +93,6 @@ export default function CreateInventory() {
                     }
                 </div>
             </div>
-            <AIAssistant/>
         </div>
     )
 }
