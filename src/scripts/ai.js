@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API,
-  dangerouslyAllowBrowser: true,
+  apiKey: import.meta.env.VITE_OPENAI_API_BACKUP,
+  dangerouslyAllowBrowser: false,
 });
 
 export async function sendChatMessage(userMessage, pageContext) {
@@ -70,10 +70,6 @@ User: ${userMessage}`;
 
     if (msg.includes('429') || msg.toLowerCase().includes('rate limit')) {
       throw new Error('RATE_LIMIT');
-    }
-
-    if (import.meta.env && import.meta.env.DEV) {
-      console.error('Error calling OpenAI:', err);
     }
 
     throw new Error('GENERIC_ERROR');
