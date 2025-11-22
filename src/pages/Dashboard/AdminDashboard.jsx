@@ -36,9 +36,11 @@ function AdminDashboard() {
                     let totalRevenue = 0;
                     count.forEach((order) => {
                         const orderObject = order[1]; 
-                        const amountValue = parseFloat(orderObject?.amount) || 0; 
-                    
-                        totalRevenue += amountValue;
+                        {
+                            orderObject.payment?.status.toLowerCase() === "paid" && (
+                                totalRevenue += parseFloat(orderObject?.amount) || 0
+                            )
+                        }
                     });
                 
                     setAdminApiData(prevData => ({
@@ -132,9 +134,11 @@ function calculateMonthlyRevenue(ordersArray, year = new Date().getFullYear()) {
             const orderMonthIndex = dateObject.getMonth();
             
             if (orderYear === year) {
-                const amountValue = parseFloat(orderObject?.amount) || 0;
-                
-                monthlyRevenueData[orderMonthIndex].revenue += amountValue;
+                {
+                    orderObject.payment?.status.toLowerCase() === "paid" && (   
+                        monthlyRevenueData[orderMonthIndex].revenue += parseFloat(orderObject?.amount) || 0
+                    )
+                }
             }
         }
     });
@@ -175,8 +179,11 @@ function setDataForDate(date) {
 
             if (orderDateString === date) { 
                 dayOrdersCount++;
-                const amountValue = parseFloat(orderObject?.amount) || 0;
-                dayRevenueAmount += amountValue;
+                {
+                    orderObject.payment?.status.toLowerCase() === "paid" && (
+                        dayRevenueAmount += parseFloat(orderObject?.amount) || 0
+                    )
+                }
                 if (orderObject?.status === "Completed") {
                     dayOrdersCompletedCount++;
                 }
