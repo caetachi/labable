@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js'
 import searchWashableItems from '../../scripts/search'
 import { auth } from '../../firebase'
 import Swal from 'sweetalert2'
+import AIAssistant from '../../components/AI Assistant/AIAssistant';
 
 export default function CreateOrder() {
     const [address, setAddress] = useState();
@@ -426,6 +427,7 @@ export default function CreateOrder() {
                 }
             </div>
             </div>
+            <AIAssistant pageContext="Create Order page – customer can set the address, search and add washable items into the 'Your Order' list, choose a service card, select transfer mode and date/time (validated against business hours and at least 30 minutes ahead), choose receive mode and payment method, add additional notes, see estimated weight and price, and click 'Review Order Summary' once all required fields are filled and at least 1kg is reached." />
         </div>
     )
 }

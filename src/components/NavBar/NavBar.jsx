@@ -160,7 +160,7 @@ export default function NavBar({userid, image_url, name, hasAddress}) {
                     name ?
                     <div className="notification">
                         <button className="notification-btn" onClick={toggleFloatingNotification}>
-                        <i className={notifications?.length > 0 ? "ti ti-bell-ringing" : "ti ti-bell"}></i>
+                        <i className={notifications?.length > 0 ? "ti ti-bell-ringing-filled" : "ti ti-bell"}></i>
                         </button>
                         <div className="floating-notification-container">
                             {

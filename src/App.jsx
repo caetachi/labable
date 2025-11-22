@@ -5,12 +5,10 @@ import AboutUs from "./pages/About Us/AboutUs"
 import Footer from "./components/Footer/Footer"
 import Login from "./pages/Login/Login"
 import CreateOrder from "./pages/Order Create/OrderCreate"
-import MyOrder from "./pages/My Orders/MyOrder"
 import Profile from "./pages/Profile/Profile"
 import Registration from "./pages/Registration/Registration"
 import NotFound from "./pages/Not Found/NotFound"
 import OrderSummary from "./pages/Order Summary/OrderSummary"
-import Dashboard from "./pages/Dashboard/Dashboard"
 import AdminSideBar from "./components/Admin SideBar/AdminSideBar"
 import OrderManagementDetailsEdit from "./pages/Order Management Details Edit/OrderManagementDetailsEdit"
 import Management from "./pages/Management/Management"
@@ -105,7 +103,6 @@ function Layout({ user, userData }) {
             {/*private  routes*/}
               <Route path="/create-order" element={<CreateOrder />} />
               <Route path="/order-summary" element={<OrderSummary />} />
-              <Route path="/my-orders" element={<MyOrder />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/customer/dashboard" element={<CustomerDashboard />} />
               <Route path="/order/:viewId" element={<OrderView />} />

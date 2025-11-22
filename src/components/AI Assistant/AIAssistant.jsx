@@ -3,11 +3,12 @@ import RobabaleIcon from '../../assets/mascot.png'
 import { useEffect, useState } from 'react';
 import { sendChatMessage } from '../../scripts/ai';
 
-export default function AIAssistant(){
-    
+export default function AIAssistant({ pageContext }){
     let chat = document.querySelector('.ai-chat-container');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [prefetchedGreeting, setPrefetchedGreeting] = useState(null);
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -18,7 +19,13 @@ export default function AIAssistant(){
 
         const now = new Date().toLocaleString();
         const userMessage = message;
+        const input = document.getElementById('chat-input');
 
+        if (input) {
+            input.disabled = true;
+            setMessage('');
+        }
+        
         setMessages(prev =>{
             return [...prev,{
                 message: userMessage,
@@ -27,18 +34,15 @@ export default function AIAssistant(){
             }]
         })
 
-        const input = document.getElementById('chat-input');
-        if (input) {
-            input.disabled = true;
-        }
-        
         setError(null);
         setIsLoading(true);
-
-        const stop = waitLang();
+        let stop;
+        requestAnimationFrame(() => {
+            stop = loadingAnimation();
+        });
 
         try {
-            const reply = await sendChatMessage(userMessage);
+            const reply = await sendChatMessage(userMessage, pageContext);
             const replyTime = new Date().toLocaleString();
 
             setMessages(prev => {
@@ -50,20 +54,18 @@ export default function AIAssistant(){
             })
         } catch (err) {
             console.error(err);
-            setError('Something went wrong while contacting the AI.');
+            setError('Something went wrong.');
         } finally {
-            stop();
-            setIsLoading(false);
-            if (input) {
-                input.disabled = false;
-                input.value = "";
+            if (stop) {
+                stop();
             }
+            setIsLoading(false);
             setMessage('');
+            if (input) input.disabled = false;
         }
-
     }
 
-    function waitLang(){
+    function loadingAnimation(){
         const chats = document.querySelector('.chats-container');
         if (!chats) {
             return () => {};
@@ -78,35 +80,79 @@ export default function AIAssistant(){
             dot.style.animationDelay = `${i * 0.15}s`; 
             typingContainer.appendChild(dot);
         }
-        chats.appendChild(typingContainer);
+
+        const messageNodes = chats.querySelectorAll('.user-message-container, .ai-message-container');
+        const lastMessage = messageNodes[messageNodes.length - 1];
+        if (lastMessage) {
+            lastMessage.insertAdjacentElement('afterend', typingContainer);
+        } else {
+            chats.appendChild(typingContainer);
+        }
 
         const stop = () => {
-            if (chats.contains(typingContainer)) {
-                chats.removeChild(typingContainer);
+            if (typingContainer.parentNode) {
+                typingContainer.parentNode.removeChild(typingContainer);
             }
         }
         return stop;
     }
 
-    useEffect(()=>{
-        chat = document.querySelector('.ai-chat-container');
-    }, [])
+    function messageClick(key) {
+        const message = document.querySelector(`#msg-${key}`);
+        const date = message.lastElementChild;
 
-    function showChat(){
-        if(!chat){
-            console.log('mali');
-            return
-        }
-        if(chat.style.display == 'flex'){
-            closeChat();
+        if (date.classList.contains('shown')) {
+            date.classList.remove('shown');
+            date.style.display = 'none';
         }else{
-            chat.style.display = 'flex'
+            date.classList.add('shown');
+            date.style.display = 'block';
         }
     }
 
-    function closeChat(){
-        chat.style.display = 'none'
-        
+    useEffect(()=>{
+        chat = document.querySelector('.ai-chat-container');
+
+        (async () => {
+            try {
+                const reply = await sendChatMessage('Greet', pageContext);
+                const replyTime = new Date().toLocaleString();
+
+                setPrefetchedGreeting({
+                    message: reply,
+                    date_sent: replyTime,
+                    from: 'assistant'
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        })();
+    }, [pageContext])
+
+    useEffect(() => {
+        const chats = document.querySelector('.chats-container');
+        if (!chats) return;
+        chats.scrollTop = chats.scrollHeight;
+    }, [messages]);
+
+    function showChat(){
+        if(!chat){
+            return
+        }
+        if(chat.classList.contains('active')){
+            chat.style.display = 'none'
+            chat.classList.remove('active')
+        }else{
+            chat.style.display = 'flex'
+            chat.classList.add('active')
+
+            if (messages.length === 0 && prefetchedGreeting){
+                setMessages(prev => {
+                    if (prev.length > 0) return prev;
+                    return [...prev, prefetchedGreeting];
+                });
+            }
+        }
     }
     
     return(
@@ -114,36 +160,36 @@ export default function AIAssistant(){
             <div className="ai-chat-container">
                 <div className="chat-header">
                     <img src={RobabaleIcon} alt="Robable Icon" />
-                    <p className='chat-header-title'>Robable Chat Assistant</p>
-                    <i className="fas fa-window-minimize minimize-icon" onClick={closeChat}></i>
+                    <span className='chat-header-content'>
+                        <p className='chat-header-title'>Robable</p>
+                        <p className='chat-header-desc'>AI Assistant</p>
+                    </span>
+                    <button className="close-ai-assistant-btn" onClick={showChat}>
+                        <i className="ti ti-x close-icon"></i>
+                    </button>
                 </div>
                     <div className="chats-container">
-                        {messages && messages.map((currMessage)=>{
+                        {messages && messages.map((currMessage, idx)=>{
                             const isUser = currMessage.from === 'user';
                             const containerClass = isUser ? 'user-message-container' : 'ai-message-container';
                             const messageClass = isUser ? 'user-message' : 'ai-message';
-                            return <div key={currMessage.date_sent + currMessage.from} className={containerClass}>
-                                        <p className={messageClass}>{currMessage.message}</p>
+                            return <div id={'msg-' + idx} key={idx} className={containerClass} onClick={()=>messageClick(idx)}>
+                                        <p className={messageClass}>{error ? error : currMessage.message}</p>
                                         <p className='message-date'>{currMessage.date_sent}</p>
                                     </div>
                         })}
-                        {error && (
-                            <div className="error-message-container">
-                                <p className='message-error'>{error}</p>
-                            </div>
-                        )}
                     </div>
 
                     <div className="chat-input-container">
-                        <input
-                            type="text"
+                        <textarea
                             className='chat-input'
                             id='chat-input'
                             placeholder='Ask me anything'
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
                                     sendMessage();
                                 }
                             }}
