@@ -108,6 +108,11 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+.save-button.disabled:hover {
+  background-color: black;
+  color: white;
+  border: none;
+}
 
 .card {
   background-color: white;
