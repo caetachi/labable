@@ -10,6 +10,7 @@ permissions:
 jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    environment: .env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +22,9 @@ jobs:
           VITE_FIREBASE_URL: ${{ secrets.VITE_FIREBASE_URL }}
           VITE_OPENAI_API: ${{ secrets.VITE_OPENAI_API }}
           VITE_OPENAI_API_BACKUP: ${{ secrets.VITE_OPENAI_API_BACKUP }}
-      - run: npm ci && npm run build
+        run: | 
+          npm ci
+          npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
