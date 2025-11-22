@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { registerViaEmailPass, registerViaGoogle } from '../../scripts/register'
 import bubble from '../../assets/bubble.svg'
 import heartBubble from '../../assets/heart-bubble.svg'
+import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function Registration() {
 
@@ -265,6 +266,7 @@ export default function Registration() {
                     </div>
                 </div>
             </section>
+            <AIAssistant pageContext="Registration page – user can create a new account by filling in required fields (such as name, email, password) and can optionally register via Google, then proceed to log in and use Labable." />
         </>
     )
 }

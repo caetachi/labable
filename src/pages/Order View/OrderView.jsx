@@ -7,6 +7,7 @@ import { formatTextualDateTime } from "../../scripts/dateformat";
 import BigNumber from "bignumber.js";
 import Swal from "sweetalert2";
 import { cancelOrder, receiveOrder } from "../../scripts/update";
+import AIAssistant from "../../components/AI Assistant/AIAssistant";
 
 const fieldGroup = [
 		["Order ID", (v) => v.order_id],
@@ -224,6 +225,7 @@ export default function OrderView() {
 					)}
 				</div>
 			</div>
+			<AIAssistant />
 		</div>
 	);
 }

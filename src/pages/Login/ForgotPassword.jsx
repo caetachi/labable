@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '../../firebase'
 import { toast } from 'react-toastify'
+import AIAssistant from '../../components/AI Assistant/AIAssistant'
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
@@ -67,6 +68,7 @@ export default function ForgotPassword() {
                 }
                 <NavLink className={'back-btn'} to={'/login'}>Back to Login</NavLink>
             </form>
+            <AIAssistant pageContext="Forgot Password page – user can enter their email address and click the button to send a password reset link, then follow that email to change their password, and use the 'Back to Login' link to return to the login page." />
         </div>
     )
 }

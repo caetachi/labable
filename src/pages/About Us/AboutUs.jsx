@@ -6,6 +6,7 @@ import Santiago from '../../assets/team_santiago.jpg';
 import Valdez from '../../assets/team_valdez.jpg';
 import TeamCard from "../../components/Team Card - About Us/TeamCard";
 import ValueCard from "../../components/Value Card - About Us/ValueCard";
+import AIAssistant from "../../components/AI Assistant/AIAssistant";
 
 export default function AboutUs() {
   return (
@@ -118,6 +119,7 @@ export default function AboutUs() {
               />
             </div>
         </div>
+        <AIAssistant/>
       </div>
     </>
   );

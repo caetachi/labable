@@ -190,6 +190,11 @@
     font-size: 25px;
 }   
 
+.notification .notification-btn i[class*='bell-ringing'] {
+    color: var(--hl-blue);
+    font-weight: bold;
+}
+
 .notification .notification-btn:hover{
     transition: 0.3s ease;
 }
