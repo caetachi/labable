@@ -104,7 +104,7 @@ function CustomerDashboard() {
                             <p>Track and manage your laundry orders</p>
                         </div>
                     </div>
-                        {recentOrders.map(([orderId, order]) => {
+                        {recentOrders.sort((a, b) => new Date(b[1].created_at) - new Date(a[1].created_at)).map(([orderId, order]) => {
                             return (
                                 <DashboardOrderHistoryCard
                                     key={orderId}

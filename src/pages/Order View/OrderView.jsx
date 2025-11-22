@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import titlecase from "../../scripts/titlecase";
 import { useEffect, useState } from "react";
 import { getView } from "../../scripts/get";
@@ -6,7 +6,8 @@ import TrackNode from "../../components/TrackNode/TrackNode";
 import { formatTextualDateTime } from "../../scripts/dateformat";
 import BigNumber from "bignumber.js";
 import Swal from "sweetalert2";
-import { cancelOrder, receiveOrder } from "../../scripts/update";
+import { cancelOrder, receiveOrder, updateOrderPaymentStatus } from "../../scripts/update";
+import GCash from "../../components/GcashPayment/GCash";
 import AIAssistant from "../../components/AI Assistant/AIAssistant";
 
 const fieldGroup = [
@@ -49,6 +50,7 @@ export default function OrderView() {
 	const { viewId } = useParams();
 	const navigate = useNavigate();
 	const [viewData, setViewData] = useState(null);
+	const [showGcash, setShowGcash] = useState(false);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -128,6 +130,14 @@ export default function OrderView() {
 		});
 	}
 
+	const payWithGcash = () => {
+		setShowGcash(true);
+	}
+
+	async function onPaymentSuccess() {
+		await updateOrderPaymentStatus(viewId);
+	}
+
 	const ActionButtons = ({ category, status: orderStatus }) => {
 		const actions =
 			{
@@ -161,6 +171,11 @@ export default function OrderView() {
 					orderStatus === "rejected" ?
 						[
 							["Your order was rejected", "rejected-btn"]
+						]
+						:
+					orderStatus !== "pending" && viewData.payment.status === "unpaid" && viewData.payment.payment_method.toLowerCase() === "gcash" ?
+						[
+							["Pay Now", "pay-now-btn", { onClick: () => payWithGcash() }]
 						]
 						:
 						[]
@@ -214,7 +229,6 @@ export default function OrderView() {
 									/>
 								))}
 							</div>
-
 							<ActionButtons
 								category={'order'}
 								status={viewData.status.toLowerCase()}
@@ -224,6 +238,9 @@ export default function OrderView() {
 						<p className='placeholder-msg'>Loading order...</p>
 					)}
 				</div>
+				{showGcash && viewData && viewData.payment.status === "unpaid" &&
+				
+					<GCash amount={viewData?.amount || 0} handleClose={() => setShowGcash(false)} onPaymentSuccess={onPaymentSuccess} />}
 			</div>
 			<AIAssistant />
 		</div>
